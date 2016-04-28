@@ -18,9 +18,9 @@ import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.
  *
  * @author FGarijo
  */
-public abstract class EstadoAbstractoMovRobot implements ItfUsoMovimientoCtrl {
+public abstract class EstadoAbstractoMovRobot  {
 
-    public static  enum EstadoMovimientoRobot {Indefinido,RobotParado, RobotEnMovimiento, RobotBloqueado,RobotavanceImposible,enDestino,  error}
+//    public static  enum EstadoMovimientoRobot {Indefinido,RobotParado, RobotEnMovimiento, RobotBloqueado,RobotBloqueadoPorObstaculo,RobotavanceImposible,enDestino,  error}
     //Nombres de las clases que implementan estados del recurso interno
     public static  enum EvalEnergiaRobot {sinEnergia,energiaSuficiente,EnergiaJusta, EnergiaInsuficiente }
     public EstadoAbstractoMovRobot estadoActual;
@@ -29,13 +29,14 @@ public abstract class EstadoAbstractoMovRobot implements ItfUsoMovimientoCtrl {
     public volatile Coordinate robotposicionActual;
     public volatile Coordinate destinoCoord;
     public double distanciaDestino ;
-    protected float velocidadCrucero;
+    protected double velocidadCrucero;
     public ItfProcesadorObjetivos itfProcObjetivos;
-    protected HebraMonitorizacionLlegada monitorizacionLlegadaDestino;
+//    protected HebraMonitorizacionLlegada monitorizacionLlegadaDestino;
     public ItfUsoRecursoTrazas trazas ;
     public String identComponente ;
     public String identEstadoActual ;
     public String identDestino ;
+    public int energiaRobot;
     public ItfUsoRecursoVisualizadorEntornosSimulacion itfusoRecVisSimulador;
     
    public  EstadoAbstractoMovRobot (MaquinaEstadoMovimientoCtrl maquinaEstds,MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot identEstadoAcrear) {
@@ -49,92 +50,42 @@ public abstract class EstadoAbstractoMovRobot implements ItfUsoMovimientoCtrl {
           identEstadoActual= identEstadoAcrear.name();
     }
 }
-    public void inicializar (ItfProcesadorObjetivos itfProcObj){
-        identAgente = itfProcObj.getAgentId();
-        itfProcObjetivos = itfProcObj;
+//    public void inicializar (ItfProcesadorObjetivos itfProcObj){
+    public void inicializarDependencias1 (String agteId,ItfUsoRecursoVisualizadorEntornosSimulacion itfVisSimul){
+        identAgente = agteId;
+//        itfProcObjetivos = itfProcObj;
         identComponente = identAgente+"."+this.getClass().getSimpleName();
         trazas = NombresPredefinidos.RECURSO_TRAZAS_OBJ;
+        itfusoRecVisSimulador = itfVisSimul;
  
     }
-    public void inicializar (ItfProcesadorObjetivos itfProcObj,ItfUsoRecursoVisualizadorEntornosSimulacion itfVisSimul){
+    public void inicializarDependencias2 (ItfProcesadorObjetivos itfProcObj,ItfUsoRecursoVisualizadorEntornosSimulacion itfVisSimul){
         identAgente = itfProcObj.getAgentId();
         itfProcObjetivos = itfProcObj;
         identComponente = identAgente+"."+this.getClass().getSimpleName();
         trazas = NombresPredefinidos.RECURSO_TRAZAS_OBJ;
         itfusoRecVisSimulador = itfVisSimul;
-        maquinaEstados.inicializar(itfProcObj,itfVisSimul);
  
     }
-//    private EstadoAbstractoMovRobot setEstadoActual(EstadoAbstractoMovRobot estadoMovCtrl) {
-//        return estadoActual = maquinaEstados.estadoActual;
-//    }
-
-    public  void inicializarInfoMovimiento(Coordinate coordInicial, float velocidadInicial){
-//        robotposicionActual =coordInicial;
-//        velocidadCrucero = velocidadInicial;
-        maquinaEstados.inicializarInfoMovimiento(coordInicial, velocidadInicial);
+    public  void inicializarInfoMovimiento(int robotEnergia, Coordinate coordInicial, double velocidadInicial){
+        robotposicionActual =coordInicial;
+        velocidadCrucero = velocidadInicial;
+        energiaRobot=robotEnergia;
     } 
 
-        public  void moverAdestino(String identDest,Coordinate coordDestino, float velocidadCrucero){
-            estadoActual.moverAdestino(identDest,coordDestino, velocidadCrucero);
-            this.identDestino = identDest;
-         //   identDestino = identDest;
-        }
-
-        public abstract void cambiaVelocidad( float nuevaVelocidadCrucero) ;
-        
-
-        public synchronized void cambiaDestino(String identDest,Coordinate coordDestino) {
-            maquinaEstados.getEstadoActual().cambiaDestino(identDest,coordDestino);
-            this.identDestino = identDest;
-         //   identDestino = identDest;
-        }   
-        public synchronized void parar(){
-          maquinaEstados.getEstadoActual().parar(); 
-        }
-
-        public void continuar(){
-            maquinaEstados.getEstadoActual().continuar();
-        }
-    public abstract  boolean estamosEnDestino(String identDest);
-//    {
-//        // se informa al control de que estamos en el destino. Se cambia el estado a parar
-//        Informe informeLlegada = new Informe (identComponente,identDest, VocabularioRosace.MsgeLlegadaDestino);
-//        this.itfProcObjetivos.insertarHecho(informeLlegada);
-//        trazas.trazar(identAgente, "Se informa de llegada al  destino: " +informeLlegada + " El robot esta en el estado :"+ identEstadoActual, InfoTraza.NivelTraza.debug);
-//        estadoActual = maquinaEstados.cambiarEstado(MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotParado);
-//        this.identDestino = identDest;
-//  
-//    }
-
-    public synchronized void imposibleAvanzarADestino(){
-        maquinaEstados.cambiarEstado(MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotBloqueado);
-//        estadoActual=maquinaEstados.getEstadoActual();
-    }
-    
-
-   public synchronized Coordinate getCoordenadasActuales() {
-         return robotposicionActual= maquinaEstados.getCoordenadasActuales();
-     }
-    
-
+        public abstract void moverAdestino(String identDest,Coordinate coordDestino, double velocidadCrucero);
+        public abstract void cambiaVelocidad( double nuevaVelocidadCrucero); 
+        public abstract void cambiaDestino(String identDest,Coordinate coordDestino) ;
+        public abstract void continuar();
+        public abstract void parar();
+        public abstract  boolean getEstamosEnDestino();
+        public abstract  void setEstamosEnDestino();
+    public abstract Coordinate getCoordenadasActuales(); 
     public synchronized void setCoordenadasActuales(Coordinate nuevasCoordenadas) {
         if (nuevasCoordenadas != null){
          robotposicionActual.x = nuevasCoordenadas.x;
          robotposicionActual.y = nuevasCoordenadas.y;
          robotposicionActual.z = nuevasCoordenadas.z;
-        maquinaEstados.setCoordenadasActuales(nuevasCoordenadas);
         }
-        
-    }
-     
-    public  EstadoAbstractoMovRobot getEstadoActual (){
-        
-    return maquinaEstados.getEstadoActual();
-    }
-    @Override
-    public  String getIdentEstadoMovRobot (){
-        
-    return maquinaEstados.getIdentEstadoMovRobot();
     }
 }

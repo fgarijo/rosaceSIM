@@ -5,6 +5,7 @@
 package icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp;
 
 import icaro.aplicaciones.Rosace.informacion.Coordinate;
+import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 
@@ -12,7 +13,7 @@ import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.
  *
  * @author FGarijo
  */
-public class RobotBloqueado extends EstadoAbstractoMovRobot implements ItfUsoMovimientoCtrl{
+public class RobotBloqueado extends EstadoAbstractoMovRobot {
   
  //   public MaquinaEstadoMovimientoCtrl maquinaEstados;
     public  RobotBloqueado (MaquinaEstadoMovimientoCtrl maquinaEstados){
@@ -22,18 +23,18 @@ public class RobotBloqueado extends EstadoAbstractoMovRobot implements ItfUsoMov
          super (maquinaEstados,MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotBloqueado);
   
     }
-   @Override
-    public  void inicializarInfoMovimiento(Coordinate coordInicial, float velocidadInicial){
-       
-   } 
+//   @Override
+//    public  void inicializarInfoMovimiento(Coordinate coordInicial, double velocidadInicial){
+//       
+//   } 
     @Override
-        public void moverAdestino(String identdest,Coordinate coordDestino, float velocidadCrucero) {
+        public void moverAdestino(String identdest,Coordinate coordDestino, double velocidadCrucero) {
 //            this.distanciaDestino = this.distanciaEuclidC1toC2(this.robotposicionActual, coordDestino);
 //            double tiempoParaAlcanzarDestino = distanciaDestino/velocidadCrucero;
             this.identDestino = identdest;
         }
     @Override
-        public void cambiaVelocidad( float nuevaVelocidadCrucero) {
+        public void cambiaVelocidad( double nuevaVelocidadCrucero) {
             this.velocidadCrucero = nuevaVelocidadCrucero;
         }
     @Override
@@ -43,12 +44,12 @@ public class RobotBloqueado extends EstadoAbstractoMovRobot implements ItfUsoMov
         }
     @Override
         public void parar(){
-         if (monitorizacionLlegadaDestino!=null ) this.monitorizacionLlegadaDestino.finalizar();
+//         if (monitorizacionLlegadaDestino!=null ) this.monitorizacionLlegadaDestino.finalizar();
             this.trazas.trazar (this.identAgente +"."+this.getClass().getSimpleName(), " ignoro la operacion porque estoy parado ", InfoTraza.NivelTraza.debug);
         }
-    @Override
+   
         public void bloquear(){
-           if (monitorizacionLlegadaDestino!=null ) this.monitorizacionLlegadaDestino.finalizar();
+//           if (monitorizacionLlegadaDestino!=null ) this.monitorizacionLlegadaDestino.finalizar();
            this.trazas.trazar (this.identAgente +"."+this.getClass().getSimpleName(), " ignoro la operacion porque estoy bloqueado ", InfoTraza.NivelTraza.debug);
     }
     @Override
@@ -57,7 +58,7 @@ public class RobotBloqueado extends EstadoAbstractoMovRobot implements ItfUsoMov
         // lo podria hacer generando una notificacion que va al controlador del agente
             this.trazas.trazar (this.identAgente +"."+this.getClass().getSimpleName(), " ignoro la operacion porque estoy parado ", InfoTraza.NivelTraza.debug); 
         }
-    @Override
+   
     public boolean estamosEnDestino(String identDest){
         return (identDestino.equals(identDest));
         // 
@@ -66,21 +67,45 @@ public class RobotBloqueado extends EstadoAbstractoMovRobot implements ItfUsoMov
     }
     @Override
     public  Coordinate getCoordenadasActuales(){
-        return this.monitorizacionLlegadaDestino.getCoordRobot();
+//        return this.monitorizacionLlegadaDestino.getCoordRobot();
+        return this.robotposicionActual;
     } 
-    @Override
      public  String getIdentEstadoMovRobot(){
          return MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotBloqueado.name();
      }
 
-    @Override
+   
     public EstadoAbstractoMovRobot getEstadoActual() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     return this;
     }
 
-    @Override
     public boolean paradoEnDestino(String identDestino) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+
+    public Coordinate getCoordenasDestino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+//    @Override
+//    public HebraMonitorizacionLlegada getHebraMonitorizacionLlegadaDestino() {
+//        return null;
+//    }
+
+    @Override
+    public boolean getEstamosEnDestino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setEstamosEnDestino() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    
+
+
 }

@@ -1,21 +1,24 @@
 package icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl;
 
 import icaro.aplicaciones.Rosace.informacion.Coordinate;
-import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp.EstadoAbstractoMovRobot;
+import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 
 public interface ItfUsoMovimientoCtrl {
-	public void inicializarInfoMovimiento(Coordinate coordInicial, float velocidadInicial) ;
-        public void moverAdestino(String identDest,Coordinate coordDestino, float velocidadCrucero) ;
-        public void cambiaVelocidad( float nuevaVelocidadCrucero) ;
+	public void inicializarInfoMovimiento(int energiaRobot,Coordinate coordInicial, double velocidadInicial) ;
+        public void moverAdestino(String identDest,Coordinate coordDestino, double velocidadCrucero) ;
+        public void cambiaVelocidad( double nuevaVelocidadCrucero) ;
         public void cambiaDestino(String identDest,Coordinate coordDestino) ;
+        public Coordinate getCoordenasDestino();
  //       public void actualizarCoordenadas(Coordinate nuevasCoordenadas) ;
         public Coordinate getCoordenadasActuales() ;
-        public String getIdentEstadoMovRobot();
         public  void setCoordenadasActuales(Coordinate nuevasCoordenadas) ;
         public void parar();
         public void bloquear();
         public void continuar();
-        public boolean paradoEnDestino(String identDestino);
+        public boolean estamosEnDestino(String identDestino);
         public void imposibleAvanzarADestino();
+//	public HebraMonitorizacionLlegada getHebraMonitorizacionLlegadaDestino();
+	public void setRobotStatus(RobotStatus1 robotStatus);
+        public String getIdentEstadoMovRobot();
         
 }

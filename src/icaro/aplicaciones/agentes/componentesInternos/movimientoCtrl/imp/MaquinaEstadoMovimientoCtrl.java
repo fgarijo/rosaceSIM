@@ -5,9 +5,12 @@
 package icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp;
 
 import icaro.aplicaciones.Rosace.informacion.Coordinate;
+import icaro.aplicaciones.Rosace.informacion.Coste;
+import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
 import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.ItfUsoRecursoVisualizadorEntornosSimulacion;
+import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp.LineaObstaculo;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Informe;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Temporizador;
@@ -15,7 +18,10 @@ import icaro.infraestructura.patronAgenteCognitivo.procesadorObjetivos.factoriaE
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza.NivelTraza;
+
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,12 +32,10 @@ import org.openide.util.Exceptions;
  *
  * @author FGarijo
  */
-public class MaquinaEstadoMovimientoCtrl   {
-    private static EstadoAbstractoMovRobot instance;
-    private String identEstadoActual;
+public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
     private String identComponente;
-    private String identDestino;
-  public static  enum EstadoMovimientoRobot {Indefinido,RobotParado, RobotEnMovimiento, RobotBloqueado,RobotavanceImposible,enDestino,  error}
+    private String identEstadoActual;
+    public static  enum EstadoMovimientoRobot {Indefinido,RobotParado, RobotEnMovimiento, RobotBloqueado, RobotBloqueadoPorObstaculo,RobotavanceImposible,enDestino,  error}
     //Nombres de las clases que implementan estados del recurso interno
     public static  enum EvalEnergiaRobot {sinEnergia,energiaSuficiente,EnergiaJusta, EnergiaInsuficiente }
     public EstadoAbstractoMovRobot estadoActual;
@@ -43,40 +47,56 @@ public class MaquinaEstadoMovimientoCtrl   {
     private  Map<EstadoMovimientoRobot, EstadoAbstractoMovRobot> estadosCreados;
     public volatile Coordinate robotposicionActual;
     public volatile Coordinate destinoCoord;
+    public volatile String identDestino;
     public double distanciaDestino ;
     protected Integer velocidadCrucero;
+    public int energiaRobot;
+    public boolean robotEnDestino = false;
     public ItfProcesadorObjetivos itfProcObjetivos;
-    protected HebraMonitorizacionLlegada monitorizacionLlegadaDestino;
-    ItfUsoRecursoVisualizadorEntornosSimulacion itfUsoRecVisEntornosSimul;
+//    protected HebraMonitorizacionLlegada monitorizacionLlegadaDestino;
+    public ItfUsoRecursoVisualizadorEntornosSimulacion itfUsoRecVisEntornosSimul;
+    private ArrayList<LineaObstaculo> obstaculosDescubiertos;
     private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass().getSimpleName());
+
     
+    public  MaquinaEstadoMovimientoCtrl (){
+	this.obstaculosDescubiertos = new ArrayList<LineaObstaculo>();
+        estadosCreados = new EnumMap<EstadoMovimientoRobot, EstadoAbstractoMovRobot>(EstadoMovimientoRobot.class) ;
+    }
+    @Override
+    public void inicializarInfoMovimiento(int energRobot, Coordinate coordInicial, double velocidadInicial) {
+       this.energiaRobot= energRobot;
+       this.robotposicionActual = coordInicial;
+       this.velocidadRobot = velocidadInicial;
+       if (this.estadoActual==null)estadoActual = this.crearInstanciaEstado2(EstadoMovimientoRobot.RobotParado);
+       this.estadoActual.inicializarInfoMovimiento(energiaRobot, coordInicial, velocidadInicial);
+    }
+
+    @Override
+    public void cambiaVelocidad(double nuevaVelocidadCrucero) {
+        this.estadoActual.cambiaVelocidad(nuevaVelocidadCrucero);
+    }
+
+    @Override
+    public Coordinate getCoordenasDestino() {
+        return (Coordinate)this.destinoCoord.clone();
+    }
+
+    @Override
     public void bloquear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-   
+    @Override
     public boolean estamosEnDestino(String identDestino) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    return estadoActual.estamosEnDestino(identDestino);
+        return this.robotEnDestino;
     }
 
-    void setVelocidadInicial(float velocidadInicial) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    this.velocidadRobot = velocidadInicial;
+    @Override
+    public void setRobotStatus(RobotStatus1 robotStatus) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    public synchronized void inicializar(ItfProcesadorObjetivos itfProcObj, ItfUsoRecursoVisualizadorEntornosSimulacion itfVisSimul) {
-       identAgente = itfProcObj.getAgentId();
-        if (identComponente ==null) identComponente = identAgente+"."+this.getClass().getSimpleName();
-       itfProcObjetivos =itfProcObj;
-       itfUsoRecVisEntornosSimul=itfVisSimul;
-    }
-   
-    public  MaquinaEstadoMovimientoCtrl (){
-        estadosCreados = new EnumMap<EstadoMovimientoRobot, EstadoAbstractoMovRobot>(EstadoMovimientoRobot.class) ;
-        
-    }
-    
+     
     public EstadoAbstractoMovRobot getEstadoActual (){
         return  estadoActual ;
     }
@@ -89,10 +109,7 @@ public class MaquinaEstadoMovimientoCtrl   {
     public void SetInfoContexto (ItfProcesadorObjetivos itfProcObj){
         identAgente = itfProcObj.getAgentId();
         itfProcObjetivos = itfProcObj;
-   //     identComponente = identAgente+"."+this.getClass().getSimpleName();
         if (identComponente ==null) identComponente = identAgente+"."+this.getClass().getSimpleName();
- //       estadoRobotParado =new RobotParado(agenteId);
- //      estadoActual= estadoRobotParado;
         trazas = NombresPredefinidos.RECURSO_TRAZAS_OBJ;
     }
      public synchronized EstadoAbstractoMovRobot  cambiarEstado (EstadoMovimientoRobot nuevoEstadoId){
@@ -101,9 +118,9 @@ public class MaquinaEstadoMovimientoCtrl   {
         estadoActual = estadosCreados.get(nuevoEstadoId);
         
         if ( estadoActual != null  ) {}
-         else estadoActual =  crearInstanciaEstado2(nuevoEstadoId);       
-    }
-      identEstadoActual = estadoActual.identEstadoActual;
+         else estadoActual =  crearInstanciaEstado2(nuevoEstadoId);  
+        identEstadoActual = nuevoEstadoId.name();
+    }   
       return estadoActual; 
     }
      		               	
@@ -131,155 +148,91 @@ public class MaquinaEstadoMovimientoCtrl   {
          if(estadoId.equals(EstadoMovimientoRobot.RobotBloqueado))estadoActual = new RobotBloqueado(this);
          else if(estadoId.equals(EstadoMovimientoRobot.RobotParado))estadoActual = new RobotParado(this);
             else estadoActual = new RobotEnMovimiento(this);
-         estadoActual.inicializar(itfProcObjetivos, itfUsoRecVisEntornosSimul);
+	 estadoActual.inicializarDependencias1(this.identAgente, itfUsoRecVisEntornosSimul);
          identEstadoActual = estadoId.name();
-         estadoActual.identComponente=identComponente;
          estadosCreados.put(estadoId,estadoActual);
          trazas.trazar(identComponente, " se crea el estado: "+ identEstadoActual+  " y se pone la maquina de estados  en este estado  " , NivelTraza.debug);
-         
+//         estadoActual.inicializarInfoMovimiento(this.energiaInicialRobot, robotposicionActual, this.velocidadRobot);
          return estadoActual;
          
      }
 
-    public  void inicializarInfoMovimiento(icaro.aplicaciones.Rosace.informacion.Coordinate coordInicial, float velocidadInicial){
+    public  void inicializarInfoMovimiento(Coordinate coordInicial, float velocidadInicial){
         robotposicionActual =coordInicial;
         velocidadRobot = velocidadInicial;
-//        this.estadoActual.inicializarInfoMovimiento(coordInicial,velocidadInicial);
-//        this.robotposicionActual = coordInicial;
     } 
- 
-public synchronized void moverAdestino(String identdest,Coordinate coordDestino, float velocidadCrucero) {   
-    // suponemos que la orden de moverse se da desde un estado parado
-    // cuando se da desde un estado en movimiento se activa la orden cambiar destino
-        if (velocidadCrucero<= 0)trazas.trazar(identComponente, "La velocidad debe ser mayor que cero. Se ignora la operacion", InfoTraza.NivelTraza.error);
-              else this.velocidadRobot = velocidadCrucero;
-        if ( this.identEstadoActual.equals(EstadoMovimientoRobot.RobotEnMovimiento.name()))
-                if ( identdest.equals(identDestino))
-                        this.trazas.trazar (this.identComponente, " Se esta avanzando hacia el destino ", InfoTraza.NivelTraza.debug);
-                else { 
-                    // cambiar destino
-                    if (monitorizacionLlegadaDestino != null)this.monitorizacionLlegadaDestino.finalizar();
-                    robotposicionActual = monitorizacionLlegadaDestino.getCoordRobot();
-                    this.velocidadRobot = velocidadCrucero;
-                    this.destinoCoord = coordDestino;
-                    this.identDestino = identdest;
-               this.monitorizacionLlegadaDestino = new HebraMonitorizacionLlegada (this.identAgente,this,this.itfUsoRecVisEntornosSimul);
-//               monitorizacionLlegadaDestino.setValoresIniciales(identDestino,robotposicionActual,destinoCoord);
-//               this.robotposicionActual = this.maquinaEstados.getCoordenadasActuales();
-//               this.monitorizacionLlegadaDestino = new HebraMonitorizacionLlegada (this.identAgente,this,this.itfUsoRecVisEntornosSimul);
-                    monitorizacionLlegadaDestino.inicializarDestino(identdest,this.robotposicionActual,coordDestino,velocidadCrucero);
-                    monitorizacionLlegadaDestino.start();
+    @Override
+	public synchronized void moverAdestino(String identDest,Coordinate coordDestino, double velocidadCrucero) {
+		this.identDestino= identDest;
+                this.destinoCoord = (Coordinate)coordDestino.clone();
+                if(this.identEstadoActual.equals(EstadoMovimientoRobot.RobotParado.name())){
+                    this.estadoActual = this.cambiarEstado(EstadoMovimientoRobot.RobotEnMovimiento);
+                    estadoActual.inicializarInfoMovimiento(this.energiaRobot, this.robotposicionActual, velocidadCrucero);
+                    }
+		trazas.trazar(identAgente, "Se recibe una  orden de mover a destino."+ identDest + " El robot esta en el estado :"+ identEstadoActual
+				+ " CoordActuales =  "+this.robotposicionActual.toString() + " CoordDestino =  " +this.destinoCoord.toString(), InfoTraza.NivelTraza.debug);
+		estadoActual.moverAdestino(identDest,coordDestino, velocidadCrucero);
                   }
-        if ( this.identEstadoActual.equals(EstadoMovimientoRobot.RobotParado.name()))
-            if ( identdest.equals(identDestino))
-                        this.trazas.trazar (this.identComponente, " Estamos parados en destino ", InfoTraza.NivelTraza.error);
-            else{// se da la orden de avanzar al destino
-               this.velocidadRobot = velocidadCrucero;
-               this.destinoCoord = coordDestino;
-               this.identDestino = identdest;
-               if (monitorizacionLlegadaDestino == null) {
-                   log.debug("Se crea la hebra de  monitorizacion para destino " + identdest + "  posicion actual -> ("+this.robotposicionActual.getX() + " , " + this.robotposicionActual.getY() + ")"); 
-                    monitorizacionLlegadaDestino= new HebraMonitorizacionLlegada (this.identAgente,this,this.itfUsoRecVisEntornosSimul);
-                    monitorizacionLlegadaDestino.inicializarDestino(identdest,this.robotposicionActual,coordDestino,velocidadCrucero);
-                     monitorizacionLlegadaDestino.start();
-               }else {
-//               robotposicionActual = monitorizacionLlegadaDestino.getCoordRobot();
-              
-//               this.monitorizacionLlegadaDestino = new HebraMonitorizacionLlegada (this.identAgente,this,this.itfUsoRecVisEntornosSimul);
-//               monitorizacionLlegadaDestino.setValoresIniciales(identDestino,robotposicionActual,destinoCoord);
-//               this.robotposicionActual = this.maquinaEstados.getCoordenadasActuales();
-//               this.monitorizacionLlegadaDestino = new HebraMonitorizacionLlegada (this.identAgente,this,this.itfUsoRecVisEntornosSimul);       
-               log.debug("Se da orden de  monitorizacion para destino " + identdest + "  posicion actual -> ("+this.robotposicionActual.getX() + " , " + this.robotposicionActual.getY() + ")"); 
-               monitorizacionLlegadaDestino.inicializarDestino(identdest,this.robotposicionActual,coordDestino,velocidadCrucero);
-               monitorizacionLlegadaDestino.start();
-               }
-                   }
-         }
-  
-        public void cambiaVelocidad( float nuevaVelocidadCrucero) {
-            velocidadRobot =nuevaVelocidadCrucero;
-        }
-  
-//        public synchronized void cambiaDestino(String identDest,icaro.aplicaciones.Rosace.informacion.Coordinate coordDestino) {
-////            estadoActual.cambiaDestino(identDest,coordDestino);
-//            this.destinoCoord = coordDestino;
-//            trazas.trazar(identAgente, "Se recibe una  orden de cambiar  a destino. El robot esta en el estado :"+ identEstadoActual
-//                + " CoordActuales =  "+this.robotposicionActual.toString() + " CoordDestino =  " +this.destinoCoord.toString(), InfoTraza.NivelTraza.debug);
-////            this.estadoActual.identDestino = identDest;
-//         //   identDestino = identDest;
-//        }   
-        public synchronized void cambiaDestino(String identdest,Coordinate coordDestino) {
-        // Habria que obtener la posicion actual y recalcular la distancia y el tiempo
-        // lo dejamos con mover a destino desde la posicion inicial 
-            if ( identdest.equals(identDestino))
-                        this.trazas.trazar (this.identComponente, " El nuevo destino coincide con el  destino actual ", InfoTraza.NivelTraza.debug);
-            else {
-                if ( this.identEstadoActual.equals(EstadoMovimientoRobot.RobotEnMovimiento)){
+   
+    @Override
+	public synchronized void cambiaDestino(String identDest,icaro.aplicaciones.Rosace.informacion.Coordinate coordDestino) {
+		estadoActual.cambiaDestino(identDest,coordDestino);
                 this.destinoCoord = coordDestino;
-                this.identDestino = identdest;
-                if (monitorizacionLlegadaDestino != null)this.monitorizacionLlegadaDestino.finalizar();
-                robotposicionActual = monitorizacionLlegadaDestino.getCoordRobot();
-//            this.monitorizacionLlegadaDestino.finalizar();
                 trazas.trazar(identAgente, "Se recibe una  orden de cambiar  a destino. El robot esta en el estado :"+ identEstadoActual
                 + " CoordActuales =  "+this.robotposicionActual.toString() + " CoordDestino =  " +this.destinoCoord.toString(), InfoTraza.NivelTraza.debug);
                 }
-                moverAdestino(identDestino,destinoCoord,this.velocidadCrucero);
-            }
-        }
 
+    @Override
         public synchronized void parar(){
-         if (monitorizacionLlegadaDestino != null)this.monitorizacionLlegadaDestino.finalizar();
-                robotposicionActual = monitorizacionLlegadaDestino.getCoordRobot();
-                trazas.trazar(identAgente, "Se recibe una  orden de parada. El robot esta en el estado :"+ identEstadoActual
-                + " CoordActuales =  "+this.robotposicionActual.toString() + " CoordDestino =  " +this.destinoCoord.toString(), InfoTraza.NivelTraza.debug);
+		estadoActual.parar(); 
         }
-//
-//        public void continuar(){
-//            estadoActual.continuar();
-//        }
 
-    public synchronized void estamosEnDestino(String identDest, Coordinate destinoCoord){
+    @Override
+	public void continuar(){
+		estadoActual.continuar();
+	}
+
+        public synchronized void enDestino(){
         // se informa al control de que estamos en el destino. Se cambia el estado a parar
-//        estadoActual = this.cambiarEstado(MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotParado);
+        estadoActual = this.cambiarEstado(MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotParado);
 //        this.estadoActual.identDestino = identDest;
-//        Informe informeLlegada = new Informe (identComponente,identDest, VocabularioRosace.MsgeLlegadaDestino);
-//        Temporizador informeTemp = new Temporizador (500,itfProcObjetivos,informeLlegada);
-//        robotposicionActual = monitorizacionLlegadaDestino.getCoordDestino();
-        estadoActual = this.cambiarEstado(EstadoMovimientoRobot.RobotParado);
-//        this.itfProcObjetivos.insertarHecho(informeLlegada);   
-        this.robotposicionActual = destinoCoord;
-        this.estadoActual.identDestino = identDest;
-//        this.estadoActual.setCoordenadasActuales(destinoCoord);
+        this.robotposicionActual=this.destinoCoord;
+		Informe informeLlegada = new Informe (identComponente,identDestino, VocabularioRosace.MsgeLlegadaDestino);
+		Temporizador informeTemp = new Temporizador (1,itfProcObjetivos,informeLlegada);
+		informeTemp.start();
+//        estadoActual = this.cambiarEstado(EstadoMovimientoRobot.RobotParado);
+	this.robotposicionActual = new Coordinate(destinoCoord.getX(),destinoCoord.getY(),destinoCoord.getZ());
+        this.estadoActual.identDestino = identDestino;
 //         trazas.trazar(identAgente, "Se informa de llegada al  destino: " +informeLlegada + " El robot esta en el estado :"+ identEstadoActual
 //                + " CoordActuales =  "+destinoCoord.toString() , InfoTraza.NivelTraza.error);
         
   
     }
+        public synchronized void setEnergiaRobot(int energRobot){
+            this.energiaRobot=energRobot;
+        }
 
+    @Override
     public synchronized void imposibleAvanzarADestino(){
        estadoActual = this.cambiarEstado(EstadoMovimientoRobot.RobotBloqueado);
     }
     
-
+    @Override
     public synchronized Coordinate getCoordenadasActuales() {
-     return this.robotposicionActual;
+     if(!identEstadoActual.equals(EstadoMovimientoRobot.RobotEnMovimiento)){
+         this.robotposicionActual = (Coordinate)this.estadoActual.getCoordenadasActuales();
+     }
+      return (Coordinate)this.robotposicionActual.clone();
     }
 
+    @Override
     public synchronized void setCoordenadasActuales(Coordinate nuevasCoordenadas) {
         if (nuevasCoordenadas != null){
-            this.robotposicionActual = nuevasCoordenadas;
-//       this.estadoActual.  robotposicionActual.x = nuevasCoordenadas.x;
-//        this.estadoActual. robotposicionActual.y = nuevasCoordenadas.y;
-//        this.estadoActual. robotposicionActual.z = nuevasCoordenadas.z;
+            this.robotposicionActual =(Coordinate)nuevasCoordenadas.clone();
         }
     }
-//    public  EstadoAbstractoMovRobot getEstadoActual (){
-//        return this.estadoActual;
-//    }
-//     public void  setEstadoActual (EstadoAbstractoMovRobot estadoRobot){
-//         this.estadoActual = estadoRobot;
-//    }
- 
+
+    @Override
      public  String getIdentEstadoMovRobot(){
          return identEstadoActual;
      }

@@ -15,9 +15,6 @@ public class InfoCompMovimiento extends InfoCompInterno {
    
     public  ItfUsoMovimientoCtrl itfAccesoComponente;
     public  ItfProcesadorObjetivos itfAccesoControlEntidad;
-    private String identEstadoRobot;
-    private String identDestino;
-    public static  enum EstadoMovimientoRobot {Indefinido,RobotParado, RobotEnMovimiento, RobotBloqueado,RobotavanceImposible,enDestino,  error}
     
   public  InfoCompMovimiento ( String componenteId){
       super (componenteId);
@@ -36,23 +33,4 @@ public class InfoCompMovimiento extends InfoCompInterno {
      public Object getitfAccesoControlEntidad(){
          return itfAccesoControlEntidad ;
      } 
-
-     public String getidentEstadoRobot(){
-//         identEstadoRobot = itfAccesoComponente.getIdentEstadoMovRobot();
-         return identEstadoRobot;
-     }
-     public void setidentEstadoRobot(String identEstRobot){
-         identEstadoRobot = identEstRobot;
-         
-     }
-     public String getidentDestino(){
-         return identDestino;
-     }
-     public void setidentDestino(String destinoId){
-         identDestino = destinoId;
-         
-     }
-//     public  void actualizarEstadoMovRobot(){
-//         this.estadoRobot = itfAccesoComponente.getIdentEstadoMovRobot();
-//     }
 }

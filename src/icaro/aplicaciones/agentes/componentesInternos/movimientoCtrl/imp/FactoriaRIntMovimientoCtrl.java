@@ -39,15 +39,14 @@ public class FactoriaRIntMovimientoCtrl extends FactoriaAbstrCompInterno{
          ItfUsoRepositorioInterfaces repoItfs = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
          itfUsoRecVisEntornosSimul = (ItfUsoRecursoVisualizadorEntornosSimulacion)repoItfs.obtenerInterfazUso(VocabularioRosace.IdentRecursoVisualizadorEntornosSimulacion);
          maquinaEstados.SetItfUsoRecursoVisualizadorEntornosSimulacion(itfUsoRecVisEntornosSimul);
+         maquinaEstados.cambiarEstado(MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotParado);
         } catch (Exception ex) {
             Logger.getLogger(FactoriaRIntMovimientoCtrl.class.getName()).log(Level.SEVERE, null, ex);
         }
-        maquinaEstados.cambiarEstado(MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotParado);
-        ItfUsoMovimientoCtrl itfMov =(ItfUsoMovimientoCtrl) maquinaEstados.cambiarEstado(MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotParado);
-        
+//        ItfUsoMovimientoCtrl itfMov =(ItfUsoMovimientoCtrl) maquinaEstados.cambiarEstado(MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotParado);
+        ItfUsoMovimientoCtrl itfMov =(ItfUsoMovimientoCtrl) maquinaEstados;
         InfoCompMovimiento infoCompCreado = new InfoCompMovimiento (identComponenteAcrear);
         infoCompCreado.setitfAccesoComponente(itfMov);
-//        infoCompCreado.setitfAccesoComponente ((ItfUsoMovimientoCtrl) maquinaEstados);
         return infoCompCreado;
  
     }

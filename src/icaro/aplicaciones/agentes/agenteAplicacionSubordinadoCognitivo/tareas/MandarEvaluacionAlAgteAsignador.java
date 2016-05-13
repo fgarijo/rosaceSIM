@@ -102,7 +102,8 @@ public class MandarEvaluacionAlAgteAsignador  extends TareaSincrona {
 //              trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "EvaluacionEnviadaAlAgente : "+ nombreAgenteQuePideLaEvaluacion, InfoTraza.NivelTraza.info));
               trazas.aceptaNuevaTrazaEjecReglas(nombreAgenteEmisor, "Victima En Peticion : "+victimEnPeticion + "  EvaluacionEnviadaAlAgente : "+
                                             nombreAgenteQuePideLaEvaluacion + " Evaluacion : "+miEvalDeRespuesta );
-              //            tiempoSinRecibirRespuesta.start();
+              trazas.aceptaNuevaTrazaEjecReglas(nombreAgenteEmisor, "Estatus Robot. Estado" +robot.getestadoMovimiento() + " Coordenadas  : "+robotLocation + "  Destino:  " +robot.getidentDestino());
+//            tiempoSinRecibirRespuesta.start();
 
 		  } catch (Exception e) {
 			  e.printStackTrace();
@@ -123,7 +124,8 @@ public class MandarEvaluacionAlAgteAsignador  extends TareaSincrona {
        	          }  
                   * 
                   */
-          robotLocation = robot.getRobotCoordinate();
+//          robotLocation = robot.getRobotCoordinate();
+            robotLocation = robot.getInfoCompMovt().getCoordenadasActuales();
           Coste coste = new Coste();
           return coste.CalculoCosteAyudarVictima(nombreAgenteEmisor, robotLocation, robot, victimEnPeticion, victimasRecibidas, misObjtvs, "FuncionEvaluacion3");
                               

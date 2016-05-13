@@ -85,27 +85,27 @@ public class AccesoPropiedadesGlobalesRosace {
 
 	
 	
-    public static String getRutaFicheroVictimasTest(){
-		
-		String rutaFicheroVictimasTest="";
-		
-		ClaseGeneradoraRepositorioInterfaces itfUsoRepositorioInterfaces;
-		ItfUsoConfiguracion itfconfig;
-		
-    	try{    	
-    		itfUsoRepositorioInterfaces = ClaseGeneradoraRepositorioInterfaces.instance();
-    		itfconfig = (ItfUsoConfiguracion)itfUsoRepositorioInterfaces.obtenerInterfaz(NombresPredefinidos.NOMBRE_ITF_USO_CONFIGURACION);
-    		rutaFicheroVictimasTest = itfconfig.getValorPropiedadGlobal(VocabularioRosace.identRutaFicheroEscenarioSimulacion); 
-    	}
-    	catch (Exception e){
-    		e.printStackTrace();
-    	}
-			
-    	String strAUX = rutaFicheroVictimasTest.replaceAll(" ", "");  //elimina los espacios en blanco que podria haber en los numeros    	
-    	rutaFicheroVictimasTest = strAUX;
-    	    	
-		return rutaFicheroVictimasTest;				
-	}
+//    public static String getRutaFicheroVictimasTest(){
+//		
+//		String rutaFicheroVictimasTest="";
+//		
+//		ClaseGeneradoraRepositorioInterfaces itfUsoRepositorioInterfaces;
+//		ItfUsoConfiguracion itfconfig;
+//		
+//    	try{    	
+//    		itfUsoRepositorioInterfaces = ClaseGeneradoraRepositorioInterfaces.instance();
+//    		itfconfig = (ItfUsoConfiguracion)itfUsoRepositorioInterfaces.obtenerInterfaz(NombresPredefinidos.NOMBRE_ITF_USO_CONFIGURACION);
+//    		rutaFicheroVictimasTest = itfconfig.getValorPropiedadGlobal(VocabularioRosace.rutaFicheroVictimasTest); 
+//    	}
+//    	catch (Exception e){
+//    		e.printStackTrace();
+//    	}
+//			
+//    	String strAUX = rutaFicheroVictimasTest.replaceAll(" ", "");  //elimina los espacios en blanco que podria haber en los numeros    	
+//    	rutaFicheroVictimasTest = strAUX;
+//    	    	
+//		return rutaFicheroVictimasTest;				
+//	}
 	
 	
 	

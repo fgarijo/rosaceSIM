@@ -83,9 +83,9 @@ public abstract class EstadoAbstractoMovRobot  {
     public abstract Coordinate getCoordenadasActuales(); 
     public synchronized void setCoordenadasActuales(Coordinate nuevasCoordenadas) {
         if (nuevasCoordenadas != null){
-         robotposicionActual.x = nuevasCoordenadas.x;
-         robotposicionActual.y = nuevasCoordenadas.y;
-         robotposicionActual.z = nuevasCoordenadas.z;
+            
+         robotposicionActual= nuevasCoordenadas;
         }
+        notify();
     }
 }

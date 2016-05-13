@@ -32,13 +32,13 @@ public class InterpretarOrdenDelCC extends TareaSincrona{
              String nombreAgenteEmisor = this.getIdentAgente();
              String idVictim = victim.getName();
          //    this.getEnvioHechos().eliminarHechoWithoutFireRules(ccOrdenAyudarVictima);
-             this.getEnvioHechos().eliminarHecho(ccOrdenAyudarVictima);
+            
            // verificamos que no se esta ayudando a esa victima. Comprobamos que el ident no esta en ninguno de los objetivos 
        //      if ((ccOrdenAyudarVictima.mensajeOrden.equals(VocabularioRosace.MsgOrdenCCAyudarVictima)))
         //          if((objetivoEjecutantedeTarea == null) |
         //             ((objetivoEjecutantedeTarea != null)&&((!idVictim.equals(objetivoEjecutantedeTarea.getobjectReferenceId()))&& (!misObjs.existeObjetivoConEsteIdentRef(idVictim))))){
            // se crea el objetivo y se inserta en el motor
-                 if (victims2R.getvictims2Rescue().isEmpty() || victims2R.getVictimToRescue(idVictim) == null )  {   
+//                 if (victims2R.getvictims2Rescue().isEmpty() || victims2R.getVictimToRescue(idVictim) == null )  {   
                  AyudarVictima newAyudarVictima = new AyudarVictima (idVictim);
            //      newObjetivo.setvictimId(idVictim);
                  newAyudarVictima.setPriority(victim.getPriority());
@@ -51,10 +51,10 @@ public class InterpretarOrdenDelCC extends TareaSincrona{
                  this.getEnvioHechos().actualizarHechoWithoutFireRules(victims2R);
                  this.getEnvioHechos().insertarHecho(newAyudarVictima);
                  this.getEnvioHechos().insertarHecho(newDecision);
-                 trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Se ejecuta la tarea " + identTarea+
-                                    " Se crea el  objetivo:  "+ newAyudarVictima, InfoTraza.NivelTraza.debug));
+                 this.getEnvioHechos().eliminarHecho(ccOrdenAyudarVictima);
+                 trazas.aceptaNuevaTrazaEjecReglas(this.identAgente, "Se Ejecuta la Tarea :"+ this.identTarea +" Se crea el  objetivo:  "+ newAyudarVictima+ "  y el objetivo : "+ newDecision+"\n");
             System.out.println("\n"+nombreAgenteEmisor +"Se ejecuta la tarea " + this.getIdentTarea()+ " Se crea el  objetivo:  "+ newAyudarVictima+"\n\n" );
-             }
+//             }
         //         Si el foco esta en un objetivo solved
                 
        } catch (Exception e) {

@@ -5,12 +5,13 @@
 
 package icaro.aplicaciones.Rosace.tareasComunes;
 import icaro.aplicaciones.Rosace.informacion.EvaluacionAgente;
+import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.Victim;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
 import icaro.aplicaciones.agentes.agenteAplicacionSubordinadoConCambioRolCognitivo.tareas.GeneraryEncolarObjetivoActualizarFocoNC1;
 import icaro.aplicaciones.agentes.agenteAplicacionrobotIgualitarioNCognitivo.informacion.InfoParaDecidirQuienVa;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.InfoCompMovimiento;
-import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.InfoCompMovimiento.EstadoMovimientoRobot;
+import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp.MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Informe;
@@ -35,8 +36,9 @@ public class ProcesarInformeLlegadaDestino extends TareaSincrona{
              MisObjetivos misObjs = (MisObjetivos)params[0];
              VictimsToRescue victims = (VictimsToRescue) params[1];
              Focus focoActual = (Focus) params[2];
-             InfoCompMovimiento infoCompMov = (InfoCompMovimiento) params[3];
-             Informe informeRecibido = (Informe) params[4];
+             RobotStatus1 estatusRobot = (RobotStatus1) params[3];
+             InfoCompMovimiento infoCompMov = (InfoCompMovimiento) params[4];
+             Informe informeRecibido = (Informe) params[5];
 //             trazas.aceptaNuevaTraza(new InfoTraza(this.identAgente, "Se Ejecuta la Tarea :"+ this.identTarea , InfoTraza.NivelTraza.info));
              trazas.aceptaNuevaTrazaEjecReglas(this.identAgente, "Se Procesa el informe   recibido por el agente :"+ informeRecibido.referenciaContexto +" Cuyo contenido:"+informeRecibido.contenidoInforme + "\n");
             // se actualiza el coste de la  vicitima salvada
@@ -65,12 +67,14 @@ public class ProcesarInformeLlegadaDestino extends TareaSincrona{
                       Victim victimaRescatada = victims.getVictimToRescue(victimaRescatadaId);
                       String idVictimaRescatar=nuevoObjetivo.getobjectReferenceId();
                       victimaRescatar = victims.getVictimToRescue(idVictimaRescatar);
-                     infoCompMov.setidentDestino(idVictimaRescatar);
-//                     infoCompMov.itfAccesoComponente.moverAdestino(nuevoObjetivo.getobjectReferenceId(), victimaRescatada.getCoordinateVictim(), velocidadCruceroPordefecto);
-                  accesoCompMovimiento.start();
+                     estatusRobot.setidentDestino(idVictimaRescatar);
+//                     itfcompMov.moverAdestino(nuevoObjetivo.getobjectReferenceId(), victimaRescatada.getCoordinateVictim(), velocidadCruceroPordefecto);
+                     nuevoObjetivo.setSolving();
+                     this.getEnvioHechos().actualizarHechoWithoutFireRules(nuevoObjetivo);
+                     accesoCompMovimiento.start();
                   }
                   String estadoComponente=EstadoMovimientoRobot.RobotEnMovimiento.name();
-//                  infoCompMov.setidentEstadoRobot(estadoComponente);
+                  estatusRobot.setestadoMovimiento(estadoComponente);
 //                  if(focoActual.getFoco().getState()==Objetivo.SOLVED) focoActual.setFoco(objetivoConseguido);
                   focoActual.setFoco(nuevoObjetivo);
 //                   focoActual.refocusUltimoObjetivoSolving();
@@ -78,7 +82,7 @@ public class ProcesarInformeLlegadaDestino extends TareaSincrona{
                   
                   this.getEnvioHechos().actualizarHechoWithoutFireRules(victims);
                   this.getEnvioHechos().actualizarHechoWithoutFireRules(misObjs);
-//                  this.getEnvioHechos().actualizarHechoWithoutFireRules(infoCompMov);
+                  this.getEnvioHechos().actualizarHechoWithoutFireRules(estatusRobot);
                   this.getEnvioHechos().actualizarHechoWithoutFireRules(objetivoConseguido);
                   this.getEnvioHechos().actualizarHecho(focoActual);
                   trazas.aceptaNuevaTrazaEjecReglas(this.identAgente, "Se Ejecuta la Tarea :"+ this.identTarea +

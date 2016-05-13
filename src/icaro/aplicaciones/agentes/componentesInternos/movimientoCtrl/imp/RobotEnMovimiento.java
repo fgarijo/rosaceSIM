@@ -8,6 +8,12 @@ import icaro.aplicaciones.Rosace.informacion.Coordinate;
 import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -18,29 +24,55 @@ import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.
     private RobotStatus1 robotStatus;
     private boolean estamosEnDestino=false;
     private HebraMonitorizacionLlegada monitorizacionLlegadaDestino = null;
+    private  Semaphore semaforo;
+    private ExecutorService executorService1;
+    private Future ejecucionHebra;
     public  RobotEnMovimiento (MaquinaEstadoMovimientoCtrl maquinaEstados){
  //       this.inicializarMovimientoCtrl(robotId);
      super (maquinaEstados,MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotEnMovimiento);
-     
+     semaforo=new Semaphore(1);
+      executorService1 = Executors.newSingleThreadExecutor();
+      
     }
     
     @Override
-        public synchronized void moverAdestino(String identdest,Coordinate coordDestino, double velocidadCrucero) {   
-           if ( identdest.equals(identDestino)){
-              this.trazas.trazar (this.identComponente, " Se esta avanzando hacia el destino ", InfoTraza.NivelTraza.debug);
+        public  void moverAdestino(String identdest,Coordinate coordDestino, double velocidadCrucero) { 
+//            try {
+//			semaforo.acquire();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//           if ( identdest.equals(identDestino)){
+              this.trazas.trazar (this.identComponente, " Se esta avanzando hacia el destino : " + this.identDestino, InfoTraza.NivelTraza.debug);
               if (velocidadCrucero<= 0)trazas.trazar(identComponente, "La velocidad debe ser mayor que cero. Se ignora la operacion", InfoTraza.NivelTraza.error);
               else this.velocidadCrucero = velocidadCrucero;
-            }else { 
+//            }else { 
 // cambair destino
-               if (monitorizacionLlegadaDestino != null)this.monitorizacionLlegadaDestino.finalizar();
+               if(monitorizacionLlegadaDestino!=null ){
+                   monitorizacionLlegadaDestino.finalizar();
+                   this.trazas.trazar (this.identComponente, " Se da orden de finalizar a la hebra de monitorizacion", InfoTraza.NivelTraza.debug);
+                   
+//                       ejecucionHebra.get();
+                       ejecucionHebra.cancel(true);
+//                   executorService1.shutdown();
+                   
+                   
+               }
+//               this.trazas.trazar(identComponente, "Se ejecuta  una  orden de mover a destino."+ identdest + " El robot esta en el estado : movimiento . "
+//				+ " CoordActuales =  "+this.robotposicionActual.toString() + " CoordDestino =  " +this.destinoCoord.toString(), InfoTraza.NivelTraza.debug);
+               this.trazas.trazar(this.identComponente, "Se ejecuta  una  orden de mover a destino."+ identdest + " El robot esta en el estado : movimiento . ", InfoTraza.NivelTraza.debug);
                this.velocidadCrucero = velocidadCrucero;
-               this.destinoCoord = coordDestino;
+               this.destinoCoord = (Coordinate)coordDestino.clone();
                this.identDestino = identdest;
                monitorizacionLlegadaDestino = new HebraMonitorizacionLlegada(this.identAgente, energiaRobot, this, itfusoRecVisSimulador);
 //               this.monitorizacionLlegadaDestino.cambiarDestino(identDestino,  coordDestino, velocidadCrucero);        
-               monitorizacionLlegadaDestino.inicializarDestino(identdest,this.robotposicionActual,coordDestino,velocidadCrucero);
-               monitorizacionLlegadaDestino.start();
-                  }
+               monitorizacionLlegadaDestino.inicializarDestino(identDestino,this.robotposicionActual,destinoCoord,velocidadCrucero);
+              ejecucionHebra = executorService1.submit(monitorizacionLlegadaDestino);
+//               monitorizacionLlegadaDestino.run();
+              
+//                  }
+//           this.semaforo.release();
          }
     @Override
         public void cambiaVelocidad( double nuevaVelocidadCrucero) {
@@ -53,7 +85,7 @@ import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.
             this.destinoCoord = coordDestino;
             this.identDestino = identdest;
             this.monitorizacionLlegadaDestino.finalizar();
-            moverAdestino(identDestino,destinoCoord,this.velocidadCrucero);
+            this.moverAdestino(identDestino,destinoCoord,this.velocidadCrucero);
         }
     
     @Override
@@ -77,9 +109,12 @@ import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.
             this.maquinaEstados.cambiarEstado (MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotBloqueado).parar();
     }
     @Override
-    public  Coordinate getCoordenadasActuales(){
-        if(monitorizacionLlegadaDestino==null)return this.robotposicionActual;
-        else return this.monitorizacionLlegadaDestino.getCoordRobot();
+    public synchronized Coordinate getCoordenadasActuales(){
+//        if(monitorizacionLlegadaDestino==null)return this.robotposicionActual;
+//        else return this.monitorizacionLlegadaDestino.getCoordRobot();
+            
+        return this.robotposicionActual;
+       
 }
 //    @Override
 //    public HebraMonitorizacionLlegada getHebraMonitorizacionLlegadaDestino() {

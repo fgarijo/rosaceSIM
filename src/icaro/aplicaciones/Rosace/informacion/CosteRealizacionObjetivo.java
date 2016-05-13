@@ -11,7 +11,9 @@ import java.util.PriorityQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 
-public class Coste {
+public class CosteRealizacionObjetivo {
+    private String refObjetivo;
+    private String identAgenteQusaCoste;
     private Coordinate robotLocation; //Localizacion del robot
     private double funcionEvaluacion; //Variable para almacenar el resultado de calcular la funcion de evaluacion utilizada
     private Integer divisor = 10000;
@@ -27,14 +29,13 @@ public class Coste {
     private RobotStatus1 robot;
     private VictimsToRescue victims2R;
     private MisObjetivos misObjs ; 
-    private boolean trazar;
-    private String trazaCalculoCoste="";
-    private String identAgenteQusaCoste;
+    private boolean trazar= false;
+    private String trazaCalculoCoste;
 	
 //    ItfUsoRecursoTrazas trazas = NombresPredefinidos.RECURSO_TRAZAS_OBJ; //Para depurar por la ventana de trazas de ICARO los calculos de costes
 	
 	//Constructor
-	public void Coste(){
+	public void CosteRealizacionObjetivo(){
 		trazaCalculoCoste="";
 	}
     //Funcion de evaluacion que solo considera distancia entre la nueva victima y la posicion del robot. NO SE CONSIDERA LA ENERGIA NI LAS VICTIMAS QUE TIENE ASIGNADAS PREVIAMENTE.
@@ -73,21 +74,19 @@ public class Coste {
 	public double FuncionEvaluacion3(double par1DistanciaCamino, double pesoPar1, double par2TiempoTotalAtencionVictimas, double pesoPar2, RobotStatus1 robot, Victim nuevaVictima){
 		double resultado;
 		//Si no tiene energia devuelve un -1 para indicar que no tiene recursos para ir
-		if (par1DistanciaCamino > robot.getAvailableEnergy()){   		        		                                                           		        		          		           			
-			   resultado= -1.0 ;
+		if (par1DistanciaCamino > robot.getAvailableEnergy()){
+//		       trazas.aceptaNuevaTraza(new InfoTraza("Evaluacion", "Coste: FuncionEvaluacion3 sobre Victima(" + nuevaVictima.getName() + ")"  +
+//			          ": robot " + robot.getIdRobot() + "-> -1.0"
+//		    		   , InfoTraza.NivelTraza.info));       		        		                                                           		        		          		           			
+			   return -1.0 ;
 			}
 			else{
-				resultado = (par1DistanciaCamino * pesoPar1) + (par2TiempoTotalAtencionVictimas*pesoPar2);								
-				
-			}
-                if(trazar){
-                    this.addTraza("Coste con FuncionEvaluacion3", resultado);
-                    this.addTraza("DistanciaCamino", par1DistanciaCamino);
-                    this.addTraza("pesoDistanciaCamino", pesoPar1);
-                    this.addTraza("par2TiempoTotalAtencionVictimas", par2TiempoTotalAtencionVictimas);
-                    this.addTraza("pesoTiempoTotalAtencionVictimas", pesoPar2);
-                }
-                return resultado;
+				resultado = (par1DistanciaCamino * pesoPar1) + (par2TiempoTotalAtencionVictimas*pesoPar2);
+//				trazas.aceptaNuevaTraza(new InfoTraza("Evaluacion", "Coste: FuncionEvaluacion3 sobre Victima(" + nuevaVictima.getName() + ")"  +
+//				       ": robot " + robot.getIdRobot() + "-> " + resultado
+//					   , InfoTraza.NivelTraza.info));								
+				return resultado;
+			}				
 	}	
 					
 	
@@ -119,51 +118,10 @@ public class Coste {
 		}
 		else return evaluacionActual;		
 	}
-//    public int calculoCosteAyudarVictimaConRLocation (String nombreAgenteEmisor, RobotStatus1 robot,Victim victima, VictimsToRescue victims2R, MisObjetivos misObjs, String identFuncEval){
-//            
-//        try{    		   
-//                ItfUsoRepositorioInterfaces itfUsoRepositorioInterfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
-//                ItfUsoRecursoMorse morseResourceRef;
-//       		 morseResourceRef = (ItfUsoRecursoMorse) itfUsoRepositorioInterfaces.obtenerInterfaz(NombresPredefinidos.ITF_USO + 
-//       				                      "RecursoMorse1");
-//       		  robotLocation = morseResourceRef.getGPSInfo(nombreAgenteEmisor);
-//       		           
-//       	          }
-//   	              catch (Exception ex){
-//       		              ex.printStackTrace();
-//       	          }
-//         double distanciaCamino = this.CalculaDistanciaCamino(nombreAgenteEmisor, robotLocation, victima, victims2R, misObjs);
-//         double tiempoAtencionVictimas = this.CalculaTiempoAtencion(3.0, victima, victims2R, misObjs); 
-//        if (identFuncEval.equalsIgnoreCase("FuncionEvaluacion1"))
-//                funcionEvaluacion = this.FuncionEvaluacion1(distanciaCamino, 10.0,  robot, victima);
-//            else if(identFuncEval.equalsIgnoreCase("FuncionEvaluacion2"))
-//                funcionEvaluacion = this.FuncionEvaluacion2(distanciaCamino, 10.0, robot, victima);
-//            else if(identFuncEval.equalsIgnoreCase("FuncionEvaluacion3"))
-//                funcionEvaluacion = this.FuncionEvaluacion3(distanciaCamino, 10.0, tiempoAtencionVictimas, 3.0, robot, victima);
-//            else {
-////                trazas.aceptaNuevaTraza(new InfoTraza("Evaluacion", "FuncionEvaluacion Especificada no existe sobre Victima(" + victima.getName() + ")"  +
-////		          ": robot " + robot.getIdRobot() + "-> -1.0"	    		   
-////	    		   , InfoTraza.NivelTraza.error)); 
-//            }
-//	        
-//           int mi_eval = (int)funcionEvaluacion;   //convierto de double a int porque la implementación inicial de Paco usaba int                                  
-//            
-//            if (mi_eval>=0){            
-//              int  mi_eval_nueva = Integer.MAX_VALUE; 
-////              mi_eval_nueva = cotaMaxima; 
-//                //como va el que menor rango tiene, lo inicializamos a la peor                        
-//            	//Para que gane el que mayor valor tiene de evaluación le resto el valor de la distancia obtenida al valor máximo de Integer
-//            	//El que este más cercano hará decrecer menos ese valor y por tanto es el MEJOR
-//            	mi_eval = mi_eval_nueva - mi_eval;
-//            }
-//            return mi_eval;
-//        }
 
-	//Calcula el tiempo que tardara en atender todas las victimas que tiene asignadas actualmente, mas el tiempo que tardara en atender a la nueva victima
-	//El tiempo para atender una victima es igual al de la prioridad * factorMultiplicativo, siendo factorMultiplicativo el primer parametro pasado a este metodo
 	   
         public int CalculoCosteAyudarVictima (String nombreAgenteEmisor, Coordinate robotLocation,RobotStatus1 robot,Victim victima, VictimsToRescue victims2R, MisObjetivos misObjs, String identFuncEval){
-            this.identAgenteQusaCoste=nombreAgenteEmisor;
+            
             double distanciaCamino = this.CalculaDistanciaCamino(nombreAgenteEmisor, robotLocation, victima, victims2R, misObjs);
             double tiempoAtencionVictimas = this.CalculaTiempoAtencion(3.0, victima, victims2R, misObjs);
             
@@ -179,11 +137,7 @@ public class Coste {
 //		          ": robot " + robot.getIdRobot() + "-> -1.0"	    		   
 //	    		   , InfoTraza.NivelTraza.error)); 
             }
-	    if(trazar) {
-                this.addTraza("Posicion Robot : ", robotLocation.toString());
-                this.addTraza("Victima Destino : ", victima.getName()+ " Coordenadas Victima : "+victima.getCoordinateVictim().toString() );
-            
-            }   
+	        
            int mi_eval = (int)funcionEvaluacion;   //convierto de double a int porque la implementación inicial de Paco usaba int                                  
             
             if (mi_eval>=0){            
@@ -249,35 +203,45 @@ public class Coste {
     // Caso 1 Hay un objetivo en la cola de objetivos pero no tiene que ver con hacerse cargo de la victima
     //        victims2R contine la nueva victima que sera la ultima almacenada
     //        El coste debe consistir en el calculo a partir de la distancia      
-//        if (tamaniocola == 0 ) return  distanciaC1toC2(posicionActualRobot, coordinateNuevaVictima);
-//        else if (tamaniocola == 1){
-//         String refVictim = misObjs.getobjetivoMasPrioritario().getobjectReferenceId();
-//            if(refVictim == null||(victims2R.getvictims2Rescue().isEmpty() ||
-//                                   victims2R.getVictimToRescue(refVictim) == null )
-//               ) return distanciaC1toC2(posicionActualRobot, coordinateNuevaVictima);  
-//        }
-        if (tamaniocola <= 1 ) return  distanciaC1toC2(posicionActualRobot, coordinateNuevaVictima);
+        if (tamaniocola == 0 ) return  distanciaC1toC2(posicionActualRobot, coordinateNuevaVictima);
+        else if (tamaniocola == 1){
+         String refVictim = misObjs.getobjetivoMasPrioritario().getobjectReferenceId();
+            if(refVictim == null||(victims2R.getvictims2Rescue().isEmpty() ||
+                                   victims2R.getVictimToRescue(refVictim) == null )
+               ) return distanciaC1toC2(posicionActualRobot, coordinateNuevaVictima);  
+        }
             
     	Iterator<Objetivo> it = colaobjetivos.iterator();
                         
         //Mostrar informacion del calculo de la evaluacion en ventana de trazas Evaluacion
-    	//trazas.aceptaNuevaTraza(new InfoTraza("Evaluacion", "CALCULANDO DISTANCIA .......... Agente " + nombreAgenteEmisor, InfoTraza.NivelTraza.info)); 
+    	//trazas.aceptaNuevaTraza(new InfoTraza("Evaluacion", "CALCULANDO DISTANCIA .......... Agente " + nombreAgenteEmisor, InfoTraza.NivelTraza.info));
+        
     	int i = 1;
+    	
     	while (it.hasNext()){
     		  //Hay al menos un objetivo
-    	    ob = it.next();
-            if ( ob.getState()!= Objetivo.SOLVED){
+    	      ob = it.next();
     	      String referenciaIdObjetivo = ob.getobjectReferenceId();
+    	      
+//    	      trazas.aceptaNuevaTraza(new InfoTraza("Evaluacion", "CalculaDistancia: Agente " + nombreAgenteEmisor + 
+//    	    		                                              ": Objetivo  " + i + "-> " + referenciaIdObjetivo 
+//    	      		                  , InfoTraza.NivelTraza.info));       		        		                                                           		        		          		           
+    	      
     	      //Obtener la victima de la cola
-                Victim victimaActualCola = victims2R.getVictimToRescue(referenciaIdObjetivo);    	          	      
-                int prioridadVictimaActualCola = victimaActualCola.getPriority();    	          	          	      
-                Coordinate coordinateVictimaActualCola = victimaActualCola.getCoordinateVictim();   	          	      
-                if (flag == false){
+    	      Victim victimaActualCola = victims2R.getVictimToRescue(referenciaIdObjetivo);    	          	      
+    	      int prioridadVictimaActualCola = victimaActualCola.getPriority();    	          	          	      
+    	      Coordinate coordinateVictimaActualCola = victimaActualCola.getCoordinateVictim();
+    	          	      
+//    	      trazas.aceptaNuevaTraza(new InfoTraza("Evaluacion", "CalculaDistancia: Agente " + nombreAgenteEmisor + ": Victima->" + victimaActualCola
+//    	    		                  , InfoTraza.NivelTraza.info));       		        		                                                           		        		          		           
+    	          	      
+    	      if (flag == false){
     	    	  //terminar el recorrido por el resto de victimas de la cola
     	    	  distancia = distancia + distanciaC1toC2(coordinateVictimaAnteriorCola, coordinateVictimaActualCola);
-                }
-                else{     	      
-                    if (prioridadVictimaActualCola >= prioridadNuevaVictima){
+    	      }
+    	      else
+    	      {     	      
+    	    	  if (prioridadVictimaActualCola >= prioridadNuevaVictima){
     	    		  	if (i==1){
     	    	    	   //distancia del robot a la nueva victima
     	    		  		distancia = distanciaC1toC2(posicionActualRobot, coordinateVictimaActualCola);
@@ -287,21 +251,23 @@ public class Coste {
     	    		  	}
     	    		  	if (i==tamaniocola) 
     	    		  		distancia = distancia + distanciaC1toC2(coordinateVictimaActualCola, coordinateNuevaVictima);
-                    }else{ //prioridadVictimaActualCola < prioridadNuevaVictima
+    	    	  }
+    	    	  else //prioridadVictimaActualCola < prioridadNuevaVictima
+    	    	  {
      	    		    if (i==1){
     	    			      distancia = distanciaC1toC2(posicionActualRobot, coordinateNuevaVictima);
     	    		    }
     	    		    else {
-    	    			  distancia = distancia + distanciaC1toC2(coordinateVictimaAnteriorCola, coordinateNuevaVictima);
+    	    			      distancia = distancia + distanciaC1toC2(coordinateVictimaAnteriorCola, coordinateNuevaVictima);
     	    		    }
-                            distancia = distancia + distanciaC1toC2(coordinateNuevaVictima, coordinateVictimaActualCola);
-                            flag = false;
-                        }
-                    }
-                    i = i + 1;
-                    victimaAnteriorCola = victimaActualCola;
-                    coordinateVictimaAnteriorCola = victimaAnteriorCola.getCoordinateVictim();
-            }
+	    			    distancia = distancia + distanciaC1toC2(coordinateNuevaVictima, coordinateVictimaActualCola);
+    	    		    flag = false;
+    	    	  }
+    	      }
+
+    	      i = i + 1;
+    	      victimaAnteriorCola = victimaActualCola;
+    	      coordinateVictimaAnteriorCola = victimaAnteriorCola.getCoordinateVictim();
     	} //fin del while
 
     	//trazas.aceptaNuevaTraza(new InfoTraza("Evaluacion", 
@@ -315,16 +281,13 @@ public class Coste {
 	//Calcula la distancia entre dos puntos
     public double distanciaC1toC2(Coordinate c1, Coordinate c2){
     	
-        double distancia = Math.sqrt( Math.pow(c1.x - c2.x,2) + 
-     	 	   			  Math.pow(c1.y - c2.y,2) +
-     		   			  Math.pow(c1.z - c2.z,2) 
-                        ); 
-        if (trazar){
     	System.out.println("Coord calculo Coste c1->"+c1);
     	System.out.println("Coord calculo Coste c2->"+c2);
-        this.addTraza("Calculo Distancia desde ",c1.toString()+" hasta :"+c2.toString()+ "distancia = " +distancia );
-        }
-        return distancia;
+    	
+        return Math.sqrt( Math.pow(c1.x - c2.x,2) + 
+     	 	   			  Math.pow(c1.y - c2.y,2) +
+     		   			  Math.pow(c1.z - c2.z,2) 
+                        );       		               	
     }
 
 
@@ -407,15 +370,31 @@ public class Coste {
 
 	
 	
-	public double calculaCosteTotalCompletarMisionAtenderVictimasFinalesAsignadas(double par1TiempoRecorrerCaminoVictimasAsignadas, double pesoPar1, 
-			                                                                      double par2TiempoAtencionVictimasAsignadas, double pesoPar2){		
-		double resultado;
-				
+	public double calculaCosteTotalCompletarMisionAtenderVictimasFinalesAsignadas
+                (double par1TiempoRecorrerCaminoVictimasAsignadas, double pesoPar1, 
+                double par2TiempoAtencionVictimasAsignadas, double pesoPar2)        {		
+		double resultado;		
 		resultado = (par1TiempoRecorrerCaminoVictimasAsignadas * pesoPar1) + 
 				    (par2TiempoAtencionVictimasAsignadas*pesoPar2);
-
+                if(trazar){
+                    this.addTraza("TiempoRecorrerCaminoVictimasAsignadas",
+                            Double.toString(par1TiempoRecorrerCaminoVictimasAsignadas));
+                    this.addTraza("pesoArgumentoDistancia",Double.toString(pesoPar1));
+                    this.addTraza("TiempoAtencionVictimasAsignadas",
+                            Double.toString(par2TiempoAtencionVictimasAsignadas));
+                    this.addTraza("pesoArgumentoTiempoAtencion",Double.toString(pesoPar2));
+                            
+                                        
+                }
 		return resultado;		
-	}	
+         }
+        public String getTrazaCalculoCoste(){
+            return trazaCalculoCoste;
+        }
+        private void addTraza( String nombreParametro, String valorParametro){
+            trazaCalculoCoste.concat(nombreParametro+" : "+valorParametro + " ; \n ");
+        }
+                
 	
 
 	
@@ -428,19 +407,6 @@ public class Coste {
 
     //El string finaliza en un numero.
     //Este metodo devuelve la posicion en el que empieza el numero.
-        public void setTrazar(boolean trazas){
-            this.trazar=trazas;
-        }
-         public String getTrazaCalculoCoste(){
-            return trazaCalculoCoste;
-        }
-        private void addTraza( String nombreParametro, String valorParametro){
-            trazaCalculoCoste=trazaCalculoCoste+nombreParametro+" : "+valorParametro + " ; \n ";
-        }
-        private void addTraza( String nombreParametro, double valorParametro){
-            trazaCalculoCoste=trazaCalculoCoste+
-                               String.format(nombreParametro+" :  %.2f",valorParametro) + " ; \n ";
-        }
     private int getNumberStartIndex(String s){    	
     	int index=0;
     	

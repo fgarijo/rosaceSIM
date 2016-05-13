@@ -32,11 +32,12 @@ end
 rule "Acciones Iniciales"
  when
     infoCompmov: (InfoCompMovimiento())
+    miStatus: RobotStatus1(idRobot == agentId)
     not ( exists(Focus()))
     not ( exists(MisObjetivos()))
  then
-   Tarea tarea1 = gestorTareas.crearTarea(InicializarInfoWorkMemCRN.class);
-   tarea1.ejecutar(VocabularioRosace.IdentRolAgtesIgualitarios,infoCompmov );           
+   Tarea tarea1 = gestorTareas.crearTarea(InicializarInfoWorkMemCRN1.class);
+   tarea1.ejecutar(VocabularioRosace.IdentRolAgtesIgualitarios,infoCompmov,miStatus );           
    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());   
     System.out.println( "\n"+agentId +"EJECUTO LA REGLA Acciones Iniciales\n\n" ); 
 end
@@ -46,7 +47,7 @@ rule "Generacion Objetivo Conocer MiEquipo "
 when
     focoActual : Focus(foco == null)
     misObjs: MisObjetivos()
-    miStatus: RobotStatus(idRobot == agentId)
+    miStatus: RobotStatus1(idRobot == agentId)
     not (exists (DefinirMiEquipo()))
  then
     DefinirMiEquipo definirMiequipoObj = new DefinirMiEquipo(VocabularioRosace.IdentMisionEquipo);
@@ -61,7 +62,7 @@ rule "Inicio consecucion Objetivo Conocer MiEquipo "
 // Consecucion Objetivo Conocer mi equipo
 when   
     miEquipo: InfoEquipo(inicioContactoConEquipo== false)
-    miStatus: RobotStatus(idRobot == agentId)
+    miStatus: RobotStatus1(idRobot == agentId)
     obj1 : DefinirMiEquipo(state == Objetivo.SOLVING)
     focoActual : Focus(foco == obj1)
 then
@@ -274,11 +275,12 @@ when
     victims2R:VictimsToRescue(victims2Rescue!=null)
     misObjs : MisObjetivos()
     infoCompMov:InfoCompMovimiento ()
+    miStatus: RobotStatus1()
     focoActual:Focus()
     informe: Informe ( referenciaContexto == idVict,contenidoInforme == VocabularioRosace.MsgeLlegadaDestino)
  then
 TareaSincrona tarea = gestorTareas.crearTareaSincrona(ProcesarInformeLlegadaDestino.class);
-tarea.ejecutar(misObjs,victims2R,focoActual,infoCompMov,informe );
+tarea.ejecutar(misObjs,victims2R,focoActual,miStatus,infoCompMov,informe );
 recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId,"( ID Victima: "+idVict + " ) EJECUTO LA REGLA " + drools.getRule().getName() + "\n");
 end
 
@@ -366,7 +368,7 @@ rule "Encolar el objetivo Ayudar nueva victima despues de obtener el acuerdo de 
 when
     victimaCC:Victim(idVict:name)
     misObjs : MisObjetivos()
-    infoComMov :InfoCompMovimiento ()
+    estatusRobot :RobotStatus1()
     victims2R:VictimsToRescue(victims2Rescue!=null)
     obj1 :AyudarVictima(state == Objetivo.PENDING, victimId == idVict)   
     obj2: DecidirQuienVa (state == Objetivo.SOLVED,objectDecisionId == idVict )
@@ -375,7 +377,7 @@ when
     focoActual:Focus(foco == obj)
  then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(EncolarObjetivoActualizarFocoIGN1.class); ;
-    tarea.ejecutar(misObjs, obj1,infoDecision,focoActual, infoComMov, victimaCC,victims2R );
+    tarea.ejecutar(misObjs, obj1,infoDecision,focoActual, estatusRobot, victimaCC,victims2R );
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId,"( ID Victima: "+idVict + " ) EJECUTO LA REGLA " + drools.getRule().getName() + "\n");
     System.out.println( "\n"+agentId +" EJECUTO LA REGLA: "+drools.getRule().getName()+" \n\n" );
     System.out.println( "\n"+agentId + "Foco: Estoy en  el objetivo "+focoActual.toString()+" \n\n" );
@@ -386,7 +388,7 @@ rule " Si me piden mi evaluacion en DecidirQuienVa  Solved se la mando "
   when
      // Si me piden la evaluacion cuando estoy resolviendo el objetivo o cuando ya lo he resuelto
     misObj:MisObjetivos() 
-    robot:RobotStatus()
+    robot:RobotStatus1()
     victims2R:VictimsToRescue(victims2Rescue!=null)
     victimaCC:Victim(idVict:name)    
  //    obj1:AyudarVictima(state == Objetivo.PENDING,victimId == idVict)
@@ -409,7 +411,7 @@ rule " Si me proponen aceptar un objetivo lo pongo como mas prioritario "
   when
      // Si me piden la evaluacion cuando estoy resolviendo el objetivo o cuando ya lo he resuelto
     misObj:MisObjetivos() 
-    robot:RobotStatus()
+    robot:RobotStatus1()
     victims2R:VictimsToRescue(victims2Rescue!=null)
     victimaCC:Victim(idVict:name)    
      obj1:AyudarVictima(state == Objetivo.PENDING,victimId == idVict)
@@ -457,7 +459,7 @@ rule "Obtener la evaluacion del Objetivo"
 //  no-loop true
 //  activation-group "prueba3" 
   when
-    robot:RobotStatus()
+    robot:RobotStatus1()
     victims2R:VictimsToRescue(victims2Rescue!=null)
     misObjs: MisObjetivos() 
     victimaCC:Victim(idVict:name)
@@ -657,7 +659,7 @@ rule " Si me piden mi evaluacion en DecidirQuienVa se la mando "
   when
      // Si me piden la evaluacion cuando estoy resolviendo el objetivo o cuando ya lo he resuelto
     misObj:MisObjetivos() 
-    robot:RobotStatus()
+    robot:RobotStatus1()
     victims2R:VictimsToRescue(victims2Rescue!=null)
     victimaCC:Victim(idVict:name)   
      obj1:AyudarVictima(state == Objetivo.PENDING,victimId == idVict)
@@ -710,7 +712,7 @@ no-loop true
  when
     misObj:MisObjetivos() 
     victimaCC:Victim(idVict:name)
-    infoComMov :InfoCompMovimiento ()
+    estatusRobot :RobotStatus1()
     victims2R:VictimsToRescue(victims2Rescue!=null)
     AyudarVictima(state == Objetivo.PENDING,victimId == idVict)   
     obj:DecidirQuienVa (state == Objetivo.SOLVING,objectDecisionId == idVict )
@@ -719,7 +721,7 @@ no-loop true
     propuesta: PropuestaAgente(identObjectRefPropuesta == idVict,mensajePropuesta == VocabularioRosace.MsgPropuesta_Para_Q_vayaYo)
  then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(EncolarObjetivoActualizarFocoIGN1.class); ;
-    tarea.ejecutar(misObj,obj,infoDecision,focoActual,infoComMov,victimaCC,victims2R );
+    tarea.ejecutar(misObj,obj,infoDecision,focoActual,estatusRobot,victimaCC,victims2R );
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId,"( ID Victima: "+idVict + " ) EJECUTO LA REGLA " + drools.getRule().getName() + "\n");
     System.out.println( "\n"+agentId +" EJECUTO LA REGLA: "+drools.getRule().getName()+" \n\n" );
  //   depuracion4(agentId,idVict, drools.getRule().getName(), recursoTrazas);     
@@ -845,7 +847,7 @@ end
 rule " Si me piden mi evaluacion en ConfirmacionParaIr se la mando"
    when
     misObj:MisObjetivos() 
-    robot:RobotStatus()
+    robot:RobotStatus1()
     victims2R:VictimsToRescue(victims2Rescue!=null)
     victimaCC:Victim(idVict:name)  
       exists DecidirQuienVa(objectDecisionId == idVict,state==Objetivo.SOLVING)  
@@ -1098,7 +1100,7 @@ end
 
 rule "Fin de la simulacion"
   when    
-    robot:RobotStatus()
+    robot:RobotStatus1()
     victims2R:VictimsToRescue(victims2Rescue!=null)
     misObjs: MisObjetivos()
 //    finSimu: FinSimulacion(flagActivacion==false)                

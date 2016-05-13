@@ -4,23 +4,17 @@
  */
 
 package icaro.aplicaciones.Rosace.tareasComunes;
-import icaro.aplicaciones.Rosace.informacion.Coordinate;
 import icaro.aplicaciones.Rosace.informacion.InfoEquipo;
-import icaro.aplicaciones.Rosace.informacion.RobotStatus;
 import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
-import icaro.aplicaciones.Rosace.utils.AccesoPropiedadesGlobalesRosace;
-import icaro.aplicaciones.Rosace.utils.ReadXMLTestRobots;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.InfoCompMovimiento;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
+import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp.MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.MisObjetivos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Tarea;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -49,7 +43,10 @@ public class InicializarInfoWorkMemCRN1 extends Tarea{
                 if (  miStatus != null){
                     miStatus.setIdRobotRol(identRolAgte);
                     ItfUsoMovimientoCtrl itfCompMov = (ItfUsoMovimientoCtrl) infoCompmov.getitfAccesoComponente();
-                    itfCompMov.inicializarInfoMovimiento(miStatus.getRobotCoordinate(), velocidadCruceroPorDefecto);
+                    miStatus.setItfCompMovimiento(itfCompMov);
+                    miStatus.setestadoMovimiento(EstadoMovimientoRobot.RobotParado.name());
+//                    itfCompMov.setRobotStatus((RobotStatus1) miStatus.clone());
+                    itfCompMov.inicializarInfoMovimiento(miStatus.getAvailableEnergy(),miStatus.getRobotCoordinate(), velocidadCruceroPorDefecto);
                     InfoEquipo miEquipo = new InfoEquipo(miIdentAgte, identEquipo);
                     miEquipo.setTeamMemberStatus(miIdentAgte, miStatus); 
                     this.getEnvioHechos().insertarHecho(miStatus);

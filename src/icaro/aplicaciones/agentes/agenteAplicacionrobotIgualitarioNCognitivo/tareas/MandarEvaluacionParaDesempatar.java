@@ -67,8 +67,8 @@ public class MandarEvaluacionParaDesempatar  extends TareaSincrona {
                   Random r = new Random();                  
 
 
-                  long time = (long)AccesoPropiedadesGlobalesRosace.getTimeTimeoutMilisegundosRecibirPropuestaDesempate();
-                  
+//                  long time = (long)AccesoPropiedadesGlobalesRosace.getTimeTimeoutMilisegundosRecibirPropuestaDesempate();
+                  long time = (long)Integer.parseInt(this.itfConfig.getValorPropiedadGlobal(VocabularioRosace.timeTimeoutMilisegundosRecibirPropuestaDesempate));
                   long timeoutRespuestas = time + r.nextInt(1000);   //OBSERVO QUE timeoutRespuestas no se usa
                   this.generarInformeTemporizado(time, 
                 		                         VocabularioRosace.IdentTareaTimeOutRecibirPropuestasDesempate, objetivoEjecutantedeTarea, 

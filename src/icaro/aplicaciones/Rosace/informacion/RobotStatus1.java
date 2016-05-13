@@ -17,6 +17,7 @@
 package icaro.aplicaciones.Rosace.informacion;
 
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.InfoCompMovimiento;
+import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +48,11 @@ public class RobotStatus1 implements Cloneable{
     private  List<RobotCapability> robotCapabilities ;
 //    @Element(name="robotCapability")
     private RobotCapability capablity;
-    private InfoCompMovimiento infoCompMovt;
+//    private InfoCompMovimiento infoCompMovt;
+    private ItfUsoMovimientoCtrl itfUsoCompMovimiento;
     private boolean bloqueado;
+    private String identDestino;
+    private String estadoMovimiento;
 
     public RobotStatus1() {
         robotCoordinateAnteriorP = new Point(0,0);
@@ -119,12 +123,12 @@ public class RobotStatus1 implements Cloneable{
          this.robotCoordinate.setY(punto.y);
          
     }
-    public void setInfoCompMovt(InfoCompMovimiento compInfo){
-        this.infoCompMovt = compInfo;    	
+    public void setItfCompMovimiento(ItfUsoMovimientoCtrl itfCompMov){
+        this.itfUsoCompMovimiento = itfCompMov;    	
     }
     
-    public InfoCompMovimiento getInfoCompMovt(){
-    	return this.infoCompMovt;
+    public ItfUsoMovimientoCtrl getInfoCompMovt(){
+    	return this.itfUsoCompMovimiento;
     }
   
     public void setHealRange(float hr){
@@ -198,6 +202,18 @@ public class RobotStatus1 implements Cloneable{
         return (limiteDespalzamiento>=Math.abs(robotCoordinateActualP.getY()-robotCoordinateAnteriorP.getY()) && 
                 limiteDespalzamiento>=Math.abs(robotCoordinateActualP.getX()-robotCoordinateAnteriorP.getX()) );
     }
+    public void setidentDestino(String destinoIdent){
+         identDestino=destinoIdent ;
+    }
+    public String getidentDestino(){
+        return identDestino;
+    }
+    public void setestadoMovimiento(String estadoMvto){
+         estadoMovimiento=estadoMvto ;
+    }
+    public String getestadoMovimiento(){
+        return estadoMovimiento;
+    }
     @Override
     public Object clone(){
         Object obj=null;
@@ -215,6 +231,8 @@ public class RobotStatus1 implements Cloneable{
                 " ; Robot: Rol->" + this.getIdRobotRol() +
     			" ; engergylevel->" + this.getAvailableEnergy() + 
     			" ; coordinate->" + this.getRobotCoordinate() + 
-    			" ; healrange->" + this.getHealRange() ;    	    	    	     	
+    			" ; healrange->" + this.getHealRange() +
+                        " ; identDestino->" + this.getidentDestino() +
+                        " ; estadoMovimiento->" + this.getestadoMovimiento () ;
     }
 }

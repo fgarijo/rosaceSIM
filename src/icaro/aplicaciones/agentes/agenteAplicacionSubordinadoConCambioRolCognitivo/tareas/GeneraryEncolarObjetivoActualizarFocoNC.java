@@ -5,6 +5,7 @@
 package icaro.aplicaciones.agentes.agenteAplicacionSubordinadoConCambioRolCognitivo.tareas;
 
 import icaro.aplicaciones.Rosace.informacion.AceptacionPropuesta;
+import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.Victim;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
 import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
@@ -26,19 +27,29 @@ import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.
  */
 public class GeneraryEncolarObjetivoActualizarFocoNC extends TareaSincrona{
 		
+	
+	private ItfUsoMovimientoCtrl itfcompMov;
+	private Victim victima;
+	
+	private int velocidadCruceroPordefecto;
+	
+	
     @Override
    public void ejecutar(Object... params) {
-    int	velocidadCruceroPordefecto = 1;
+		velocidadCruceroPordefecto = 1;
 //       ItfUsoRecursoEstadistica itfUsoRecursoEstadistica=null;    //Para recoger estadisticas del instante de envio de victimas desde el centro de contro    	
 	   try {
              MisObjetivos misObjs = (MisObjetivos) params[0];
     //         Objetivo obj1 = (Objetivo)params[1];
   //           InfoParaDecidirQuienVa infoDecision = (InfoParaDecidirQuienVa)params[2];
              Focus focoActual = (Focus)params[1];
-             Victim victima = (Victim) params[2];
+			victima = (Victim) params[2];
+//			victima.setIdRobotEncargadoDeMi(this.identAgente);
+			
              AceptacionPropuesta propuestaAceptada = (AceptacionPropuesta) params[3];
              InfoCompMovimiento infoComMov  = (InfoCompMovimiento)params[4];
              VictimsToRescue victimas = (VictimsToRescue)params[5];
+             RobotStatus1 robotStatus = (RobotStatus1) params[6];
              String identTarea = this.getIdentTarea();
              String nombreAgenteEmisor = this.getIdentAgente();    
              //Para anotar en el fichero cual es mi coste
@@ -74,23 +85,24 @@ public class GeneraryEncolarObjetivoActualizarFocoNC extends TareaSincrona{
                 nuevoObj.setSolving() ;
                 victimas.addVictimToRescue(victima);
                 misObjs.addObjetivo(nuevoObj);
-//                focoActual.setFocusToObjetivoMasPrioritario(misObjs);
-                Objetivo objActual = misObjs.getobjetivoMasPrioritario();
-                focoActual.setFoco(objActual);
-//                victima = victimas.getVictimToRescue(objActual.getobjectReferenceId());
-//                ItfUsoMovimientoCtrl itfcompMov = (ItfUsoMovimientoCtrl) infoComMov.getitfAccesoComponente();
-//                // caso 1 el objetivo mas prioritario es el objetivo asignado
-//                if ( objActual.getobjectReferenceId().equals(nuevoObj.getobjectReferenceId())){
-//                    itfcompMov.moverAdestino(victima.getName(), victima.getCoordinateVictim(), velocidadCruceroPordefecto);
-//                }
-//                else{
-//                   // caso 2 hay otro objetivo victima  en curso de ayuda. Se encola el objetivo
-//                    // se espera a tratar el informe de llegada a destina
-//                }
-//                if (itfcompMov.paradoEnDestino(objActual.getobjectReferenceId())){
-//                    // no se hace nada y esperamos a tratar el informe de llegada a destino
-//                }
-//            itfcompMov.moverAdestino(objActual.getobjectReferenceId(), victima.getCoordinateVictim(), velocidadCruceroPordefecto); // se pondra la verlocidad por defecto 
+			focoActual.setFocusToObjetivoMasPrioritario(misObjs);
+			//Objetivo objActual = focoActual.getFoco();
+			// victima = victimas.getVictimToRescue(objActual.getobjectReferenceId());
+			itfcompMov = (ItfUsoMovimientoCtrl) infoComMov.getitfAccesoComponente();
+			itfcompMov.setRobotStatus(robotStatus);
+					
+			Thread t = new Thread(){
+				
+				public void run(){
+					
+					itfcompMov.moverAdestino(victima.getName(), victima.getCoordinateVictim(), velocidadCruceroPordefecto); 
+				}
+			};
+			t.start();
+			
+			
+			
+			
             trazas.aceptaNuevaTrazaEjecReglas(identAgente, "Se ejecuta la tarea : " + identTarea + " Se genera el  objetivo:  "+ nuevoObj+
                     " Se actualiza el  foco al objetivo:  " + focoActual + "\n");
             trazas.aceptaNuevaTrazaEjecReglas(identAgente, "Se da orden al comp Movimiento  para salvar a la victima :  " + victima + "\n");
@@ -100,8 +112,8 @@ public class GeneraryEncolarObjetivoActualizarFocoNC extends TareaSincrona{
                  this.getEnvioHechos().actualizarHechoWithoutFireRules(victimas);
                 this.getEnvioHechos().eliminarHecho(propuestaAceptada);
                 this.getEnvioHechos().actualizarHecho(focoActual);
-//                trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Se ejecuta la tarea " + this.getIdentTarea()+
-//                                    " Se actualiza el  objetivo:  "+ nuevoObj, InfoTraza.NivelTraza.debug));
+			trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Se ejecuta la tarea " + this.getIdentTarea()+
+					" Se actualiza el  objetivo:  "+ nuevoObj, InfoTraza.NivelTraza.debug));
             System.out.println("\n"+nombreAgenteEmisor +"Se ejecuta la tarea " + this.getIdentTarea()+ " Se actualiza el  objetivo:  "+ nuevoObj+"\n\n" );
                           
              

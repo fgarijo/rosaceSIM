@@ -4,20 +4,14 @@
  */
 
 package icaro.aplicaciones.Rosace.tareasComunes;
-import icaro.aplicaciones.Rosace.informacion.Coordinate;
 import icaro.aplicaciones.Rosace.informacion.InfoEquipo;
 import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
-import icaro.aplicaciones.Rosace.utils.AccesoPropiedadesGlobalesRosace;
-import icaro.aplicaciones.Rosace.utils.ReadXMLTestRobots;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.MisObjetivos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Tarea;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -55,42 +49,42 @@ public class InicializarInfoWorkMemCR extends Tarea{
   
 private RobotStatus1 getRobotStatusInicial ( String identRol){
 // Esto habria que cambiarlo cuando se defina el Recurso         
-    String rutaFicheroRobotsTest = AccesoPropiedadesGlobalesRosace.getRutaFicheroRobotsTest();        
-    	//ReadXMLTestRobots rXMLTRobots = new ReadXMLTestRobots(Constantes.rutasFicheroRobotsJerarquico);
-    	ReadXMLTestRobots rXMLTRobots = new ReadXMLTestRobots(rutaFicheroRobotsTest);    	
-		Document doc = rXMLTRobots.getDocument(rXMLTRobots.gettestFilePaht());
-		//Obtain all the robots
-		NodeList nodeLst = rXMLTRobots.getRobotsXMLStructure(doc, "robot");	
-		int numeroRobotsSimulation = rXMLTRobots.getNumberOfRobots(nodeLst);	
-		int j=0;
-                boolean encontrado= false;
-                Element info = null ;  // Lo siguienta habria que quitarlo cuando se defina el recurso
-       //        String identAgteSinIdentEquipo = miIdentAgte.replaceFirst(identEquipo, "");
-                while(j<numeroRobotsSimulation && !encontrado ){
-  		    //Obtain info about robot located at the test        	
-                    info = rXMLTRobots.getRobotElement(nodeLst, j);			        	
-                    String valueid = rXMLTRobots.getRobotIDValue(info, "id");
-                    if (miIdentAgte.equals(valueid)){        		
-                        encontrado = true; //Salir del bucle for. Se ha encontrado la informacion xml asociada al robot/agente que ejecuta esta tarea
-                    } j++;
-                }
-            if (encontrado){
-                        int energy = rXMLTRobots.getRobotInitialEnergy(info, "initialenergy");
-                        Coordinate initialCoordinate = rXMLTRobots.getRobotCoordinate(info);
-                        float healRange = rXMLTRobots.getRobotHealRange(info, "healrange");    		        	           	   
-                        RobotStatus1 robotStatus = new RobotStatus1();        	           	   
-                        robotStatus.setIdRobot(miIdentAgte);
-                        robotStatus.setIdRobotRol(identRol);
-                        robotStatus.setAvailableEnergy(energy);        	   
-                        robotStatus.setRobotCoordinate(initialCoordinate);        	   
-                        robotStatus.setHealRange(healRange); 	       
-                return robotStatus ;
-            }
-            else{
-                trazas.trazar(miIdentAgte, "No se ha podido encontrar el identificador del agente en el fichero :"
-                        +rutaFicheroRobotsTest , InfoTraza.NivelTraza.error);
-                return null;
-            }
-    }
+//    String rutaFicheroRobotsTest = AccesoPropiedadesGlobalesRosace.getRutaFicheroRobotsTest();        
+//    	//ReadXMLTestRobots rXMLTRobots = new ReadXMLTestRobots(Constantes.rutasFicheroRobotsJerarquico);
+//    	ReadXMLTestRobots rXMLTRobots = new ReadXMLTestRobots(rutaFicheroRobotsTest);    	
+//		Document doc = rXMLTRobots.getDocument(rXMLTRobots.gettestFilePaht());
+//		//Obtain all the robots
+//		NodeList nodeLst = rXMLTRobots.getRobotsXMLStructure(doc, "robot");	
+//		int numeroRobotsSimulation = rXMLTRobots.getNumberOfRobots(nodeLst);	
+//		int j=0;
+//                boolean encontrado= false;
+//                Element info = null ;  // Lo siguienta habria que quitarlo cuando se defina el recurso
+//       //        String identAgteSinIdentEquipo = miIdentAgte.replaceFirst(identEquipo, "");
+//                while(j<numeroRobotsSimulation && !encontrado ){
+//  		    //Obtain info about robot located at the test        	
+//                    info = rXMLTRobots.getRobotElement(nodeLst, j);			        	
+//                    String valueid = rXMLTRobots.getRobotIDValue(info, "id");
+//                    if (miIdentAgte.equals(valueid)){        		
+//                        encontrado = true; //Salir del bucle for. Se ha encontrado la informacion xml asociada al robot/agente que ejecuta esta tarea
+//                    } j++;
+//                }
+//            if (encontrado){
+//                        int energy = rXMLTRobots.getRobotInitialEnergy(info, "initialenergy");
+//                        Coordinate initialCoordinate = rXMLTRobots.getRobotCoordinate(info);
+//                        float healRange = rXMLTRobots.getRobotHealRange(info, "healrange");    		        	           	   
+//                        RobotStatus1 robotStatus = new RobotStatus1();        	           	   
+//                        robotStatus.setIdRobot(miIdentAgte);
+//                        robotStatus.setIdRobotRol(identRol);
+//                        robotStatus.setAvailableEnergy(energy);        	   
+//                        robotStatus.setRobotCoordinate(initialCoordinate);        	   
+//                        robotStatus.setHealRange(healRange); 	       
+//                return robotStatus ;
+//            }
+//            else{
+//                trazas.trazar(miIdentAgte, "No se ha podido encontrar el identificador del agente en el fichero :"
+//                        +rutaFicheroRobotsTest , InfoTraza.NivelTraza.error);
+//                return null;
+//            }
+   return null; }
      
 }

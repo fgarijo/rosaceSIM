@@ -110,6 +110,7 @@ salience 10
     robot:RobotStatus1()
     misObjs: MisObjetivos()
     victims2R:VictimsToRescue()
+    focoActual : Focus()
     peticionAgte: PeticionAgente( mensajePeticion == VocabularioRosace.MsgPeticionEnvioEvaluaciones,
                                  identAgente == idJefeEquipo,victimaCC:justificacion)
   then
@@ -136,20 +137,21 @@ rule "Procesar propuesta para que asuma el objetivo cuando no tengo objetivo foc
 end
 
 rule "Si he aceptado la propuesta para asumir el objetivo lo genero y encolo"
+salience 10
 no-loop true
    when
  //     infoComMov :InfoCompMovimiento ()
       victimaCC:Victim(idVict:name)   
  //     focoActual : Focus(foco == null)
         focoActual : Focus()
-      infoComMov :InfoCompMovimiento()
+ //     infoComMov :InfoCompMovimiento()
       misObjs: MisObjetivos()
-  //    RobotStatus()
+      estatusRobot:RobotStatus1()
      victims2R:VictimsToRescue()
       acPropuesta:AceptacionPropuesta (identAgente == agentId,identObjectRefAcetPropuesta == idVict)
    then
  //     TareaSincrona tarea = gestorTareas.crearTareaSincrona(GeneraryEncolarObjetivoAyudarVictima.class);
-      gestorTareas.ejecutar(GeneraryEncolarObjetivoActualizarFocoNC1.class,misObjs,focoActual,victimaCC,acPropuesta,infoComMov,victims2R );
+      gestorTareas.ejecutar(GeneraryEncolarObjetivoActualizarFocoNC1.class,misObjs,focoActual,victimaCC,acPropuesta,estatusRobot,victims2R );
       recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId,"( ID Victima: "+idVict + " ) EJECUTO LA REGLA " + drools.getRule().getName() + "\n");
       System.out.println( "\n"+agentId +" EJECUTO LA REGLA: "+drools.getRule().getName()+" \n\n" );                     
 end
@@ -182,12 +184,13 @@ when
     AyudarVictima(state == Objetivo.SOLVING, idVict:victimId)
     victims2R:VictimsToRescue(victims2Rescue!=null)
     misObjs : MisObjetivos()
-    infoCompMov:InfoCompMovimiento ()
+    estatusRobot:RobotStatus1()
+    infoCompMov:InfoCompMovimiento()
     focoActual:Focus()
     informe: Informe ( referenciaContexto == idVict,contenidoInforme == VocabularioRosace.MsgeLlegadaDestino)
  then
 TareaSincrona tarea = gestorTareas.crearTareaSincrona(ProcesarInformeLlegadaDestino.class);
-tarea.ejecutar(misObjs,victims2R,focoActual,infoCompMov,informe );
+tarea.ejecutar(misObjs,victims2R,focoActual,estatusRobot,infoCompMov,informe );
 recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId,"( ID Victima: "+idVict + " ) EJECUTO LA REGLA " + drools.getRule().getName() + "\n");
 end
 rule "Movimiento hacia una nueva victima tras conseguir salvar a la victima mas prioritaria"

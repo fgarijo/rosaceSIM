@@ -34,7 +34,7 @@ public class CrearComponentesInternos extends TareaAsincrona {
             //        ItfUsoMovimientoCtrl ItfCom = FactoriaAbstrCompInterno.instance.crearComponenteInterno(null, this.getEnvioHechos());
                   InfoCompInterno infoCompMov = FactoriaAbstrCompInterno.instance().crearComponenteInterno("CompMovimiento", itfProcObjetivos);
                    ItfUsoMovimientoCtrl  itfcomp =  (ItfUsoMovimientoCtrl)  infoCompMov.getitfAccesoComponente();
-                  itfcomp.inicializarInfoMovimiento(null, Integer.SIZE);
+                  itfcomp.inicializarInfoMovimiento(0,null, Integer.SIZE);
                            this.itfProcObjetivos.insertarHecho(infoCompMov);
             //             itfcomp.moverAdestino(null, Integer.MIN_VALUE);
                    this.trazas.trazar(this.identAgente, "se ejecuta la tarea : "+ this.identTarea, InfoTraza.NivelTraza.debug);

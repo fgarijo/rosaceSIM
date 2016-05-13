@@ -45,8 +45,8 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
     public volatile double velocidadRobot;
     public ItfUsoRecursoTrazas trazas;
     private  Map<EstadoMovimientoRobot, EstadoAbstractoMovRobot> estadosCreados;
-    public volatile Coordinate robotposicionActual;
-    public volatile Coordinate destinoCoord;
+    private volatile Coordinate robotposicionActual;
+    private volatile Coordinate destinoCoord;
     public volatile String identDestino;
     public double distanciaDestino ;
     protected Integer velocidadCrucero;
@@ -114,13 +114,16 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
     }
      public synchronized EstadoAbstractoMovRobot  cambiarEstado (EstadoMovimientoRobot nuevoEstadoId){
       if (!nuevoEstadoId.name().equals(identEstadoActual)) {
-        trazas.trazar(identComponente, " se cambia el estado: "+ identEstadoActual+  " al estado : " + nuevoEstadoId , NivelTraza.debug);
+        trazas.trazar(identComponente, " se cambia el estado: "+ identEstadoActual+  " al estado : " + nuevoEstadoId , NivelTraza.debug); 
         estadoActual = estadosCreados.get(nuevoEstadoId);
-        
         if ( estadoActual != null  ) {}
          else estadoActual =  crearInstanciaEstado2(nuevoEstadoId);  
         identEstadoActual = nuevoEstadoId.name();
-    }   
+        if ( robotposicionActual!=null&&destinoCoord!=null)
+        trazas.trazar(identComponente, "Info en el nuevo estado. IdentDestino: "+ this.identDestino + " El robot esta en el estado :"+ identEstadoActual
+				+ " CoordActuales =  "+this.robotposicionActual.toString() + " CoordDestino =  " +this.destinoCoord.toString(), InfoTraza.NivelTraza.debug);
+    }  
+      
       return estadoActual; 
     }
      		               	
@@ -165,14 +168,19 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
 	public synchronized void moverAdestino(String identDest,Coordinate coordDestino, double velocidadCrucero) {
 		this.identDestino= identDest;
                 this.destinoCoord = (Coordinate)coordDestino.clone();
+                trazas.trazar(identComponente, "Se recibe una  orden de mover a destino."+ identDest + " El robot esta en el estado :"+ identEstadoActual
+				+ " CoordActuales =  "+this.robotposicionActual.toString() + " CoordDestino =  " +this.destinoCoord.toString(), InfoTraza.NivelTraza.debug);
                 if(this.identEstadoActual.equals(EstadoMovimientoRobot.RobotParado.name())){
                     this.estadoActual = this.cambiarEstado(EstadoMovimientoRobot.RobotEnMovimiento);
                     estadoActual.inicializarInfoMovimiento(this.energiaRobot, this.robotposicionActual, velocidadCrucero);
-                    }
-		trazas.trazar(identAgente, "Se recibe una  orden de mover a destino."+ identDest + " El robot esta en el estado :"+ identEstadoActual
-				+ " CoordActuales =  "+this.robotposicionActual.toString() + " CoordDestino =  " +this.destinoCoord.toString(), InfoTraza.NivelTraza.debug);
-		estadoActual.moverAdestino(identDest,coordDestino, velocidadCrucero);
-                  }
+                    trazas.trazar(identComponente, "Se cambia el estado a robot en movimiento", InfoTraza.NivelTraza.debug);
+                    estadoActual.moverAdestino(identDest,destinoCoord, velocidadCrucero);
+                }else if(this.identEstadoActual.equals(EstadoMovimientoRobot.RobotEnMovimiento.name())){
+                        trazas.trazar(identComponente, "Ejecutamos una orden de cambio de destino ", InfoTraza.NivelTraza.debug);
+                        estadoActual.cambiaDestino(identDest, destinoCoord);
+                    
+                  }else estadoActual.moverAdestino(identDest,destinoCoord, velocidadCrucero);
+        }
    
     @Override
 	public synchronized void cambiaDestino(String identDest,icaro.aplicaciones.Rosace.informacion.Coordinate coordDestino) {
@@ -195,16 +203,16 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
         public synchronized void enDestino(){
         // se informa al control de que estamos en el destino. Se cambia el estado a parar
         estadoActual = this.cambiarEstado(MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotParado);
-//        this.estadoActual.identDestino = identDest;
         this.robotposicionActual=this.destinoCoord;
+//        this.robotposicionActual=(Coordinate)this.destinoCoord.clone();
 		Informe informeLlegada = new Informe (identComponente,identDestino, VocabularioRosace.MsgeLlegadaDestino);
 		Temporizador informeTemp = new Temporizador (1,itfProcObjetivos,informeLlegada);
 		informeTemp.start();
 //        estadoActual = this.cambiarEstado(EstadoMovimientoRobot.RobotParado);
-	this.robotposicionActual = new Coordinate(destinoCoord.getX(),destinoCoord.getY(),destinoCoord.getZ());
+//	this.robotposicionActual = new Coordinate(destinoCoord.getX(),destinoCoord.getY(),destinoCoord.getZ());
         this.estadoActual.identDestino = identDestino;
-//         trazas.trazar(identAgente, "Se informa de llegada al  destino: " +informeLlegada + " El robot esta en el estado :"+ identEstadoActual
-//                + " CoordActuales =  "+destinoCoord.toString() , InfoTraza.NivelTraza.error);
+         trazas.trazar(identComponente, "Se informa de llegada al  destino: " +informeLlegada + " El robot esta en el estado :"+ identEstadoActual
+                + " CoordActuales =  "+robotposicionActual.toString() , InfoTraza.NivelTraza.debug);
         
   
     }
@@ -219,9 +227,13 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
     
     @Override
     public synchronized Coordinate getCoordenadasActuales() {
-     if(!identEstadoActual.equals(EstadoMovimientoRobot.RobotEnMovimiento)){
+     if(identEstadoActual.equals(EstadoMovimientoRobot.RobotEnMovimiento.name())){
          this.robotposicionActual = (Coordinate)this.estadoActual.getCoordenadasActuales();
      }
+     
+     trazas.trazar(identComponente, "Peticion de coordenadas Robot. "  + " El robot esta en el estado :"+ identEstadoActual
+                + " CoordActuales =  "+robotposicionActual.toString() , InfoTraza.NivelTraza.debug);
+        
       return (Coordinate)this.robotposicionActual.clone();
     }
 

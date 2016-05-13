@@ -4,6 +4,7 @@
  */
 package icaro.aplicaciones.agentes.agenteAplicacionrobotIgualitarioNCognitivo.tareas;
 
+import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.Victim;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
 import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
@@ -52,8 +53,8 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
             Objetivo objetivoAsignado = (Objetivo) params[1];// AyudarVictima .pending
             InfoParaDecidirQuienVa infoDecision = (InfoParaDecidirQuienVa) params[2];
             Focus focoActual = (Focus) params[3];
-            InfoCompMovimiento infoComMov = (InfoCompMovimiento) params[4];
-             victima = (Victim) params[5];
+            RobotStatus1 estatusRobot = (RobotStatus1) params[4];
+            victima = (Victim) params[5];
             VictimsToRescue victimas =(VictimsToRescue) params[6];
             String nombreAgenteEmisor = this.getIdentAgente();
 
@@ -85,7 +86,7 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
             // Se compara con los objetivos pendientes
             // Miramos si la cola de objetivos esta o no vacia 
             Objetivo nuevoObj = misObjs.getobjetivoMasPrioritario();
-              itfcompMov = (ItfUsoMovimientoCtrl) infoComMov.getitfAccesoComponente();
+              itfcompMov = estatusRobot.getInfoCompMovt();
 //             while( nuevoObj != null&& nuevoObj.getPriority()>0 ){
 //                 if (nuevoObj.getState()== Objetivo.SOLVED){  
 //                                    nuevoObj.setPriority(-1);
@@ -95,6 +96,7 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
 //             }
              Thread t = new Thread(){
 				
+                                @Override
 				public void run(){
 					
 					itfcompMov.moverAdestino(victima.getName(), victima.getCoordinateVictim(), velocidadCruceroPordefecto); 
@@ -106,36 +108,38 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
                 misObjs.addObjetivo(objetivoAsignado);
 //                focoActual.setFoco(obj1);
 //                itfcompMov.moverAdestino(objetivoAsignado.getobjectReferenceId(), victima.getCoordinateVictim(), velocidadCruceroPordefecto);
-                t.run();
-                infoComMov.setidentDestino(objetivoAsignado.getobjectReferenceId());
-                infoComMov.setidentEstadoRobot(itfcompMov.getIdentEstadoMovRobot());
+                t.start();
+                estatusRobot.setidentDestino(objetivoAsignado.getobjectReferenceId());
+                estatusRobot.setestadoMovimiento(EstadoMovimientoRobot.RobotEnMovimiento.name());
                   
 
-                this.getEnvioHechos().actualizarHechoWithoutFireRules(infoComMov);
+                this.getEnvioHechos().actualizarHechoWithoutFireRules(estatusRobot);
                 this.getEnvioHechos().actualizarHechoWithoutFireRules(objetivoAsignado);
                 this.getEnvioHechos().actualizarHechoWithoutFireRules(misObjs);
                 trazas.aceptaNuevaTrazaEjecReglas(identAgente, "No hay objetivos anteriores Objetivo considerado : "+ objetivoAsignado.toString()+
                         "Se ejecuta la tarea : " + identTarea + " Se actualiza el  foco al objetivo:  " + objetivoAsignado +
-                        "estado del robot : "+infoComMov.getidentEstadoRobot()+"\n");
+                        "estado del robot : "+EstadoMovimientoRobot.RobotEnMovimiento.name()+"\n");
             
             }else{
-                
+                 misObjs.addObjetivo(objetivoAsignado);
+                                    this.getEnvioHechos().actualizarHecho(misObjs);
         // hay un objetivo en curso ayudar victima comparamos prioridades
                 if(objetivoAsignado.getPriority()<= nuevoObj.getPriority()){ // tiene menor prioridad  encolamos el objetivo
-                                    misObjs.addObjetivo(objetivoAsignado);
-                                    this.getEnvioHechos().actualizarHecho(misObjs);
+//                                    misObjs.addObjetivo(objetivoAsignado);
+//                                    this.getEnvioHechos().actualizarHecho(misObjs);
                  trazas.aceptaNuevaTrazaEjecReglas(identAgente, "Se ejecuta la tarea : " + identTarea + "El objetivo asignado : "+ objetivoAsignado.toString()+
                        "Tiene menor o igual prioridad que el objetivo en curso  :  " + nuevoObj +
-                        "estado del robot : "+infoComMov.getidentEstadoRobot()+"\n");                   
+                        "estado del robot : "+estatusRobot.getestadoMovimiento()+"\n");                   
                 }
                 else {// El objetivo actual tiene mayor prioridad
                     // se  mira si el robot se esta moviendo a rescatar la victima                      
-                    victima = victimas.getVictimToRescue(nuevoObj.getobjectReferenceId());
-                    if (itfcompMov.getIdentEstadoMovRobot().equalsIgnoreCase(EstadoMovimientoRobot.RobotEnMovimiento.name())){   
-                       itfcompMov.cambiaDestino(nuevoObj.getobjectReferenceId(), victima.getCoordinateVictim());
-                       infoComMov.setidentDestino(nuevoObj.getobjectReferenceId());
+//                    victima = victimas.getVictimToRescue(nuevoObj.getobjectReferenceId());
+                    if (estatusRobot.getestadoMovimiento().equalsIgnoreCase(EstadoMovimientoRobot.RobotEnMovimiento.name())){   
+//                       itfcompMov.cambiaDestino(nuevoObj.getobjectReferenceId(), victima.getCoordinateVictim());
+                        t.start();
+                       estatusRobot.setidentDestino(nuevoObj.getobjectReferenceId());
                        objetivoAsignado.setSolving(); // interrumpimos la ejecución y la sustituimos por el nuevo objetivo
-                       nuevoObj.setPending();
+//                       nuevoObj.setPending();
                        this.getEnvioHechos().actualizarHechoWithoutFireRules(objetivoAsignado);
                        this.getEnvioHechos().actualizarHechoWithoutFireRules(nuevoObj);
                        trazas.aceptaNuevaTrazaEjecReglas(identAgente,"Se ejecuta la tarea : " + identTarea +"  El objetivo asignado : "+ objetivoAsignado.toString()+
@@ -162,19 +166,20 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
                 this.getEnvioHechos().eliminarHechoWithoutFireRules(infoDecision);
             }
 //            this.getEnvioHechos().actualizarHecho(obj1);
-           String estadoMovRobot= itfcompMov.getIdentEstadoMovRobot();
-           infoComMov.setidentEstadoRobot(estadoMovRobot);
-            
-            this.getEnvioHechos().actualizarHechoWithoutFireRules(infoComMov);
+//           String estadoMovRobot= itfcompMov.getIdentEstadoMovRobot();
+            String estadoMovRobot=estatusRobot.getestadoMovimiento();
+//           infoComMov.setidentEstadoRobot(estadoMovRobot);
+//            
+//            this.getEnvioHechos().actualizarHechoWithoutFireRules(infoComMov);
 //            this.getEnvioHechos().actualizarHechoWithoutFireRules(misObjs);
             // El foco debe ponerse en la ultima decision pendiente o en su caso al ultimo objetivo solving
             // esto implica que una vez conseguido el objetivo continua con lo que estaba haciendo
 //            focoActual.setfaseProcesoConsecObjetivos("DecisionAsignacionVictima");
             focoActual.refocusUltimoObjetivoSolving();
-           
             this.getEnvioHechos().actualizarHecho(focoActual);
+            
             trazas.aceptaNuevaTrazaEjecReglas(identAgente,"Posicion Robot : "+itfcompMov.getCoordenadasActuales()+
-                    "estado del Movimiento del Robot: "+estadoMovRobot+" Victima objetivo  :  "+infoComMov.getidentDestino()+
+                    "estado del Movimiento del Robot: "+estadoMovRobot+" Victima objetivo  :  "+estatusRobot.getidentDestino()+
                     " Victima asignada  :  "+ victima + " El foco actual es : "+ focoActual+ "\n");
         } catch (Exception e) {
             e.printStackTrace();

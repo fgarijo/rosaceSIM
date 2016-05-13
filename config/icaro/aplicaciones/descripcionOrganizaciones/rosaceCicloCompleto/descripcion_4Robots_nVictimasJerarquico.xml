@@ -19,6 +19,7 @@
             <icaro:propiedad atributo="intervaloMilisegundosEnvioMensajesDesdeCC" valor = "10000" />   <!-- valor expresado en milisegundos -->  
             <icaro:propiedad atributo="timeMsTarea:TimeOutRecibirEvaluaciones1" valor = "6000" />   <!-- se usa en el igualitario y en el jerarquico -->                                                                        
             <icaro:propiedad atributo="timeMsTarea:TimeOutRecibirEvaluaciones2" valor = "6000" />
+            <icaro:propiedad atributo="timeTimeoutMilisegundosRecibirPropuestaDesempate" valor = "6000" />
             <icaro:propiedad atributo="timeMsTarea:TimeOutRecibirConfirmacionesRealizacionObjetivo1" valor = "8000" />
             <icaro:propiedad atributo="timeMsTarea:TimeOutRecibirEstatusComunicacionConJefe" valor = "3000" />     
             <icaro:propiedad atributo="timeMsTarea:TimeOutReaccionJefeAmsgeCC" valor = "3000" />
@@ -94,10 +95,11 @@
                     <icaro:componentesGestionados>
                     <!--        <icaro:componenteGestionado refId="RecursoMorse1" tipoComponente="RecursoAplicacion"/> 
                                 <icaro:componenteGestionado refId="RecursoGUI1" tipoComponente="RecursoAplicacion"/>   
-                                <icaro:componenteGestionado refId="RecursoEstadistica1" tipoComponente="RecursoAplicacion"/>  -->
+                                <icaro:componenteGestionado refId="RecursoEstadistica1" tipoComponente="RecursoAplicacion"/>
+                       <icaro:componenteGestionado refId="RecursoCreacionEntornosSimulacion1" tipoComponente="RecursoAplicacion"/>  -->
                                 <icaro:componenteGestionado refId="RecursoVisualizadorEntornosSimulacion1" tipoComponente="RecursoAplicacion"/>	    
 				<icaro:componenteGestionado refId="RecursoPersistenciaEntornosSimulacion1" tipoComponente="RecursoAplicacion"/>
-				<icaro:componenteGestionado refId="RecursoCreacionEntornosSimulacion1" tipoComponente="RecursoAplicacion"/>                            
+				                           
                     </icaro:componentesGestionados>
                 </icaro:InstanciaGestor>
             </icaro:Gestores>

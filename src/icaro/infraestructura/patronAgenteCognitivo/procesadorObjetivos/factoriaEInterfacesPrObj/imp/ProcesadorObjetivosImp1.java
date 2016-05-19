@@ -138,7 +138,7 @@ public class ProcesadorObjetivosImp1 extends ProcesadorObjetivos {
 }
     @Override
     public ItfMotorDeReglas getItfMotorDeReglas (){
-    return ruleEngine.getItfMotorDeReglas();
+    return ruleEngine;
 }
     @Override
     public boolean cambiarComportamiento(String identFicheroReglasComportamiento){
@@ -169,4 +169,9 @@ public class ProcesadorObjetivosImp1 extends ProcesadorObjetivos {
        ruleEngine.addGlobalVariable(NombresPredefinidos.ITFUSO_RECURSOTRAZAS_GLOBAL, NombresPredefinidos.RECURSO_TRAZAS_OBJ);
        ruleEngine.addGlobalVariable(NombresPredefinidos.AGENT_ID_GLOBAL, idAgente);
    }
+
+    @Override
+    public void reinicializarComportamiento() {  
+       ruleEngine.reinicializarSesion();
+    }
 }

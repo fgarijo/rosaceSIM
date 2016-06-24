@@ -35,7 +35,7 @@ import org.openide.util.Exceptions;
  */
 public class ControladorVisualizacionSimulRosace {
      private NotificadorInfoUsuarioSimulador notifEvts;
-    private int intervaloSecuencia = 10000; // valor por defecto. Eso deberia ponerse en otro sitio
+    private int intervaloSecuencia = 2000; // valor por defecto. Eso deberia ponerse en otro sitio
     private int numMensajesEnviar = 3;
     private boolean primeraVictima = true;
     private VisorControlSimuladorRosace visorControlSim;
@@ -174,6 +174,7 @@ public class ControladorVisualizacionSimulRosace {
         escenarioEdicionComp.setGestorEscenarios(gestionEscComp);
         identEquipoActual=escenarioEdicionComp.getIdentEscenario();
         visorControlSim.setIdentEscenarioActual(identEquipoActual);
+        visorControlSim.setIntervaloEnvioMensajesDesdeCC(intervaloSecuencia);
         identsRobotsEquipo=escenarioEdicionComp.getListIdentsRobots();
         if(escenarioActualAbierto){
             visorEditorEscen.setVisible(false);
@@ -287,6 +288,7 @@ public  boolean abrirVisorConEscenario(String identFicheroEscenarioSimulacion) {
        }
         visorControlSim.setIdentEscenarioActual(identFicheroEscenarioSimulacion);
         visorControlSim.visualizarIdentsEquipoRobot(escenarioEdicionComp.getListIdentsRobots());
+        visorControlSim.setIntervaloEnvioMensajesDesdeCC(intervaloSecuencia);
         visorControlSimuladorIniciado=true;
         visorEditorEscen.visualizarEscenario(escenarioEdicionComp);
     }
@@ -502,6 +504,7 @@ public void peticionObtenerEscenarioSimulacion(String modOrganizativo, int numRo
             visorControlSim.setIdentEscenarioActual(escenarioSimulacion.getIdentEscenario());
             visorControlSim.visualizarIdentsEquipoRobot(escenarioSimulacion.getListIdentsRobots());
             visorControlSim.visualizarIdentsVictimas(escenarioSimulacion.getListIdentsVictims());
+            visorControlSim.setIntervaloEnvioMensajesDesdeCC(intervaloSecuencia);
             escenarioValidoObtenido= true;
             robotsVisualizados= true;
             victimasVisualizadas = true;

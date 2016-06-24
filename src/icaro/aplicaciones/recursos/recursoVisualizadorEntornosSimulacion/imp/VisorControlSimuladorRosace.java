@@ -25,7 +25,7 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
 
     /** Creates new form ControlCenterGui2 */
     private NotificadorInfoUsuarioSimulador notifEvts;
-    private int intervaloSecuencia = 10000; // valor por defecto. Eso deberia ponerse en otro sitio
+    private int intervaloSecuencia = 5000; // valor por defecto. Eso deberia ponerse en otro sitio
     private int numMensajesEnviar = 3;
     private boolean primeraVictima = true;
     private ArrayList identsRobotsEquipo ;
@@ -544,8 +544,9 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
     	          }
         
     }//GEN-LAST:event_jListIdentsVictimsMouseClicked
-    private void setIntervaloEnvioMensajesDesdeCC(int intervalo){
+    public void setIntervaloEnvioMensajesDesdeCC(int intervalo){
 		intervaloSecuencia = intervalo ;
+                jtextTextFieldIntervaloEnvioMensajes.setText(String.valueOf(intervalo));
 		int intervaloEnvioMensajesDesdeCC = 1000;
 		String strintervaloEnvioMensajesDesdeCC = "";
     }
@@ -579,7 +580,9 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
      }
      
      public void solicitarDefinicionItervaloSecuencia(){
+//          jtextTextFieldIntervaloEnvioMensajes.setText(String.valueOf(intervaloSecuencia));
          String valorIntervaloDefinido=  jtextTextFieldIntervaloEnvioMensajes.getText();
+         
          if(valorIntervaloDefinido.equals(""))intervaloSecuencia=0;
          else intervaloSecuencia = Integer.parseInt(valorIntervaloDefinido);
          setLocationRelativeTo(this);

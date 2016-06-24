@@ -92,6 +92,7 @@ public synchronized void setGestorEscenarios( GestionEscenariosSimulacion gestor
 public synchronized void setNumVictimas( int numVict){
     numVictimas=numVict;
 }
+
 @XmlElement (name = "numVictimas")
 public synchronized int  getNumVictimas( ){
     return numVictimas;
@@ -110,6 +111,7 @@ public void setmodeloOrganizativo( String modeloOrg){
 public String  getmodeloOrganizativo( ){
     return modeloOrganizativo;
 }
+
 public synchronized void addVictimLoc (String idVictima,Point puntoEnEscenario ){
     
     if(ultimaVictimaModificada!=null &&ultimaVictimaModificada.getName().equalsIgnoreCase(idVictima))ultimaVictimaModificada.setLocPoint(puntoEnEscenario);

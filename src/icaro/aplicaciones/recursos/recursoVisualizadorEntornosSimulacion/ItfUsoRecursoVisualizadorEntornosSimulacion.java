@@ -1,6 +1,7 @@
 package icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion;
 
 import icaro.aplicaciones.Rosace.informacion.Coordinate;
+import icaro.aplicaciones.Rosace.informacion.InfoCasoSimulacion;
 import icaro.aplicaciones.Rosace.informacion.PuntoEstadistica;
 import icaro.aplicaciones.recursos.recursoPersistenciaEntornosSimulacion.ItfUsoRecursoPersistenciaEntornosSimulacion;
 import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp.EscenarioSimulacionRobtsVictms;
@@ -28,9 +29,12 @@ public void aniadirSerieAVisorGraficaEstadisticas( String tituloSerie, int index
  public void mostrarVentanaControlSimulador(EscenarioSimulacionRobtsVictms rutaEscenrioSimulacion)throws Exception;
  public void mostrarEscenario()throws Exception;
  public void crearVisorGraficasLlegadaYasignacionVictimas (int numeroRobotsSimulacion,int numeroVictimasDiferentesSimulacion,int intervaloSecuencia,String identificadorEquipo)throws Exception;
- public void visualizarLlegadaYasignacionVictimas(ArrayList<PuntoEstadistica> llegada,ArrayList<PuntoEstadistica> asignacion)throws Exception;
+ public void visualizarLlegadaYasignacionVictimas(ArrayList<PuntoEstadistica> llegada,ArrayList<PuntoEstadistica> asignacion,ArrayList<PuntoEstadistica> rescate)throws Exception;
  public void crearVisorGraficasTiempoAsignacionVictimas (int numeroRobotsSimulacion,int numeroVictimasDiferentesSimulacion,int intervaloSecuencia,String identificadorEquipo)throws Exception;
  public void visualizarTiempoAsignacionVictimas (ArrayList<PuntoEstadistica> elapsed)throws Exception;
+ public void visualizarLlegadaYasignacionVictimas(InfoCasoSimulacion infocaso)throws Exception;
+ public void visualizarTiemposRescatePorRobot(InfoCasoSimulacion infocaso)throws Exception;
+ public void visualizarCosteEnergiaRescateVicitimas(InfoCasoSimulacion infoCasoSimul)throws Exception;
  public void mostrarResultadosFinSimulacion()throws Exception;
 // public void mostrarPosicionRobot(String identRobot, Coordinate coordRobot,Coordinate coordDestino, String identDestino)throws Exception;
  public  void mostrarPosicionRobot(String identRobot, Coordinate coordRobot)throws Exception;

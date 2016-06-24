@@ -1,11 +1,13 @@
 package icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp;
 
 import icaro.aplicaciones.Rosace.informacion.Coordinate;
+import icaro.aplicaciones.Rosace.informacion.InfoCasoSimulacion;
 import icaro.aplicaciones.Rosace.informacion.PuntoEstadistica;
 import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
 import icaro.aplicaciones.recursos.recursoEstadistica.imp.visualizacionEstadisticas.VisualizacionJfreechart;
 import icaro.aplicaciones.recursos.recursoPersistenciaEntornosSimulacion.ItfUsoRecursoPersistenciaEntornosSimulacion;
 import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.ItfUsoRecursoVisualizadorEntornosSimulacion;
+import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp.visualizacionResultados.ControladorVisualizResultados;
 import icaro.infraestructura.entidadesBasicas.InfoTraza.NivelTraza;
 import icaro.infraestructura.entidadesBasicas.comunicacion.InfoContEvtMsgAgteReactivo;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Informe;
@@ -40,6 +42,7 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
     private int coordY = 40;  // valores iniciales 
 //   private int coordX, coordY ; // coordenadas de visualizacion  se le dan valores iniciales y se incrementan para que las ventanas no coincidan
     private ControladorVisualizacionSimulRosace controladorIUSimulador;
+    private ControladorVisualizResultados controladorResultados;
  // para prueba de integracion 
     private String directorioPersistencia = VocabularioRosace.NombreDirectorioPersistenciaEscenarios+File.separator;
 //    private String identFicheroEscenarioSimulacion=directorioPersistencia+"modeloOrg_JerarquicoNumRobts_4NumVicts_2.xml" ;
@@ -62,6 +65,7 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
 //            visorEscenarios = new VisorEscenariosRosace();
 //            ventanaControlCenterGUI = new ControlCenterGUI4(notifEvt);
             controladorIUSimulador = new ControladorVisualizacionSimulRosace(notifEvt);
+            controladorResultados = new ControladorVisualizResultados ();
             
         } catch (Exception e) {
             this.trazas.trazar(recursoId, " Se ha producido un error en la creación del recurso : " + e.getMessage(), InfoTraza.NivelTraza.error);
@@ -139,7 +143,7 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
         String tituloEjeX = "Number of Victim's Notifications";
         String tituloEjeY = "Time in miliseconds";
         crearEInicializarVisorGraficaEstadisticas(tituloVentanaVisor, tituloLocalGrafico, tituloEjeX, tituloEjeY);
-        mostrarVisorGraficaEstadisticas();
+        mostrarVisorGraficaEstadisticas();   
     }
 
     @Override
@@ -153,13 +157,25 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
     }
 
     @Override
-    public void visualizarLlegadaYasignacionVictimas(ArrayList<PuntoEstadistica> llegada, ArrayList<PuntoEstadistica> asignacion) throws Exception {
+    public void visualizarLlegadaYasignacionVictimas(ArrayList<PuntoEstadistica> llegada,
+            ArrayList<PuntoEstadistica> asignacion,ArrayList<PuntoEstadistica> rescate ) throws Exception {
         String tituloSerieLlegadaVictimas = "Notification Time";
         int indexSerieLlegadaVictimas = 1;
         String tituloSerieasignacionVictimas = "Assignment Time";
         int indexSerieasignacionVictimas = 2;
         aniadirSerieAVisorGraficaEstadisticas(tituloSerieLlegadaVictimas, indexSerieLlegadaVictimas, llegada);
         aniadirSerieAVisorGraficaEstadisticas(tituloSerieasignacionVictimas, indexSerieasignacionVictimas, asignacion);
+        String tituloSerieRescateVictimas = "Rescue Time";
+        int indexSerieRescateVictimas = 3;
+        aniadirSerieAVisorGraficaEstadisticas(tituloSerieRescateVictimas, indexSerieRescateVictimas, rescate);
+    }
+    @Override
+    public void visualizarLlegadaYasignacionVictimas(InfoCasoSimulacion infocaso)throws Exception{
+        this.controladorResultados.visualizarLlegadaYasignacionVictimas2(infocaso);
+    }
+    @Override
+    public void visualizarTiemposRescatePorRobot(InfoCasoSimulacion infocaso)throws Exception{
+        this.controladorResultados.visualizarTiemposRescatePorRobot(infocaso);
     }
 
     @Override
@@ -261,7 +277,7 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
     public void mostrarResultadosFinSimulacion() throws Exception {
         String directorioTrabajo = System.getProperty("user.dir");  //Obtener directorio de trabajo 
         String nombreFicheroAsignVictim = "asigVictimasObjetos";
-        String directorioPersistencia = VocabularioRosace.IdentDirectorioPersistenciaSimulacion + "/";
+        String directorioPersistencia = VocabularioRosace.NombreDirectorioPersistenciaResSimulacion + "/";
         String identFicheroInfoAsigVictimasObj = directorioPersistencia + nombreFicheroAsignVictim + ".tmp";
         //  String identFicheroInfoAsigVictimasXML = directorioPersistencia + nombreFicheroAsignVictim + ".xml";
         String identFicheroInfoAsigVictimasXML = directorioPersistencia + VocabularioRosace.NombreFicheroSerieInfoAsignacionVictimas + "<TimeTag>.xml";
@@ -371,5 +387,10 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
     public void setItfUsoPersistenciaSimulador(ItfUsoRecursoPersistenciaEntornosSimulacion itfUsopersistencia) throws Exception {
         this.controladorIUSimulador.setIftRecPersistencia(itfUsopersistencia);
         this.controladorIUSimulador.initModelosYvistas();
+    }
+
+    @Override
+    public void visualizarCosteEnergiaRescateVicitimas(InfoCasoSimulacion infoCasoSimul ) throws Exception {
+        this.controladorResultados.visualizarCosteEnergiaRescateVictimas( infoCasoSimul );
     }
 }

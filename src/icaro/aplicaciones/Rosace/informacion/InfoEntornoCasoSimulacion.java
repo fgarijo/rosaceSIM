@@ -4,6 +4,8 @@
  */
 package icaro.aplicaciones.Rosace.informacion;
 
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  *
  * @author FGarijo
@@ -28,7 +30,7 @@ public class InfoEntornoCasoSimulacion {
         numeroRobotsSimulacion = numRobotsSimulacion;
         intervaloSecuencia = intervSecuencia;
     }
-    
+    @XmlElement (name = "equipoId")
     public String getEquipoId() {
         return equipoId;
     }
@@ -36,25 +38,28 @@ public class InfoEntornoCasoSimulacion {
     public void setEquipoId(String victima) {
         this.equipoId = victima;
     }
-
+    @XmlElement (name = "nroVictimasenEntorno")
     public int getNrovictimasenentorno() {
         return nroVictimasenEntorno;
     }   
     public void setNrovictimasenentorno(int nrovictimasenentorno) {
         this.nroVictimasenEntorno = nrovictimasenentorno;
     } 
+    @XmlElement (name = "numeroRobotsSimulacion")
     public int getnumeroRobotsSimulacion() {
         return numeroRobotsSimulacion;
     }   
     public void setnumeroRobotsSimulacion(int numRobotsSimulacion) {
         this.numeroRobotsSimulacion = numRobotsSimulacion;
     } 
+    @XmlElement (name = "intervaloSecuencia")
     public int getintervSecuencia() {
-        return numeroRobotsSimulacion;
+        return intervaloSecuencia;
     }   
     public void setintervaloSecuencia(int intervSec) {
         this.intervaloSecuencia = intervSec;
     } 
+     @XmlElement (name = "tiempoInicioSimulacion")
     public long getTiempoInicioSimulacion() {
         return tiempoInicioSimulacion;
     }   

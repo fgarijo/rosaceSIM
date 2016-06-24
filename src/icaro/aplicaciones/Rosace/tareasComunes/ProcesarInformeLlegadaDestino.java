@@ -5,14 +5,17 @@
 
 package icaro.aplicaciones.Rosace.tareasComunes;
 import icaro.aplicaciones.Rosace.informacion.EvaluacionAgente;
+import icaro.aplicaciones.Rosace.informacion.InfoAgteRescateVictima;
 import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.Victim;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
+import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
 import icaro.aplicaciones.agentes.agenteAplicacionSubordinadoConCambioRolCognitivo.tareas.GeneraryEncolarObjetivoActualizarFocoNC1;
 import icaro.aplicaciones.agentes.agenteAplicacionrobotIgualitarioNCognitivo.informacion.InfoParaDecidirQuienVa;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.InfoCompMovimiento;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp.MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
+import icaro.infraestructura.entidadesBasicas.comunicacion.InfoContEvtMsgAgteReactivo;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Informe;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.MisObjetivos;
@@ -25,7 +28,11 @@ import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.
  * @author Francisco J Garijo
  */
 public class ProcesarInformeLlegadaDestino extends TareaSincrona{
-  int velocidadCruceroPordefecto = 1;// metros por segundo 
+ private int velocidadCruceroPordefecto = 1;// metros por segundo 
+ private int tiempoMedioRescate = 15; // minutos
+ private int gastoEnergíaMinuto = 5; //unidades de energia
+ private int costeEstimadoRescate = 0;
+ 
   private ItfUsoMovimientoCtrl itfcompMov;
   private Victim victimaRescatar;
   @Override
@@ -46,11 +53,13 @@ public class ProcesarInformeLlegadaDestino extends TareaSincrona{
              String victimaRescatadaId = informeRecibido.getReferenciaContexto();
              victims.addEstimatedCostVictim2Rescue(victimaRescatadaId, 0);
              this.getEnvioHechos().eliminarHecho(informeRecibido);
+             this.informarControladorRescateVictima(victimaRescatadaId); // informamos al agente controlador
              // Se actualizan los objetivos, se da por conseguido el objetivo salvar a la victima
              // se supone que este objetivo era el mas prioritario, si no lo era hay un problema
               Objetivo objetivoConseguido = misObjs.getobjetivoMasPrioritario();
               Thread accesoCompMovimiento = new Thread(){
 				public void run(){
+//                                    itfcompMov.initContadorGastoEnergia();
 					itfcompMov.moverAdestino(victimaRescatar.getName(), victimaRescatar.getCoordinateVictim(), velocidadCruceroPordefecto);
 				}
 			};
@@ -71,6 +80,7 @@ public class ProcesarInformeLlegadaDestino extends TareaSincrona{
 //                     itfcompMov.moverAdestino(nuevoObjetivo.getobjectReferenceId(), victimaRescatada.getCoordinateVictim(), velocidadCruceroPordefecto);
                      nuevoObjetivo.setSolving();
                      this.getEnvioHechos().actualizarHechoWithoutFireRules(nuevoObjetivo);
+                     
                      accesoCompMovimiento.start();
                   }
                   String estadoComponente=EstadoMovimientoRobot.RobotEnMovimiento.name();
@@ -96,6 +106,25 @@ public class ProcesarInformeLlegadaDestino extends TareaSincrona{
         }
                 
 }
-
+private void informarControladorRescateVictima(String idVictimaAsignada){
+    //ACTUALIZAR ESTADISTICAS
+            //Inicializar y recuperar la referencia al recurso de estadisticas 
+    // Supongo como prueba que la evaluación es una constante, pero deberia obtenerse del RobotStatus
+            long tiempoActual = System.currentTimeMillis();
+             int gastoEnergia = itfcompMov.getContadorGastoEnergia(); // En terminos de energia consumida  para el rescate
+//            int gastoEnergia = 3000;
+//            String refVictima = objetivoAsignado.getobjectReferenceId();
+            //      	 itfUsoRecursoEstadistica.escribeEstadisticaFicheroTextoPlanoTRealAsignacionVictimasRobots(tiempoActual, refVictima, nombreAgenteEmisor, coste);
+            ////////////////////////////////////////////////////////
+            //ENVIAR INFORMACION AL AGENTE CONTROLADOR DEL SIMULADOR           
+//            Object[] valoresParametrosAccion = new Object[4];
+//            valoresParametrosAccion[0] = tiempoActual;
+//            valoresParametrosAccion[1] = refVictima;
+//            valoresParametrosAccion[2] = nombreAgenteEmisor;
+//            valoresParametrosAccion[3] = miEvaluacion;
+            InfoAgteRescateVictima infoVictimaRescatada = new InfoAgteRescateVictima (this.identAgente,idVictimaAsignada,tiempoActual,gastoEnergia);
+            InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo("victimaRescatada",infoVictimaRescatada);
+            this.getComunicator().enviarInfoAotroAgente(msg, VocabularioRosace.IdentAgteControladorSimulador);
+}
 
 }

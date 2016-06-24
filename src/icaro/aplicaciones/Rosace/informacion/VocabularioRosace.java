@@ -67,6 +67,7 @@ public class VocabularioRosace extends NombresPredefinidos{
     static public  final String MsgeLlegadaDestino ="estoyEnDestino";
     static public  final String MsgeOrdenParar ="Para";
     static public  final String MsgeRobotParado ="RobotParado";
+    static public  final String MsgeFinCasoSimulacion="FinCasoSimulacion";
     static public  final String IdentIteracionProcesoInformesCR ="procesamientoInformesCR";
     static public  final String IdentTareaTimeOutRecibirEvaluaciones1 ="TimeOutRecibirEvaluaciones1";
     static public  final String IdentTareaTimeOutRecibirEvaluaciones2 ="TimeOutRecibirEvaluaciones2";
@@ -106,7 +107,7 @@ public class VocabularioRosace extends NombresPredefinidos{
     static public  final String IdentRecursoCreacionEntornosSimulacion = "RecursoCreacionEntornosSimulacion1";
     static public  final String IdentRecursoVisualizadorEntornosSimulacion = "RecursoVisualizadorEntornosSimulacion1";
     static public  final String IdentPersistenciaEntornosSimulacion = "RecursoPersistenciaEntornosSimulacion1";
-    static public  final String IdentDirectorioPersistenciaSimulacion = "PersistenciaResultadosSimulacion";
+    static public  final String NombreDirectorioPersistenciaResSimulacion = "PersistenciaResultadosSimulacion";
     static public  final String NombreDirectorioPersistenciaEscenarios = "PersistenciaEscenariosSimulacion";
     // Valores de los inputs del agente controlador. Son necesarios para que el visualizador envie notificaciones y para definir
     // el automata

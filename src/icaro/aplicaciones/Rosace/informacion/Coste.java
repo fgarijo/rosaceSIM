@@ -256,7 +256,8 @@ public class Coste {
 //                                   victims2R.getVictimToRescue(refVictim) == null )
 //               ) return distanciaC1toC2(posicionActualRobot, coordinateNuevaVictima);  
 //        }
-        if (tamaniocola <= 1 ) return  distanciaC1toC2(posicionActualRobot, coordinateNuevaVictima);
+        distancia= distanciaC1toC2(posicionActualRobot, coordinateNuevaVictima);
+        if (tamaniocola >1 ) {
             
     	Iterator<Objetivo> it = colaobjetivos.iterator();
                         
@@ -303,7 +304,7 @@ public class Coste {
                     coordinateVictimaAnteriorCola = victimaAnteriorCola.getCoordinateVictim();
             }
     	} //fin del while
-
+        }
     	//trazas.aceptaNuevaTraza(new InfoTraza("Evaluacion", 
     	//		"CalculaDistancia: Agente " + nombreAgenteEmisor + ": Distancia->" + distancia 
     	//		, InfoTraza.NivelTraza.info));       		        		                                                           		        		          		           

@@ -5,6 +5,9 @@
 package icaro.aplicaciones.Rosace.informacion;
 
 import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
+import org.simpleframework.xml.ElementList;
 
 /**
  *
@@ -26,12 +29,18 @@ public class InfoSerieResultadosSimulacion {
     private InfoEntornoCasoSimulacion infoEntornoSimulacion;
     private long tiempoInicioSimulacion = 0;
     private int nrovictimastotalasignadas = 0;
+    @ElementList(entry="tiempoAsignacion")
+    private  List<InfoAgteAsignacionVictima> asignacionVictimas ;
+    @ElementList(entry="tiempoRescate")
+    private  List<InfoRescateVictima> rescateVictimas ;
     private ArrayList serieResultados;
 
     public InfoSerieResultadosSimulacion(String titSerie,InfoEntornoCasoSimulacion infEntorno) {
        
         infoEntornoSimulacion = infEntorno;
         tituloSerie= titSerie+infoEntornoSimulacion.getTiempoInicioSimulacion();
+        asignacionVictimas = new ArrayList<InfoAgteAsignacionVictima>();
+        rescateVictimas = new ArrayList<InfoRescateVictima>();
     }
 
     public InfoSerieResultadosSimulacion(String titSerie,String idEquipo, int numRobotsSimulacion, int numVictimasEntorno, int intervSecuencia) {
@@ -39,7 +48,7 @@ public class InfoSerieResultadosSimulacion {
         infoEntornoSimulacion = new InfoEntornoCasoSimulacion(idEquipo,numRobotsSimulacion,numVictimasEntorno,intervSecuencia);
      //   serieResultados = new ArrayList();
     }
-
+    @XmlElement (name = "tituloSerie")
     public String getTituloSerie() {
         return tituloSerie;
     }
@@ -47,14 +56,15 @@ public class InfoSerieResultadosSimulacion {
     public void setTituloSerie(String titulo) {
         this.tituloSerie = titulo;
     }
-
+    
+    @XmlElement (name = "tiempoInicioSimulacion")
     public long getTiempoInicioSimulacion (){
         return tiempoInicioSimulacion;
     }
      public void setTiempoInicioSimulacion (long tiempoInicio){
         tiempoInicioSimulacion = tiempoInicio;
     }
-
+     @XmlElement (name = "nrovictimastotalasignadas")
     public int getnrovictimastotalasignadas() {
         return nrovictimastotalasignadas;
     }
@@ -62,16 +72,21 @@ public class InfoSerieResultadosSimulacion {
     public void setnrovictimastotalasignadas(int nrovictimasenentorno) {
         this.nrovictimastotalasignadas = nrovictimasenentorno;
     }
-    public void addVictimaAsignada(){
+    public void addVictimaAsignada(InfoAgteAsignacionVictima infoAsignac){
         nrovictimastotalasignadas++;
+        asignacionVictimas.add(infoAsignac);
     }
-    
-    public void setserieResultadosSimulacion(ArrayList serieResulSimul) {
-        this.serieResultados = serieResulSimul;
+    public void addVictimaRescatada(InfoRescateVictima infoRescat){
+        nrovictimastotalasignadas++;
+        rescateVictimas.add(infoRescat);
     }
-
-    public ArrayList getserieResultadosSimulacion(){
-        return serieResultados;
+    @XmlElement (name = "serieAsignacionVictimas")
+    public List<InfoAgteAsignacionVictima> getserieAsignacionVictimas(){
+        return asignacionVictimas;
+    }
+    @XmlElement (name = "serieRescateVictimas")
+    public List<InfoRescateVictima> getserieRescateVictimas(){
+        return rescateVictimas;
     }
 
 }

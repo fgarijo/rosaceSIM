@@ -35,6 +35,7 @@ import org.openide.util.Exceptions;
 public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
     private String identComponente;
     private String identEstadoActual;
+    private int contadorGastoEnergia = 0; // por defecto contiene el gasto energetico desde que su inicializacion. Se incrementa con el movimiento
     public static  enum EstadoMovimientoRobot {Indefinido,RobotParado, RobotEnMovimiento, RobotBloqueado, RobotBloqueadoPorObstaculo,RobotavanceImposible,enDestino,  error}
     //Nombres de las clases que implementan estados del recurso interno
     public static  enum EvalEnergiaRobot {sinEnergia,energiaSuficiente,EnergiaJusta, EnergiaInsuficiente }
@@ -90,11 +91,6 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
     @Override
     public boolean estamosEnDestino(String identDestino) {
         return this.robotEnDestino;
-    }
-
-    @Override
-    public void setRobotStatus(RobotStatus1 robotStatus) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
      
     public EstadoAbstractoMovRobot getEstadoActual (){
@@ -216,10 +212,17 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
         
   
     }
-        public synchronized void setEnergiaRobot(int energRobot){
+        public synchronized void setEnergiaRobot(int energRobot){ 
+            this.contadorGastoEnergia=energiaRobot-energRobot; // se actualiza el contador de gasto cada vez que se reporta un nueva energia
             this.energiaRobot=energRobot;
         }
-
+    @Override
+    public synchronized int getEnergiaRobot(){
+                if(identEstadoActual.equals(EstadoMovimientoRobot.RobotEnMovimiento.name())){
+             this.energiaRobot = (int)this.estadoActual.getEnergiaRobot();
+         }
+                return energiaRobot;
+            }
     @Override
     public synchronized void imposibleAvanzarADestino(){
        estadoActual = this.cambiarEstado(EstadoMovimientoRobot.RobotBloqueado);
@@ -247,6 +250,14 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
     @Override
      public  String getIdentEstadoMovRobot(){
          return identEstadoActual;
+     }
+    @Override
+     public synchronized int getContadorGastoEnergia(){
+         return contadorGastoEnergia;
+     }
+    @Override
+     public synchronized void initContadorGastoEnergia(){
+         if (contadorGastoEnergia>0)contadorGastoEnergia=0 ;
      }
      
 }

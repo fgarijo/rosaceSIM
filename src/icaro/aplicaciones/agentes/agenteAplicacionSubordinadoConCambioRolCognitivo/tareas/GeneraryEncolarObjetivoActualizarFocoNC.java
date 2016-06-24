@@ -89,7 +89,7 @@ public class GeneraryEncolarObjetivoActualizarFocoNC extends TareaSincrona{
 			//Objetivo objActual = focoActual.getFoco();
 			// victima = victimas.getVictimToRescue(objActual.getobjectReferenceId());
 			itfcompMov = (ItfUsoMovimientoCtrl) infoComMov.getitfAccesoComponente();
-			itfcompMov.setRobotStatus(robotStatus);
+//			itfcompMov.setRobotStatus(robotStatus);
 					
 			Thread t = new Thread(){
 				
@@ -98,6 +98,7 @@ public class GeneraryEncolarObjetivoActualizarFocoNC extends TareaSincrona{
 					itfcompMov.moverAdestino(victima.getName(), victima.getCoordinateVictim(), velocidadCruceroPordefecto); 
 				}
 			};
+                        itfcompMov.initContadorGastoEnergia();
 			t.start();
 			
 			

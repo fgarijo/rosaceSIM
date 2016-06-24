@@ -4,6 +4,7 @@
  */
 package icaro.aplicaciones.agentes.agenteAplicacionrobotIgualitarioNCognitivo.tareas;
 
+import icaro.aplicaciones.Rosace.informacion.InfoAgteAsignacionVictima;
 import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.Victim;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
@@ -15,6 +16,7 @@ import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp.Maquina
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp.MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot;
 import icaro.infraestructura.entidadesBasicas.comunicacion.InfoContEvtMsgAgteReactivo;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
+import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Informe;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.MisObjetivos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Objetivo;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
@@ -39,6 +41,7 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
         private  enum EstadoMovimientoRobot {Indefinido,RobotParado, RobotEnMovimiento, RobotBloqueado,RobotavanceImposible,enDestino,  error}
         private ItfUsoMovimientoCtrl itfcompMov;
 	private Victim victima;
+        private int miEvaluacion;
 	private int velocidadCruceroPordefecto;
     @Override
     public void ejecutar(Object... params) {
@@ -62,26 +65,28 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
             int coste = 0;   //El coste se define como el MAYOR ENTERO - VALOR DE LA FUNCION DE EVALUACION
             //El que menor coste tiene es el que se hace cargo de la victima o dicho de otra manera
             //El que mayor funcionn de evaluacionn tiene es el que se hace cargo de la victima
-            int miEvaluacion = infoDecision.getMi_eval();
+             miEvaluacion = infoDecision.getMi_eval();
             if (miEvaluacion != -1) {
                 coste = Integer.MAX_VALUE - miEvaluacion;
             } else {
                 coste = miEvaluacion;    //SI EL COSTE EL -1 INDICARIA QUE SE HA HECHO CARGO PERO QUE NO PUEDE IR (NO TIENE RECURSOS)
             }
             //ACTUALIZAR ESTADISTICAS
-            //Inicializar y recuperar la referencia al recurso de estadisticas        	
-            long tiempoActual = System.currentTimeMillis();
+            //Inicializar y recuperar la referencia al recurso de estadisticas 
             String refVictima = objetivoAsignado.getobjectReferenceId();
-            //      	 itfUsoRecursoEstadistica.escribeEstadisticaFicheroTextoPlanoTRealAsignacionVictimasRobots(tiempoActual, refVictima, nombreAgenteEmisor, coste);
-            ////////////////////////////////////////////////////////
-            //ENVIAR INFORMACION AL AGENTE CONTROLADOR DEL SIMULADOR           
-            Object[] valoresParametrosAccion = new Object[4];
-            valoresParametrosAccion[0] = tiempoActual;
-            valoresParametrosAccion[1] = refVictima;
-            valoresParametrosAccion[2] = nombreAgenteEmisor;
-            valoresParametrosAccion[3] = miEvaluacion;
-            InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo("victimaAsignadaARobot", valoresParametrosAccion);
-            this.getComunicator().enviarInfoAotroAgente(msg, VocabularioRosace.IdentAgteControladorSimulador);
+            this.informarControladorAsignacionVictima(refVictima);
+//            long tiempoActual = System.currentTimeMillis();
+//            String refVictima = objetivoAsignado.getobjectReferenceId();
+//            //      	 itfUsoRecursoEstadistica.escribeEstadisticaFicheroTextoPlanoTRealAsignacionVictimasRobots(tiempoActual, refVictima, nombreAgenteEmisor, coste);
+//            ////////////////////////////////////////////////////////
+//            //ENVIAR INFORMACION AL AGENTE CONTROLADOR DEL SIMULADOR           
+//            Object[] valoresParametrosAccion = new Object[4];
+//            valoresParametrosAccion[0] = tiempoActual;
+//            valoresParametrosAccion[1] = refVictima;
+//            valoresParametrosAccion[2] = nombreAgenteEmisor;
+//            valoresParametrosAccion[3] = miEvaluacion;
+//            InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo("victimaAsignadaARobot", valoresParametrosAccion);
+//            this.getComunicator().enviarInfoAotroAgente(msg, VocabularioRosace.IdentAgteControladorSimulador);
             // verificamos que no se esta ayudando a esa victima. Comprobamos que el ident no esta en ninguno de los objetivos 
             // Se compara con los objetivos pendientes
             // Miramos si la cola de objetivos esta o no vacia 
@@ -98,7 +103,7 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
 				
                                 @Override
 				public void run(){
-					
+					 itfcompMov.initContadorGastoEnergia();
 					itfcompMov.moverAdestino(victima.getName(), victima.getCoordinateVictim(), velocidadCruceroPordefecto); 
 				}
 			};
@@ -108,6 +113,7 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
                 misObjs.addObjetivo(objetivoAsignado);
 //                focoActual.setFoco(obj1);
 //                itfcompMov.moverAdestino(objetivoAsignado.getobjectReferenceId(), victima.getCoordinateVictim(), velocidadCruceroPordefecto);
+               
                 t.start();
                 estatusRobot.setidentDestino(objetivoAsignado.getobjectReferenceId());
                 estatusRobot.setestadoMovimiento(EstadoMovimientoRobot.RobotEnMovimiento.name());
@@ -175,6 +181,7 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
             // El foco debe ponerse en la ultima decision pendiente o en su caso al ultimo objetivo solving
             // esto implica que una vez conseguido el objetivo continua con lo que estaba haciendo
 //            focoActual.setfaseProcesoConsecObjetivos("DecisionAsignacionVictima");
+            trazas.aceptaNuevaTrazaEjecReglas(identAgente,"Reinicializao sesion"+ "\n");
             focoActual.refocusUltimoObjetivoSolving();
             this.getEnvioHechos().actualizarHecho(focoActual);
             
@@ -185,5 +192,22 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
             e.printStackTrace();
         }
     }
+    private void informarControladorAsignacionVictima(String idVictimaAsignada){
+    //ACTUALIZAR ESTADISTICAS
+            //Inicializar y recuperar la referencia al recurso de estadisticas        	
+            long tiempoActual = System.currentTimeMillis();
+//            String refVictima = objetivoAsignado.getobjectReferenceId();
+            //      	 itfUsoRecursoEstadistica.escribeEstadisticaFicheroTextoPlanoTRealAsignacionVictimasRobots(tiempoActual, refVictima, nombreAgenteEmisor, coste);
+            ////////////////////////////////////////////////////////
+            //ENVIAR INFORMACION AL AGENTE CONTROLADOR DEL SIMULADOR           
+//            Object[] valoresParametrosAccion = new Object[4];
+//            valoresParametrosAccion[0] = tiempoActual;
+//            valoresParametrosAccion[1] = refVictima;
+//            valoresParametrosAccion[2] = nombreAgenteEmisor;
+//            valoresParametrosAccion[3] = miEvaluacion;
+            InfoAgteAsignacionVictima infoVictimaAsignada = new InfoAgteAsignacionVictima (this.identAgente,idVictimaAsignada,tiempoActual,miEvaluacion);
+            InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo("victimaAsignadaARobot",infoVictimaAsignada);
+            this.getComunicator().enviarInfoAotroAgente(msg, VocabularioRosace.IdentAgteControladorSimulador);
+}
 }
 

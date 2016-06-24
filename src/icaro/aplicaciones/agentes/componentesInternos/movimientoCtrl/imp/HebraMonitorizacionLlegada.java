@@ -63,6 +63,7 @@ public class HebraMonitorizacionLlegada implements Runnable {
 	private int contadorAuxiliar=0;
     private MaquinaEstadoMovimientoCtrl contrMovimiento;
     private int costeEnergeticoPorPaso= 1;
+    private int energiaMinimaParaMoverse= 5000; // otra constante a revisar
 
 	//    private int numeroPuntos = 20;
 	/**
@@ -75,7 +76,7 @@ public class HebraMonitorizacionLlegada implements Runnable {
 		estadoRobot =estdoRobot;
 		this.itfusoRecVisSimulador = itfRecVisSimulador;
 		identRobot = idRobot;
-                energiaRobot= energRobot* 100000; // arbitrario : cambiar por algo realista
+                energiaRobot= energRobot; // arbitrario : cambiar por algo realista
 	}
 	public synchronized void inicializarDestino (String idDestino,Coordinate coordRobot,Coordinate coordDest, double velocidad ){    
 		//      this.finalizar= false;
@@ -178,7 +179,7 @@ public class HebraMonitorizacionLlegada implements Runnable {
                      calcularNuevasCoordenadas (distanciaRecorridaEnIntervaloInformes);                      
 //                     log.debug("Coord Robot " + identRobot + " calculadas -> ("+this.coordActuales.getX() + " , " + this.coordActuales.getY() + ")");  
                     enDestino = ((coordActuales.getX()-coordDestino.getX())*dirX>=0 &&(coordActuales.getY()-coordDestino.getY())*dirY>=0);
-                     finalizar = (coordActuales.x<0.5 || coordActuales.y<0.5 );
+                     finalizar = (coordActuales.x<0.5 || coordActuales.y<0.5 ||energiaRobot< energiaMinimaParaMoverse);
                     if (itfusoRecVisSimulador != null)
                          coordenadaEnviar = (Coordinate)coordActuales.clone();
 			this.itfusoRecVisSimulador.mostrarPosicionRobot(identRobot, coordenadaEnviar);

@@ -80,8 +80,14 @@ public abstract class EstadoAbstractoMovRobot  {
         public abstract void parar();
         public abstract  boolean getEstamosEnDestino();
         public abstract  void setEstamosEnDestino();
-    public abstract Coordinate getCoordenadasActuales(); 
-    public synchronized void setCoordenadasActuales(Coordinate nuevasCoordenadas) {
+        public abstract Coordinate getCoordenadasActuales(); 
+        public void setEnergiaRobot(int robtEnergia){
+            this.energiaRobot = robtEnergia;
+            }
+        public int getEnergiaRobot(){
+            return energiaRobot ;
+        }
+        public synchronized void setCoordenadasActuales(Coordinate nuevasCoordenadas) {
         if (nuevasCoordenadas != null){
             
          robotposicionActual= nuevasCoordenadas;

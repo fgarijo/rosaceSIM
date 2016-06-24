@@ -17,8 +17,9 @@ public interface ItfUsoMovimientoCtrl {
         public void continuar();
         public boolean estamosEnDestino(String identDestino);
         public void imposibleAvanzarADestino();
-//	public HebraMonitorizacionLlegada getHebraMonitorizacionLlegadaDestino();
-	public void setRobotStatus(RobotStatus1 robotStatus);
+	public  int getEnergiaRobot();
+        public  int getContadorGastoEnergia();
+        public void initContadorGastoEnergia();
         public String getIdentEstadoMovRobot();
         
 }

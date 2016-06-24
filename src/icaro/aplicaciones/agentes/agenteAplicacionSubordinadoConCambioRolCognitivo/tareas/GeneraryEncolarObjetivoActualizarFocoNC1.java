@@ -91,6 +91,7 @@ private ItfUsoMovimientoCtrl itfcompMov;
                 focoActual.setFoco(objetivoAsignado);
                 estatusRobot.setidentDestino(objetivoAsignado.getobjectReferenceId());
 //                itfcompMov.moverAdestino(objetivoAsignado.getobjectReferenceId(), victima.getCoordinateVictim(), velocidadCruceroPordefecto);
+                itfcompMov.initContadorGastoEnergia();
                 t.run();
                 estadoMovRobot = EstadoMovimientoRobot.RobotEnMovimiento.name();
                 estatusRobot.setestadoMovimiento(estadoMovRobot);

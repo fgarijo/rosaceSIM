@@ -9,6 +9,7 @@ import icaro.aplicaciones.recursos.recursoPersistenciaEntornosSimulacion.imp.Rea
 import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.ItfUsoRecursoVisualizadorEntornosSimulacion;
 import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp.EscenarioSimulacionRobtsVictms;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
+import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Informe;
 import icaro.infraestructura.patronAgenteReactivo.control.acciones.AccionesSemanticasAgenteReactivo;
 import icaro.infraestructura.recursosOrganizacion.configuracion.ItfUsoConfiguracion;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
@@ -54,11 +55,11 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
     private int numeroVictimasAsignadas = 0;          //Numero de victimas asignadas a robots
     private int numeroVictimasDiferentesSimulacion; //Numero de victimas diferentes que van a intervenir en el proceso de simulacion
     private int numeroRobotsSimulacion = 0;         //Numero de robots diferentes que van a intervenir en el proceso de simulacion
-    private int intervaloSecuencia;                 //Intervalo uniforme de envio de la secuencia de victimas
+    private int intervaloSecuencia = 5000;                 //Intervalo uniforme de envio de la secuencia de victimas
     private ArrayList<Victim> victimasDefinidas;     //Victimas definidas en la simulacion 
     private Map<String, Victim> victims2Rescue ;      //Victimas que han sido enviadas al equipo   
     private Map<String, String> victimasAsignadas = new HashMap<String, String>();   //Victimas que han sido asignadas a algun robot, es decir, algun robot se ha hecho responsable para salvarla
-    private Map<String, InfoAsignacionVictima> infoVictimasAsignadas;
+    private Map<String, InfoAgteAsignacionVictima> infoVictimasAsignadas;
     private ItfUsoRecursoCreacionEntornosSimulacion itfUsoRecursoCreacionEntornosSimulacion = null;
     private ItfUsoRecursoPersistenciaEntornosSimulacion itfUsoRecursoPersistenciaEntornosSimulacion;
     private InfoSerieResultadosSimulacion infoContxVict;
@@ -68,13 +69,14 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
     private int indexvictimasAsignadasEstadistica = 0;
     private int contadorRobotsQueContestanFinsimulacion = 0;
     final int nMM = this.numMensajesEnviar; // numeroMaximoDeMensajes a  enviar										
-    final int interv = intervaloSecuencia;
+//    final int intervaloSecuencia;
     // #end_nodeglobalVariables:globalVariables <--globalVariables-- DO NOT
     // REMOVE THIS
     private boolean peticionTerminacionSimulacionUsuario = false;
     private boolean robotEstatusEquipoInicializado = false;
     private EscenarioSimulacionRobtsVictms escenarioActual;
     private String identFicheroEscenario;
+    private int ordenesEnviadas;
 
     // AccionA is the action initial executed when agent manager sends the comenzar event
     public void AccionComenzar() {
@@ -153,6 +155,7 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
             e.printStackTrace();
         }
        trazas.trazar(this.nombreAgente, "Accion obtenerEscenarioSimulacion completada ....", NivelTraza.debug);
+       
    }
    public void  ValidarEscenarioRecibido (EscenarioSimulacionRobtsVictms escenario){
         try {
@@ -179,9 +182,9 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
 
     //Esta accion semantica se ejecuta cuando se envia el input "sendSequenceOfSimulatedVictimsToRobotTeam" en el 
     //metodo sendSequenceOfSimulatedVictimsToRobotTeam de la clase NotificacionEventosRecursoGUI3	
-    public void sendSequenceOfSimulatedVictimsToRobotTeam(Integer intervaloSecuencia) {
-        this.intervaloSecuencia = intervaloSecuencia;
-        final int interv = intervaloSecuencia;
+    public void sendSequenceOfSimulatedVictimsToRobotTeam(Integer intervaloSec) {
+        this.intervaloSecuencia = intervaloSec;
+//        final int interv = intervaloSecuencia;
         trazas.aceptaNuevaTraza(new InfoTraza(this.nombreAgente, "Accion SendSequenceOfSimulatedVictimsToRobotTeam  ...."
                 + intervaloSecuencia, InfoTraza.NivelTraza.debug));
         //--------------------------------------------------------------------------------------------------------------------
@@ -195,7 +198,8 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
             //	this.numeroVictimasDiferentesSimulacion = itfUsoRecursoPersistenciaEntornosSimulacion.getNumeroVictimasDiferentesSimulacion();
 //            victimasDefinidas = this.itfUsoRecursoPersistenciaEntornosSimulacion.getVictimasArescatar();
 //            numeroVictimasDiferentesSimulacion = victimasDefinidas.size();
-            infoVictimasAsignadas = new HashMap<String, InfoAsignacionVictima>();
+            infoVictimasAsignadas = new HashMap<String, InfoAgteAsignacionVictima>();
+            this.numeroRobotsSimulacion =this.escenarioActual.getNumRobots();
             trazas.aceptaNuevaTraza(new InfoTraza(this.nombreAgente,
                     "Accion SendSequenceOfSimulatedVictimsToRobotTeam  .... "
                     + "Simulacion de tipo " + identificadorEquipo + " ; "
@@ -218,10 +222,10 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
             String identCaso = identificadorEquipo + tiempoActual;
 
             //     infoContxVict = new InfoContextoAsignacionVictima(identificadorEquipo, numeroVictimasDiferentesSimulacion, numeroRobotsSimulacion,  this.intervaloSecuencia); 
-            infoEntornoCaso = new InfoEntornoCasoSimulacion(identificadorEquipo, numeroRobotsSimulacion, numeroVictimasDiferentesSimulacion, intervaloSecuencia);
-            infoEntornoCaso.setTiempoInicioSimulacion(tiempoInicialDeLaSimulacion);
-            infoCasoSimul = new InfoCasoSimulacion(identCaso);
-            infoCasoSimul.setInfoCasoSimulacion(infoEntornoCaso);
+//            infoEntornoCaso = new InfoEntornoCasoSimulacion(identificadorEquipo, numeroRobotsSimulacion, numeroVictimasDiferentesSimulacion, intervaloSecuencia);
+//            infoEntornoCaso.setTiempoInicioSimulacion(tiempoInicialDeLaSimulacion);
+            infoCasoSimul = new InfoCasoSimulacion(identCaso,escenarioActual.getIdentEscenario());
+            infoCasoSimul.setInfoCasoSimulacion(identificadorEquipo,escenarioActual.getmodeloOrganizativo(),escenarioActual.getNumRobots(),escenarioActual.getNumVictimas());
             infoCasoSimul.setTiempoInicioEnvioPeticiones(tiempoInicialDeLaSimulacion);
 
         } catch (Exception e) {
@@ -245,12 +249,14 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
                     //      victima = createNewVictim(rXMLTSeq, nodeLst, i);
                     victima = (Victim)victimas[i];
                     OrdenCentroControl ccOrder = new OrdenCentroControl("ControlCenter", VocabularioRosace.MsgOrdenCCAyudarVictima, victima);
-                    // Escribir nueva linea de estadistica en el fichero de llegada de victimas					
+                    // Escribir nueva linea de estadistica en el fichero de llegada de victimas
+                    String victimId=victima.getName();
+                     InfoRescateVictima infoAsigVictima = new InfoRescateVictima(victimId);
                     try {
-                        long tActual = System.currentTimeMillis();
-
+//                        long tActual = System.currentTimeMillis();
+                        
                         //Lo siguiente se hacia en escribeEstadisticaFicheroXMLTRealLlegadaVictimas //EN EL FUTURO HABRIA QUE INTENTAR QUITARLO DE ESE METODO
-                        Victim valor = victims2Rescue.put(victima.getName(), victima);
+                        Victim valor = victims2Rescue.put(victimId, victima);
                         if (valor == null) //no estaba insertado
                         {
                             incrementarNumeroVictimasActuales();
@@ -258,11 +264,11 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
                         //Actualiza el fichero EstadisticasLlegadaVictimas.xml
 //                        itfUsoRecursoPersistenciaEntornosSimulacion.escribeEstadisticaFicheroXMLTRealLlegadaVictimas(tActual, victima);
                         //Anotar informacion en el buffer de estadisticas de victimas que llegan al entorno
-                        InfoAsignacionVictima infoAsigVictima = new InfoAsignacionVictima();
-                        infoAsigVictima.setNrovictimasenentorno(numeroVictimasEntorno);
-                        infoAsigVictima.setTiempoPeticion(tActual - tiempoInicialDeLaSimulacion);
-                        infoAsigVictima.setVictima(victima);
-                        infoCasoSimul.addEnvioVictima(infoAsigVictima);
+                       
+//                        infoAsigVictima.setNrovictimasenentorno(numeroVictimasEntorno);
+                        infoAsigVictima.setTiempoPeticion(System.currentTimeMillis());
+//                        infoAsigVictima.setVictimId(victimId);
+                        
                         ///////
                         //        VictimaLlegadaEstadistica victLlegEst = new VictimaLlegadaEstadistica();
                         //        victLlegEst.setVictima(victima);
@@ -280,15 +286,16 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
                     } else {
                         comunicator.informaraGrupoAgentes(ccOrder, identsAgtesEquipo);
                     }
-
+                    infoCasoSimul.addInfoAsignacionVictima(infoAsigVictima);
                     i++;
                     try {
-                        this.sleep(interv);
+                        this.sleep(intervaloSecuencia);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
-                }// fin del while
-
+                }// fin del while. Se calcula el tiempo medio de envio de victimas
+                int tiempoMedioEnvio= (int)(System.currentTimeMillis() - tiempoInicialDeLaSimulacion)/numeroVictimasDiferentesSimulacion;
+                infoCasoSimul.setTiempoMedioEnvioPeticiones(tiempoMedioEnvio);
                 // Se han enviado todas las victimas
                 // Cerrar el fichero de estadistica en el fichero de llegada de victimas
 
@@ -300,48 +307,74 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
 public void sendSimulatedVictimToRobotTeam(String idVictima) {
     trazas.aceptaNuevaTraza(new InfoTraza(this.nombreAgente, "Accion SendVictimToRobotTeam  .... "
                 + idVictima, InfoTraza.NivelTraza.debug));
-    
+    if(infoCasoSimul==null)inicializarInfoCasoSimulacion();
     if(victims2Rescue == null)victims2Rescue =escenarioActual.getVictims();
     Victim victima = victims2Rescue.get(idVictima);
     OrdenCentroControl ccOrder = new OrdenCentroControl("ControlCenter", VocabularioRosace.MsgOrdenCCAyudarVictima, victima);
     comunicator.informaraGrupoAgentes(ccOrder, identsAgtesEquipo);
+    InfoRescateVictima infoRescVictima = new InfoRescateVictima(idVictima);
+    infoRescVictima.setTiempoPeticion(System.currentTimeMillis());
+    infoCasoSimul.addInfoAsignacionVictima(infoRescVictima);
+    ordenesEnviadas++;
+            if(ordenesEnviadas==numeroVictimasDiferentesSimulacion){
+                this.visualizarYguardarResultadosCaso();
+            }
 }
     //Esta accion semantica se ejecuta cuando se envia el input "victimaAsignadaARobot" en la  
     //tarea sincrona GeneraryEncolarObjetivoActualizarFoco del agente Subordinado
     //Esta accion semantica se ejecuta cuando se envia el input "victimaAsignadaARobot" en la  
     //tarea sincrona EncolarObjetivoActualizarFoco del agente Igualitario (robotMasterIA)	
-    public void VictimaAsignadaARobot(Long tiempoReportado, String refVictima, String nombreAgenteEmisor, Integer miEvaluacion) {
+//    public void VictimaAsignadaARobot(Long tiempoReportado, String refVictima, String nombreAgenteEmisor, Integer miEvaluacion) {
+    
+private void inicializarInfoCasoSimulacion(){
+    
+   long  tiempoActual = System.currentTimeMillis();
+            tiempoInicialDeLaSimulacion = tiempoActual;
+            String identCaso = identificadorEquipo + tiempoActual;
+
+            //     infoContxVict = new InfoContextoAsignacionVictima(identificadorEquipo, numeroVictimasDiferentesSimulacion, numeroRobotsSimulacion,  this.intervaloSecuencia); 
+//            infoEntornoCaso = new InfoEntornoCasoSimulacion(identificadorEquipo, numeroRobotsSimulacion, numeroVictimasDiferentesSimulacion, intervaloSecuencia);
+//            infoEntornoCaso.setTiempoInicioSimulacion(tiempoInicialDeLaSimulacion);
+            infoCasoSimul = new InfoCasoSimulacion(identCaso,escenarioActual.getIdentEscenario());
+            infoCasoSimul.setInfoCasoSimulacion(identificadorEquipo,escenarioActual.getmodeloOrganizativo(),escenarioActual.getNumRobots(),escenarioActual.getNumVictimas());
+            infoCasoSimul.setTiempoInicioEnvioPeticiones(tiempoInicialDeLaSimulacion);
+}
+public void victimaAsignadaARobot(InfoRescateVictima infoAsignacion) {
         try {
+            long tiempoReportado = (long)infoAsignacion.getTiempoAsignacion();
+            String refVictima = infoAsignacion.getvictimaId();
+            String nombreAgenteEmisor = infoAsignacion.getRobotRescatadorId();
+            int miEvaluacion=(int) infoAsignacion.getcosteRescate();
             trazas.aceptaNuevaTraza(new InfoTraza(this.nombreAgente,
                     "Accion VictimaAsignadaARobot  ... " + "tiempoActual->" + tiempoReportado + " ; refVictima->"
                     + refVictima + " ; nombreAgenteEmisor->" + nombreAgenteEmisor + " ; miEvaluacion->" + miEvaluacion, InfoTraza.NivelTraza.debug));
             itfUsoRecursoVisualizadorEntornosSimulacion.mostrarVictimaRescatada(refVictima);
             if (infoCasoSimul!=null){
-            InfoAsignacionVictima infoAsigVictima = infoCasoSimul.getInfoAsignacionVictima(refVictima);
-            infoAsigVictima.setEvaluacion(miEvaluacion);
-            infoAsigVictima.setRobotId(nombreAgenteEmisor);
-            infoAsigVictima.setTiempoAsignacion(tiempoReportado - tiempoInicialDeLaSimulacion); // tiempo reportado
-            infoAsigVictima.setNrovictimastotalasignadas(infoCasoSimul.getnumeroVictimasAsignadas());
-            infoAsigVictima.setNrovictimasenentorno(infoCasoSimul.getnumeroVictimasEntorno());
-            itfUsoRecursoPersistenciaEntornosSimulacion.guardarInfoAsignacionVictima(infoAsigVictima);
-            itfUsoRecursoVisualizadorEntornosSimulacion.mostrarVictimaRescatada(refVictima);
-            infoCasoSimul.addAsignacionVictima(infoAsigVictima);
-            itfUsoRecursoVisualizadorEntornosSimulacion.mostrarVictimaRescatada(refVictima);
-            if (infoCasoSimul.todasLasVictimasAsgnadas()) {
-//                notificarFinSimulacion();
-                visualizarYguardarResultadosCaso();
-            }
+//            InfoAsignacionVictima infoAsigVictima = infoCasoSimul.getInfoAsignacionVictima(refVictima);
+//            infoAsigVictima.setEvaluacion(miEvaluacion);
+//            infoAsigVictima.setRobotId(nombreAgenteEmisor);
+//            infoRescate.setTiempoAsignacion(tiempoReportado - tiempoInicialDeLaSimulacion); // tiempo reportado
+//            infoAsigVictima.setNrovictimastotalasignadas(infoCasoSimul.getnumeroVictimasAsignadas());
+//            infoAsigVictima.setNrovictimasenentorno(infoCasoSimul.getnumeroVictimasEntorno());
+//            itfUsoRecursoPersistenciaEntornosSimulacion.guardarInfoAsignacionVictima(infoAsigVictima);
+//            itfUsoRecursoVisualizadorEntornosSimulacion.mostrarVictimaRescatada(refVictima);
+            infoCasoSimul.addInfoAsignacionVictima(infoAsignacion);
+//            if (infoCasoSimul.todasLasVictimasAsignadas()) {
+////                notificarFinSimulacion();
+//                visualizarYguardarResultadosCaso();
+//            }
             }
         } catch (Exception ex) {
             Logger.getLogger(AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void notificarFinSimulacion() {
+    private void notificarFinCasoSimulacion() {
 
         try {
-            FinSimulacion finalSimulacion = new FinSimulacion();
-            comunicator.informaraGrupoAgentes(finalSimulacion, identsAgtesEquipo);
+//            FinSimulacion finalSimulacion = new FinSimulacion();
+            Informe informeFinCaso =new Informe(this.nombreAgente,"notificarFin Caso", VocabularioRosace.MsgeFinCasoSimulacion);
+            comunicator.informaraGrupoAgentes(informeFinCaso, identsAgtesEquipo);
             trazas.aceptaNuevaTraza(new InfoTraza(this.nombreAgente,
                     "Se notifica el fin de la simulacion a los agentes del Equipo:identsAgtesEquipo->" + identsAgtesEquipo,
                     InfoTraza.NivelTraza.info));
@@ -350,39 +383,73 @@ public void sendSimulatedVictimToRobotTeam(String idVictima) {
         }
     }
 
-    private void visualizarYguardarResultadosCaso() {
+    public void visualizarYguardarResultadosCaso() {
         try {
             // ArrayList<PuntoEstadistica> llegada = new ArrayList();
             // ArrayList<PuntoEstadistica> asignacion = new ArrayList();
             // Pasarle al visualizador infoSerie y que saque los valores
-            itfUsoRecursoVisualizadorEntornosSimulacion.crearVisorGraficasLlegadaYasignacionVictimas(this.numeroRobotsSimulacion, this.numeroVictimasDiferentesSimulacion, this.intervaloSecuencia, this.identificadorEquipo); // parametros definicion titulos		                                                                        
-            ArrayList<PuntoEstadistica> llegada = infoCasoSimul.getSerieLlegadaPeticiones().getserieResultadosSimulacion();
-            ArrayList<PuntoEstadistica> asignacion = infoCasoSimul.getSerieAsignacion().getserieResultadosSimulacion();
-            itfUsoRecursoVisualizadorEntornosSimulacion.visualizarLlegadaYasignacionVictimas(llegada, asignacion);
-            itfUsoRecursoVisualizadorEntornosSimulacion.crearVisorGraficasTiempoAsignacionVictimas(this.numeroRobotsSimulacion, this.numeroVictimasDiferentesSimulacion, this.intervaloSecuencia, this.identificadorEquipo); // parametros definicion titulos		                                                                        
-            ArrayList<PuntoEstadistica> elapsed = infoCasoSimul.getSerieElapsed().getserieResultadosSimulacion();
-            itfUsoRecursoVisualizadorEntornosSimulacion.visualizarTiempoAsignacionVictimas(elapsed);
-            itfUsoRecursoPersistenciaEntornosSimulacion.guardarSerieResultadosSimulacion(infoCasoSimul.getSerieAsignacion());
-            itfUsoRecursoPersistenciaEntornosSimulacion.guardarSerieResultadosSimulacion(infoCasoSimul.getSerieElapsed());
+            itfUsoRecursoVisualizadorEntornosSimulacion.visualizarTiemposRescatePorRobot(infoCasoSimul);
+            itfUsoRecursoVisualizadorEntornosSimulacion.visualizarLlegadaYasignacionVictimas(infoCasoSimul);
+            itfUsoRecursoVisualizadorEntornosSimulacion.visualizarCosteEnergiaRescateVicitimas(infoCasoSimul);
+//            itfUsoRecursoVisualizadorEntornosSimulacion.crearVisorGraficasLlegadaYasignacionVictimas(this.numeroRobotsSimulacion, this.numeroVictimasDiferentesSimulacion, this.intervaloSecuencia, this.identificadorEquipo); // parametros definicion titulos		                                                                        
+//            ArrayList<PuntoEstadistica> llegada = infoCasoSimul.getSerieDatosParaVisualizar(InfoCasoSimulacion.SerieDatosTiempoPeticion);
+//            ArrayList<PuntoEstadistica> asignacion = infoCasoSimul.getSerieDatosParaVisualizar(InfoCasoSimulacion.SerieDatosTiempoAsignacion);
+//            ArrayList<PuntoEstadistica> rescate = infoCasoSimul.getSerieDatosParaVisualizar(InfoCasoSimulacion.SerieDatosTiempoRescate);
+//            itfUsoRecursoVisualizadorEntornosSimulacion.visualizarLlegadaYasignacionVictimas(llegada, asignacion, rescate);
+//            itfUsoRecursoVisualizadorEntornosSimulacion.crearVisorGraficasTiempoAsignacionVictimas(this.numeroRobotsSimulacion, this.numeroVictimasDiferentesSimulacion, this.intervaloSecuencia, this.identificadorEquipo); // parametros definicion titulos		                                                                        
+//            ArrayList<PuntoEstadistica> elapsed = infoCasoSimul.getSerieElapsed().getserieResultadosSimulacion();
+//            itfUsoRecursoVisualizadorEntornosSimulacion.visualizarTiempoAsignacionVictimas(elapsed);
+//            itfUsoRecursoPersistenciaEntornosSimulacion.guardarSerieResultadosSimulacion(infoCasoSimul.getSerieAsignacion());
+//            itfUsoRecursoPersistenciaEntornosSimulacion.guardarSerieResultadosSimulacion(infoCasoSimul.getSerieElapsed());
+            itfUsoRecursoPersistenciaEntornosSimulacion.guardarInfoCasoSimulacion(this.infoCasoSimul);
         } catch (Exception e1) {
             e1.printStackTrace();
         }
     }
 
-    public void procesarInfoAsignacionVictima(Long tiempoAsignacion, String refVictima, String nombreAgenteEmisor, Integer miEvaluacion) {
+    public void procesarInfoVictimaAsignada(InfoAgteAsignacionVictima infoAsigVict) {
+        // el robot que se ha quedado con la victima informa sobre los detalles de la asignacion
+        // este agente incorpora el contexto de asigancion de la victima
+        String idVictima= infoAsigVict.getVictimId();
+        trazas.trazar(this.nombreAgente,
+                "Info Asignacion Victima  ... " + "tiempoActual->" +infoAsigVict.getTiempoAsignacion()  + " ; refVictima->"
+                + idVictima + " ; nombreAgenteEmisor->" + infoAsigVict.getRobotId() + " ; miEvaluacion->" + infoAsigVict.getEvaluacion(), InfoTraza.NivelTraza.debug);
+        InfoRescateVictima infoAsigVictima = infoCasoSimul.getInfoRescateVictima(idVictima);
+        infoAsigVictima.setcosteEstimadoEnAsignacion(infoAsigVict.getEvaluacion());
+        infoAsigVictima.setRobotRescatadorId(infoAsigVict.getRobotId());
+        infoAsigVictima.setTiempoAsignacion(infoAsigVict.getTiempoAsignacion());
+        try {
+            itfUsoRecursoVisualizadorEntornosSimulacion.mostrarVictimaRescatada(idVictima);
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        infoCasoSimul.addInfoAsignacionVictima(infoAsigVictima);
+//        if (infoCasoSimul.todasLasVictimasAsignadas()) {
+//            this.informaraMiAutomata(VocabularioRosace.informacionFinSimulacion, null)
+//        }
+
+    }
+     public void procesarInfoVictimaRescatada(InfoAgteRescateVictima infoRstVict) {
         // el robot que se ha quedado con la victima informa sobre los detalles de la asingnacion
         // este agente incorpora el contexto de asigancion de la victima
+        
         trazas.trazar(this.nombreAgente,
-                "Info Asigancion Victima  ... " + "tiempoActual->" + tiempoAsignacion + " ; refVictima->"
-                + refVictima + " ; nombreAgenteEmisor->" + nombreAgenteEmisor + " ; miEvaluacion->" + miEvaluacion, InfoTraza.NivelTraza.debug);
-        InfoAsignacionVictima infoAsigVictima = infoCasoSimul.getInfoAsignacionVictima(refVictima);
-        infoAsigVictima.setEvaluacion(miEvaluacion);
-        infoAsigVictima.setRobotId(nombreAgenteEmisor);
-        infoAsigVictima.setTiempoAsignacion(tiempoAsignacion);
-        infoAsigVictima.setNrovictimastotalasignadas(infoCasoSimul.getnumeroVictimasAsignadas());
-        infoAsigVictima.setNrovictimasenentorno(infoCasoSimul.getnumeroVictimasEntorno());
-        infoCasoSimul.addAsignacionVictima(infoAsigVictima);
-        if (infoCasoSimul.todasLasVictimasAsgnadas()) {
+                "Info Salvacion Victima  ... " + "tiempoRescate->" + infoRstVict.getTiempoRescate() + " ; refVictima->"
+                + infoRstVict.getVictimId() + " ; nombreAgenteEmisor->" + infoRstVict.getRobotId() + " ; Energia Consumida en rescate->" + infoRstVict.getCosteRescate(), InfoTraza.NivelTraza.debug);
+        InfoRescateVictima infoRescVictima = infoCasoSimul.getInfoRescateVictima(infoRstVict.getVictimId());
+        infoRescVictima.setcosteRescate(infoRstVict.getCosteRescate()); // en terminos de energia consumida
+        infoRescVictima.setRobotRescatadorId(infoRstVict.getRobotId());
+        infoRescVictima.setTiempoRescate(infoRstVict.getTiempoRescate());
+        infoCasoSimul.addInfoRescateVictima(infoRescVictima);
+        if (infoCasoSimul.todasLasVictimasRescatadas()) {
+            try {
+//                infoCasoSimul.ordenarInfoRescateVictimas();
+                itfUsoRecursoPersistenciaEntornosSimulacion.guardarInfoCasoSimulacion(this.infoCasoSimul);
+//                this.visualizarYguardarResultadosCaso();
+            } catch (Exception ex) {
+                Exceptions.printStackTrace(ex);
+            }
+            
             this.informaraMiAutomata(VocabularioRosace.informacionFinSimulacion, null);
         }
 
@@ -392,12 +459,14 @@ public void sendSimulatedVictimToRobotTeam(String idVictima) {
     //Nos permite generar un fichero EstadisticaFinalSimulacionAsignacionMisionV2.xml que resume que victimas han sido asignadas a cada robot.
 
     public void FinSimulacion(String robot, ArrayList idsVictimasFinalesAsignadas, Double tiempoTotalCompletarMisionAtenderVictimasFinalesAsignadas) {
-
+// Definir las series a visualizar y los datos resumen del escenario
+//        Visluarizar los graficos
+        this.visualizarYguardarResultadosCaso();
         trazas.aceptaNuevaTraza(new InfoTraza(this.nombreAgente, "Accion FinSimulacion  .... "
                 + "robot->" + robot + " ; idsVictimasFinalesAsignadas->" + idsVictimasFinalesAsignadas
                 + " ; tiempoTotalCompletarMisionAtenderVictimasFinalesAsignadas->" + tiempoTotalCompletarMisionAtenderVictimasFinalesAsignadas, InfoTraza.NivelTraza.debug));
         try {
-            ArrayList<InfoAsignacionVictima> infoAsignVictms = new ArrayList();
+            ArrayList<InfoAgteAsignacionVictima> infoAsignVictms = new ArrayList();
             infoAsignVictms = itfUsoRecursoPersistenciaEntornosSimulacion.obtenerInfoAsignacionVictimas();
             contadorRobotsQueContestanFinsimulacion++;
             if (contadorRobotsQueContestanFinsimulacion == identsAgtesEquipo.size())
@@ -500,7 +569,7 @@ public void sendSimulatedVictimToRobotTeam(String idVictima) {
     private void informarResultadosSimulacion() {
         try {
             // visualizamos los resultados
-            this.itfUsoRecursoVisualizadorEntornosSimulacion.visualizarLlegadaYasignacionVictimas(identsAgtesEquipo, identsAgtesEquipo);
+//            this.itfUsoRecursoVisualizadorEntornosSimulacion.visualizarLlegadaYasignacionVictimas(identsAgtesEquipo, identsAgtesEquipo);
             this.itfUsoRecursoVisualizadorEntornosSimulacion.visualizarTiempoAsignacionVictimas(identsAgtesEquipo);
             // guardamos los resultados para poder consultarlos
 

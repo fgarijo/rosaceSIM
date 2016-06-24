@@ -137,9 +137,7 @@ import org.openide.util.Exceptions;
        this.maquinaEstados.setEnergiaRobot(energiaRobot);
        this.maquinaEstados.enDestino();
     }
-    public void setEnergiaRobot(int robtEnergia){
-        this.energiaRobot = robtEnergia;
-    }
+    
 
 
 }

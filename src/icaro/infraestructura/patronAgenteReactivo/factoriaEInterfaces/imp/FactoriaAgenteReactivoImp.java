@@ -16,7 +16,7 @@ import icaro.infraestructura.patronAgenteReactivo.percepcion.factoriaEInterfaces
 import icaro.infraestructura.patronAgenteReactivo.percepcion.factoriaEInterfaces.ItfConsumidorPercepcion;
 import icaro.infraestructura.patronAgenteReactivo.percepcion.factoriaEInterfaces.ItfProductorPercepcion;
 import icaro.infraestructura.patronAgenteReactivo.percepcion.factoriaEInterfaces.PercepcionAbstracto;
-import icaro.infraestructura.patronAgenteReactivo.control.factoriaEInterfaces.ProcesadorEventosAbstracto;
+import icaro.infraestructura.patronAgenteReactivo.control.factoriaEInterfaces.ProcesadorInfoReactivoAbstracto;
 import icaro.infraestructura.patronAgenteReactivo.control.factoriaEInterfaces.FactoriaControlAgteReactivo;
 import icaro.infraestructura.patronAgenteReactivo.control.factoriaEInterfaces.ItfControlAgteReactivo;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
@@ -155,7 +155,7 @@ public class FactoriaAgenteReactivoImp extends FactoriaAgenteReactivo {
          // Paso 3.2 Se intenta la creacion del  control del agente
                 
 		//	ProcesadorEventosAbstracto control = FactoriaControlAgteReactivo.instancia().crearControlAgteReactivo( accionesSemanticasEspecificas,rutaTabla , nombreInstanciaAgente, itfConsumidorPercepcion, itfProductorPercepcion);
-                ProcesadorEventosAbstracto control = FactoriaControlAgteReactivo.instancia().crearControlAgteReactivo( accionesSemanticasEspecificas,rutaTabla , nombreInstanciaAgente, itfConsumidorPercepcion, itfProductorPercepcion);
+                ProcesadorInfoReactivoAbstracto control = FactoriaControlAgteReactivo.instancia().crearControlAgteReactivo( accionesSemanticasEspecificas,rutaTabla , nombreInstanciaAgente, itfConsumidorPercepcion, itfProductorPercepcion);
                         itfControlAgteReactivo = (ItfControlAgteReactivo) control ;
      //     itfGesControl = (InterfazGestion) control.getProcesadorEventos();
 
@@ -167,7 +167,7 @@ public class FactoriaAgenteReactivoImp extends FactoriaAgenteReactivo {
                  AgenteReactivoAbstracto patron = new AgenteReactivoImp(nombreInstanciaAgente,itfAutomata,itfControlAgteReactivo,itfProductorPercepcion,itfConsumidorPercepcion);
         // paso 3. 4  Se define la interfaz de uso del agente creado en las acciones semánticas específicas
 
-        accionesSemanticasEspecificas.setItfUsoAgenteReactivo(patron);
+//        accionesSemanticasEspecificas.setItfUsoAgenteReactivo(patron);
         // Quedan definidos todos los objetos necesarios para implementar el ejemplar creado
         logger.debug(nombreInstanciaAgente + ":Creaci�n del Agente ...ok");
    //         trazas.aceptaNuevaTraza(new InfoTraza(nombreInstanciaAgente,
@@ -302,7 +302,7 @@ public void crearAgenteReactivo(String nombreInstanciaAgente, String rutaComport
 
          // Paso 3.2 Se intenta la creacion del  control del agente
 
-            ProcesadorEventosAbstracto control = FactoriaControlAgteReactivo.instancia().crearControlAgteReactivo( accionesSemanticasEspecificas,RutaAutomata , nombreInstanciaAgente, itfConsumidorPercepcion, itfProductorPercepcion);
+            ProcesadorInfoReactivoAbstracto control = FactoriaControlAgteReactivo.instancia().crearControlAgteReactivo( accionesSemanticasEspecificas,RutaAutomata , nombreInstanciaAgente, itfConsumidorPercepcion, itfProductorPercepcion);
            itfControlAgteReactivo = (ItfControlAgteReactivo) control ;
      //     itfGesControl = (InterfazGestion) control.getProcesadorEventos();
 
@@ -315,7 +315,7 @@ public void crearAgenteReactivo(String nombreInstanciaAgente, String rutaComport
 
         // paso 3. 4  Se define la interfaz de uso del agente creado en las acciones semánticas específicas
 
-        accionesSemanticasEspecificas.setItfUsoAgenteReactivo(patron);
+//        accionesSemanticasEspecificas.setItfUsoAgenteReactivo(patron);
         // Quedan definidos todos los objetos necesarios para implementar el ejemplar creado
         logger.debug(nombreInstanciaAgente + ":Creacion del Agente ...ok");
    //         trazas.aceptaNuevaTraza(new InfoTraza(nombreInstanciaAgente,

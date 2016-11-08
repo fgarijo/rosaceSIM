@@ -13,6 +13,9 @@ import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.ExtractedInfo;
 import icaro.infraestructura.patronAgenteCognitivo.procesadorObjetivos.factoriaEInterfacesPrObj.ItfProcesadorObjetivos;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -37,6 +40,8 @@ public class ProcesadorItems implements ItfProcesadorItems {
 	private ItfUsoRecursoTrazas trazas= NombresPredefinidos.RECURSO_TRAZAS_OBJ;
         private InterpreteEventosSimples interpreteEvS = null;
         private InterpreteMensajesSimples interpreteMsgS = null;
+        private ExecutorService executorService1;
+        private Future ejecucionHebra;
 
 	public ProcesadorItems(AgenteCognitivo agente) {
 		this.agente = agente;
@@ -45,7 +50,7 @@ public class ProcesadorItems implements ItfProcesadorItems {
 				CAPACIDAD_BUZON_CONT_MESSG);
 		this.itfProcesadorInfoExtracted = agente.getControl();
 		this.envioEvidencias = new EnvioInfoExtractedThread();
-                this.envioEvidencias.setName(agente.getIdentAgente()+"envioEvidenciasThread");
+//                this.envioEvidencias.setName(agente.getIdentAgente()+"envioEvidenciasThread");
 	}
 	
 	
@@ -73,8 +78,6 @@ public class ProcesadorItems implements ItfProcesadorItems {
 		this.itfProcesadorInfoExtracted = procesadorEvidencias;
 				//		this.envioEvidencias = new EnvioEvidenciaThread();
 	}
-
-    
 	// De momento filtra los items que no tengan como destinatario este agente.
 	private boolean filtrarItem() {
 		String nombreAgente = agente.getIdentAgente();
@@ -151,6 +154,7 @@ public class ProcesadorItems implements ItfProcesadorItems {
 	}
 
 	
+        @Override
 	public boolean procesarItem(Object item) {
         this.item = item;
         if (filtrarItem()) {
@@ -189,7 +193,7 @@ public class ProcesadorItems implements ItfProcesadorItems {
 	////////////////////////////////////////////////////////////////////////////////////////
 	
     //Envia evidencias por la interfaz del control.
-	private class EnvioInfoExtractedThread extends Thread {
+	private class EnvioInfoExtractedThread implements Runnable {
 		
 		//JM: Variable para hacer que la percepcion no pasen informacion al motor 
 		public boolean filtradoPercepcion = false;
@@ -198,7 +202,7 @@ public class ProcesadorItems implements ItfProcesadorItems {
 		private boolean termina;
 
 		public EnvioInfoExtractedThread() {
-			setDaemon(true);
+//			setDaemon(true);
 			termina = false;
 		}
 
@@ -234,7 +238,8 @@ public class ProcesadorItems implements ItfProcesadorItems {
     @Override
 	public void termina() {				
 		this.infoExtractedQ.clear();
-        envioEvidencias.interrupt();
+                ejecucionHebra.cancel(true); 
+//        envioEvidencias.interrupt();
         		//        try {
         		//            //           envioEvidencias.interrupt();
         		//            envioEvidencias.join();
@@ -246,8 +251,9 @@ public class ProcesadorItems implements ItfProcesadorItems {
     @Override
 	public void arranca() {
         this.envioEvidencias = new EnvioInfoExtractedThread();
-        this.envioEvidencias.setName(agente.getIdentAgente()+"envioEvidenciasThread");
-        envioEvidencias.start();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+//        this.envioEvidencias.setName(agente.getIdentAgente()+"envioEvidenciasThread");
+        ejecucionHebra=executor.submit(envioEvidencias);
 	}
 	
 	
@@ -255,7 +261,8 @@ public class ProcesadorItems implements ItfProcesadorItems {
     @Override
 	public void pararProcesoEnvioInfoExtracted(){       
 		//envioEvidencias.suspend();
-		envioEvidencias.filtradoPercepcion = true;        		
+		envioEvidencias.filtradoPercepcion = true; 
+                ejecucionHebra.cancel(true);                
 	}
 	
 	

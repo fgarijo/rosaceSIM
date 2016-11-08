@@ -9,25 +9,32 @@ import icaro.infraestructura.patronAgenteReactivo.percepcion.factoriaEInterfaces
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 import java.rmi.RemoteException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
 
 /**
- * Implementation for Cognitive Agent Perception
+ * Implementation for Reactive Agent Perception
  */
 public class PercepcionAgenteReactivoImp extends PercepcionAbstracto {
 
 	private static final int CAPACIDAD_BUZON_PORDEFECTO = 15;
 	private ProcesadorItemsPercepReactivo procesador;
-	private LinkedBlockingQueue<Object> buzon;
+	private LinkedBlockingDeque<Object> buzon;
 	private EnvioItemsThread envioItems;
+        static final AtomicLong seq = new AtomicLong(0);
 
 	private AgenteReactivoAbstracto agente;
-
+        private ExecutorService executorService1;
+        private Future ejecucionHebra;
 	private Logger log = Logger.getLogger(PercepcionAgenteReactivoImp.class);
 	private ItfUsoRecursoTrazas trazas=NombresPredefinidos.RECURSO_TRAZAS_OBJ ;
 
@@ -39,14 +46,14 @@ public class PercepcionAgenteReactivoImp extends PercepcionAbstracto {
 //		this.envioItems = new EnvioItemsThread();
 	}
         public PercepcionAgenteReactivoImp(AgenteReactivoAbstracto agente) {
-		buzon = new LinkedBlockingQueue<Object>(CAPACIDAD_BUZON_PORDEFECTO);
+		buzon = new LinkedBlockingDeque<Object>(CAPACIDAD_BUZON_PORDEFECTO);
 		this.agente = agente;
 		this.procesador = new ProcesadorItemsPercepReactivo(agente, agente.getItfControl());
 		this.envioItems = new EnvioItemsThread();
 
 	}
     public PercepcionAgenteReactivoImp(int CapacidadBuzon, ProcesadorItemsPercepReactivo prItems,AgenteReactivoAbstracto agente) {
-		buzon = new LinkedBlockingQueue<Object>(CapacidadBuzon);
+		buzon = new LinkedBlockingDeque<Object>(CapacidadBuzon);
 		this.agente = agente;
 		this.procesador = prItems;
 		this.envioItems = new EnvioItemsThread();
@@ -55,10 +62,10 @@ public class PercepcionAgenteReactivoImp extends PercepcionAbstracto {
 	public PercepcionAgenteReactivoImp(AgenteReactivoAbstracto agente,ProcesadorItemsPercepReactivo procesador) {
                 this.agente = agente;
                 this.procesador = procesador;
-		buzon = new LinkedBlockingQueue<Object>(CAPACIDAD_BUZON_PORDEFECTO);
+		buzon = new LinkedBlockingDeque<Object>(CAPACIDAD_BUZON_PORDEFECTO);
                 this.envioItems = new EnvioItemsThread();
 	}
- public void SetParametrosPercepcionAgenteReactivoImp(LinkedBlockingQueue<Object> colaEvtosyMsgs, ProcesadorItemsPercepReactivo prItems,AgenteReactivoAbstracto agente) {
+ public void SetParametrosPercepcionAgenteReactivoImp(LinkedBlockingDeque<Object> colaEvtosyMsgs, ProcesadorItemsPercepReactivo prItems,AgenteReactivoAbstracto agente) {
 		this.buzon=colaEvtosyMsgs;
 		this.agente = agente;
 		this.procesador = prItems;
@@ -87,17 +94,18 @@ public class PercepcionAgenteReactivoImp extends PercepcionAbstracto {
 	}
 
 
-	private class EnvioItemsThread extends Thread {
+	private class EnvioItemsThread implements Runnable {
 
 		private static final long TIEMPO_ESPERA = 10;
 
 		private boolean termina;
 
 		public EnvioItemsThread() {
-			this.setDaemon(true);
+//			this.setDaemon(true);
 			termina = false;
 		}
 
+                @Override
 		public void run() {
 			while (!termina) {
 				Object item = null;
@@ -121,30 +129,27 @@ public class PercepcionAgenteReactivoImp extends PercepcionAbstracto {
 
 		public void termina() {
 			this.termina = true;
-                        this.interrupt();
-          
-//                try {
-//                    envioItems.finalize();
-//                } catch (Throwable ex) {
-//                    java.util.logging.Logger.getLogger(PercepcionAgenteReactivoImp.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-           
 		}
 	}
 
 
+        @Override
 	public void termina() {
 		this.envioItems.termina();
 		this.buzon.clear();
 //		this.procesador.termina();
+                ejecucionHebra.cancel(true);
 	}
 
+        @Override
 	public void arranca() {
-		this.envioItems.start();
+	ExecutorService executor = Executors.newSingleThreadExecutor();
+        ejecucionHebra=executor.submit(envioItems);
 //		this.procesador.arranca();
 	}
 
-public Object consumeConTimeout(int tiempoEnMilisegundos)throws ExcepcionSuperadoTiempoLimite {
+        @Override
+        public Object consumeConTimeout(int tiempoEnMilisegundos)throws ExcepcionSuperadoTiempoLimite {
     // No tiene mucho sentido la ponemos para compatibilizar las interfaces
 
     try
@@ -158,7 +163,8 @@ public Object consumeConTimeout(int tiempoEnMilisegundos)throws ExcepcionSuperad
 			throw new ExcepcionSuperadoTiempoLimite("Percepcion: Interrumpida la espera de nuevo item en el buzon de items");
 		}
 }
-public void produce(Object evento)
+        @Override
+        public void produce(Object evento)
 	{
 		buzon.offer(evento);
 	}
@@ -169,8 +175,12 @@ public void produce(Object evento)
 	 *
 	 *@param  evento  Evento que se consumir el primero
 	 */
+        @Override
 	public void produceParaConsumirInmediatamente(Object evento)
 	{
-		buzon.offer(evento);
+		buzon.addFirst(evento);
+               
 	}
+        
+   
 }

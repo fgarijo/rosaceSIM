@@ -46,6 +46,11 @@ public class MisObjetivos {
                     setOfIGoalRefIds.add(goalRefId);
         }
     }
+    public void inicializar(){
+        misObjetivosPriorizados = new PriorityBlockingQueue <Objetivo> (11,c);
+        setOfIGoalRefIds = new TreeSet<String>();
+        objetivoMasPrioritario=null;
+    }
     public boolean eliminarObjetivo ( Objetivo obj){
         String goalRefId = obj.getobjectReferenceId();
         if(goalRefId==null)goalRefId= obj.getgoalId();

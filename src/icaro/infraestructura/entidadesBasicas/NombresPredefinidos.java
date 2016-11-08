@@ -15,6 +15,7 @@ public class NombresPredefinidos {
   public static final String TIPO_REACTIVO = "Reactivo";
   public static final String ROL_AGENTE = "Gestor";
   public static final String NOMBRE_ENTIDAD_AGENTE = "Agente";
+  public static final String NOMBRE_ENTIDAD_INDEFINIDA = "Entidad No efinida";
   public static final String NOMBRE_ENTIDAD_RECURSO = "Recurso";
   public static String NOMBRE_GESTOR_AGENTES = "GestorAgentes";
   public static String NOMBRE_GESTOR_RECURSOS = "GestorRecursos" ;
@@ -38,11 +39,27 @@ public class NombresPredefinidos {
   public static final String NOMBRE_FICHERO_PDFTO_REGLAS = "reglas.drl";
   public static final String NOMBRE_FICHERO_PDFTO_ACCIONES_SMT = "AccionesSemanticas.class";
   public static final String NOMBRE_ACCIONES_SEMANTICAS = "AccionesSemanticas";
+  public static final String EXPR_REG_ACCIONES_AGTE_REACTIVO = "AccionesSemanticas([0-9a-zA-Z])*.class";
+  public static final String NOMBRE_TABLA_AUTOMATA_EF = "automata";
   public static final String NOMBRE_FICHERO_CL_GENER_RECURSO = "ClaseGeneradora.class";
 //  public static final String EXPR_REG_NOMBRE_FICHERO_AUTOMATA = "automata*.xml";
 //  public static final String EXPR_REG_NOMBRE_FICHERO_REGLAS = "reglas([0-9a-zA-Z])*.drl";
   public static final String EXPR_REG_NOMBRE_GESTOR = "(GestorOrganizacion|GestorAgentes|GestorRecursos)([0-9a-zA-Z])*";
   public static  enum TipoEntidad {Cognitivo,ADO,DirigidoPorObjetivos,Reactivo,Recurso, noDefinido};
+  public static final Integer TIPO_ESTADO_FINAL_AUTOMATA_EF = 3;
+  public static final Integer AUTOMATA_EF_TIPO_ESTADO_FINAL_ = 3;
+  public static final Integer AUTOMATA_EF_TIPO_ESTADO_INTERMEDIO = 2;
+  public static final Integer AUTOMATA_EF_TIPO_ESTADO_INICIAL = 1;
+  public static final Integer AUTOMATA_EF_TIPO_TRANSICION_SIN_ACCION = 0;
+  public static final Integer AUTOMATA_EF_TIPO_TRANSICION_ACCION_BLOQ = 1;
+  public static final Integer AUTOMATA_EF_TIPO_TRANSICION_ACCION_THREAD= 2;
+  public static final Integer AUTOMATA_EF_TIPO_TRANSICION_METODO_AS_BLOQ = 3;
+  public static final Integer AUTOMATA_EF_TIPO_TRANSICION_METODO_AS_CONCURR = 4;
+  public static final String AUTOMATA_EF_NOMBRE_MODO_BLOQUEANTE ="bloqueante";
+  public static final String AUTOMATA_EF_NOMBRE_MODO_CONCURRENTE ="paralelo";
+//  public static final Integer TRANSICION_AUTOMATA_EF_SIN_ACCION = 0;
+//  public static final Integer TRANSICION_AUTOMATA_EF_ACCION_BLOQ = 1;
+//  public static final Integer TRANSICION_AUTOMATA_EF_ACCION_CONCUR = 2;
   public static final String ITF_GESTION = "Itf_Ges_";
   public static final String ITF_USO = "Itf_Uso_";
 
@@ -81,6 +98,8 @@ public class NombresPredefinidos {
   public static final String PAQUETE_JAXB = "icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.jaxb";
   public static final String RUTA_LOGS = "./log/";
 // Estados e inputs para el automata del ciclo de vida
+  public static final String ESTADO_INICIAL = "estadoInicial";
+  public static final String ESTADO_FINAL = "estadoFinal";
   public static final String ESTADO_EN_CONSTRUCCION = "creandose";
   public static final String ESTADO_CREADO = "creado";
   public static final String ESTADO_ARRANCADO = "arrancado";
@@ -95,11 +114,27 @@ public class NombresPredefinidos {
   public static final String INPUT_ARRANCA = "arrancar";
   public static final String INPUT_FALLO = "fallo";
   public static final String INPUT_ERROR = "error";
+  public static final String INPUT_COMENZAR = "comenzar";
   public static final String INPUT_OK = "ok";
   public static final String INPUT_PARAR = "parar";
   public static final String INPUT_CONTINUAR = "continuar";
   public static final String INPUT_ACTIVAR = "activar";
   public static final String INPUT_TERMINAR = "terminar";
+  public static final String NOMBRE_TRANSICION_AUTOMATA_EF = "transicion";
+  
+  public static final String NOMBRE_MODO_BLOQUEANTE_AUTOMATA_EF_SIN_ACCION ="bloqueante";
+  public static final String NOMBRE_MODO_CONCURRENTE_AUTOMATA_EF_SIN_ACCION ="paralelo";
+  public static final String NOMBRE_TRANSICION_UNIVERSAL_AUTOMATA_EF ="transicionUniversal";
+  public static final String NOMBRE_INPUT_AUTOMATA_EF = "input";
+  public static final String NOMBRE_ESTADO_AUTOMATA_EF = "estado";
+  public static final String NOMBRE_ACCION_AUTOMATA_EF = "accion";
+  public static final String NOMBRE_MODO_TRANSICION_AUTOMATA_EF ="modoDeTransicion";
+  public static final String NOMBRE_ESTADO_SIGUIENTE_AUTOMATA_EF = "estadoSiguiente";
+  public static final String IDENT_NODO_INICIAL_AUTOMATA_EF = "idInicial";
+  public static final String IDENT_NODO_INTERMEDIO_AUTOMATA_EF = "idIntermedio";
+  public static final String IDENT_NODO_FINAL_AUTOMATA_EF = "idFinal";
+  public static final String ACCION_VACIA_AUTOMATA_EF = "vacio";
+  public static final String EXPR_REG_SIN_ACCION_EN_AUTOMATA_EF = "(null|vacia|vacio|nada|sinAccion)";
  // public final static String FICHERO_AUTOMATA_CICLO_VIDA_COMPONENTE = "/icaro/infraestructura/patronRecursoSimple/TablaEstadosCicloVidaRecursos.xml";
 //  public final static String FICHERO_AUTOMATA_CICLO_VIDA_COMPONENTE = "./schemas/TablaEstadosCicloVidaRecursos.xml";
   public final static String FICHERO_AUTOMATA_CICLO_VIDA_COMPONENTE = "/icaro/infraestructura/entidadesBasicas/componentesBasicos/automatas/automataEFsinAcciones/TablaEstadosCicloVidaEntidades.xml";
@@ -121,6 +156,7 @@ public class NombresPredefinidos {
   public final static String DROOLS_Debugging_BEFORE_RuleFired = "BEFORE_ActivationFired";
   public final static String DROOLS_Debugging_AFTER_RuleFired = "AFTER_ActivationFired";
   public final static String PROPERTY_TIME_TIMEOUT_POR_DEFECTO = "timeTimeoutPorDefecto"; 
-  // aÃ±adir los nombres de cada aplicacion en concreto
+  // añadir los nombres de cada aplicacion en concreto
+  public final static String RUTA_PRUEBAS = "icaro.pruebas";
   public static String RUTA_Carpeta_CodigoFuente_ICARO = "src/";  //cambiar el valor a "src/main/java" si pone el icaro en un proyecto maven
 }

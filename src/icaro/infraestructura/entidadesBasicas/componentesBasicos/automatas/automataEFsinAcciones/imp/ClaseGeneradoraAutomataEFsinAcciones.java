@@ -4,9 +4,6 @@
 package icaro.infraestructura.entidadesBasicas.componentesBasicos.automatas.automataEFsinAcciones.imp;
 
 import icaro.infraestructura.entidadesBasicas.componentesBasicos.automatas.automataEFsinAcciones.*;
-import icaro.infraestructura.entidadesBasicas.componentesBasicos.automatas.automataEFsinAcciones.imp.XMLParserTablaEstadosAutomataEF;
-import icaro.infraestructura.entidadesBasicas.componentesBasicos.automatas.automataEFsinAcciones.imp.TablaEstadosAutomataEF;
-import icaro.infraestructura.entidadesBasicas.componentesBasicos.automatas.automataEFsinAcciones.imp.AutomataSinAccionesControlImp;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
 import icaro.infraestructura.entidadesBasicas.componentesBasicos.automatas.automataEFsinAcciones.ItfUsoAutomataEFsinAcciones;
 import org.apache.log4j.Logger;

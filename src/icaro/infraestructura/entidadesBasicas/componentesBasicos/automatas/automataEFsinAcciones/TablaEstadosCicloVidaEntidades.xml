@@ -35,6 +35,9 @@
 	<estado idIntermedio="terminando">
 		<transicion input="ok" estadoSiguiente="terminado"/>
 	</estado>
+	<estado idIntermedio="terminado">
+		<transicion input="ok" estadoSiguiente="terminado"/>
+	</estado>
 	<estado idIntermedio="error">
 		<transicion input="terminar" estadoSiguiente="terminando"/>
 	</estado>

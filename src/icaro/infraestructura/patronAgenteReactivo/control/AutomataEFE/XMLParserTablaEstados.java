@@ -3,6 +3,7 @@
  */
 package icaro.infraestructura.patronAgenteReactivo.control.AutomataEFE;
 
+import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,9 +52,8 @@ public class XMLParserTablaEstados {
 			if (sxe.getException() != null) {
 				x = sxe.getException();
 			}
-			System.out
-					.println("Se ha producido un error al procesar el fichero XML: "
-							+ nombreFich);
+			System.out.println("Se ha producido un error al procesar el fichero XML: "
+							+ x.getMessage());
             throw new ExcepcionNoSePudoCrearAutomataEFE( "XMLParserTablaEstados", "error al procesar el fichero XML"+ nombreFich,
                                                           "document = builder.parse(this.getClass().getResourceAsStream(nombreFich)");
 			//x.printStackTrace();
@@ -67,8 +67,7 @@ public class XMLParserTablaEstados {
                     "document = builder.parse(this.getClass().getResourceAsStream(nombreFich)");
 			//pce.printStackTrace();
 		} catch (IOException ioe) {
-			System.out
-					.println("Error de lectura en el fichero XML. Est usted seguro de que el fichero '"
+			System.out.println("Error de lectura en el fichero XML. Est usted seguro de que el fichero '"
 							+ nombreFich + "' esta ahi?");
 			throw new ExcepcionNoSePudoCrearAutomataEFE("XMLParserTablaEstados","Error de lectura en el fichero XML : "+ nombreFich,
                     "document = builder.parse(this.getClass().getResourceAsStream(nombreFich)");
@@ -158,6 +157,7 @@ public class XMLParserTablaEstados {
 		org.w3c.dom.NodeList nlUniversal = document
 				.getElementsByTagName("transicionUniversal");
 		// bucle que recorre transiciones universales
+                 if (nlUniversal.getLength()>0)
 		for (int i = 0; i < nlUniversal.getLength(); i++) {
 			nodo = nlUniversal.item(i);
 			mapaNombreNodo = nodo.getAttributes();
@@ -230,21 +230,26 @@ public class XMLParserTablaEstados {
 	private void procesarListaNodosTransicion(String idEstado,
 			org.w3c.dom.NodeList listaTransiciones,
 			TablaEstadosControl tablaEstados) {
-		org.w3c.dom.Node nodo;
+		org.w3c.dom.Node nodo, nodoAux;
 		org.w3c.dom.NamedNodeMap mapaNombreNodo;
-
+                String input,accion,estadoSig,modo ;
 		for (int i = 0; i < listaTransiciones.getLength(); i++) {
 			nodo = listaTransiciones.item(i);
-			if (nodo.getNodeName().equalsIgnoreCase("transicion")) {
+                        String idNodo = nodo.getNodeName();
+//			if (nodo.getNodeName().equalsIgnoreCase("transicion")) {
+                        if (idNodo.equalsIgnoreCase("transicion")) {
 				mapaNombreNodo = nodo.getAttributes();
-				String input = mapaNombreNodo.getNamedItem("input")
+				 input = mapaNombreNodo.getNamedItem("input")
 						.getNodeValue();
-				String accion = mapaNombreNodo.getNamedItem("accion")
-						.getNodeValue();
-				String estadoSig = mapaNombreNodo.getNamedItem(
-						"estadoSiguiente").getNodeValue();
-				String modo = mapaNombreNodo.getNamedItem("modoDeTransicion")
-						.getNodeValue();
+                                // consideramos la posiblidad de que las acciones no se especificque y las definimos como vacias
+                                nodoAux = mapaNombreNodo.getNamedItem("accion");
+                                if (nodoAux == null)accion=NombresPredefinidos.ACCION_VACIA_AUTOMATA_EF;
+                                 else accion = mapaNombreNodo.getNamedItem("accion").getNodeValue();
+                                estadoSig = mapaNombreNodo.getNamedItem("estadoSiguiente").getNodeValue();
+                                // consideramos la posiblidad de que la modalidad sea vacia
+                                nodoAux = mapaNombreNodo.getNamedItem("modoDeTransicion");
+                                if (nodoAux == null) modo = NombresPredefinidos.NOMBRE_MODO_TRANSICION_AUTOMATA_EF;                           
+                                else modo = nodoAux.getNodeValue();
 				tablaEstados.putTransicion(idEstado, input, accion, estadoSig,
 						modo);
 			}

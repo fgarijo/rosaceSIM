@@ -78,7 +78,7 @@ return  inforExtracted ;
 */
 public ExtractedInfo extractInfo(MensajeSimple mensaje) {
 
-    Object contenido = mensaje.getContenido();
+//    Object contenido = mensaje.getContenido();
     emisorMensaje = (String ) mensaje.getEmisor();
     inforExtracted = new  ExtractedInfo ( );
     inforExtracted.setOrigen(emisorMensaje);
@@ -88,7 +88,7 @@ public ExtractedInfo extractInfo(MensajeSimple mensaje) {
 //    }
     if ( mensaje.isContenidoColection())
     inforExtracted.setContentCollection(mensaje.getColeccionContenido());
-    else inforExtracted.setContenido(contenido);
+    else inforExtracted.setContenido(mensaje.getContenido());
 
 return  inforExtracted ;
  }

@@ -11,11 +11,12 @@ public class ExtractedInfo {
     private Object creador;     //JM: Identificdor  del agente que recibe el mensaje/evento (es decir el destinatario del mensaje/evento)
 	private Object contenido;   //JM: Contenido del mensaje/evento que fue creado en el origen
     private Boolean esElContenidoUnaColeccion = false;
+   
 	
 	public ExtractedInfo(){
         contenido = null;
         origen = null;
-        creador = null;      
+        creador = null;
     }
 	
 	public ExtractedInfo(Object origen, Object creador, Object contenidoInicial) {
@@ -42,7 +43,7 @@ public class ExtractedInfo {
 	}
 	
 	public Object getContenido() {
-		return contenido;
+		return this.contenido;
 	}
     
 	public Boolean isContentACollection() {
@@ -73,12 +74,13 @@ public class ExtractedInfo {
         	 this.contenido = null ;	        
 	}
     
-
     /**
      *  JM: Cadena de texto para la depuración
      */
+        @Override
     public String toString() {
-    	return "ExtractedInfo:" + " origen->" + this.getOrigen() + " ; creador->" + this.getCreador() + " ; contenido->" + this.getContenido(); 
+    	return "ExtractedInfo:"+"clase -> "+" origen->" + this.getOrigen() + " ; creador->" + this.getCreador() + " ; contenido->"+contenido.getClass().getSimpleName() + this.contenido; 
     }
     
+   
 }

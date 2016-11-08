@@ -5,6 +5,7 @@
 
 package icaro.infraestructura.patronAgenteReactivo.percepcion.factoriaEInterfaces.imp;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
+import icaro.infraestructura.entidadesBasicas.comunicacion.EventoInternoAgteReactivo;
 import icaro.infraestructura.entidadesBasicas.comunicacion.EventoSimple;
 import icaro.infraestructura.entidadesBasicas.comunicacion.InfoContEvtMsgAgteReactivo;
 import icaro.infraestructura.entidadesBasicas.comunicacion.MensajeSimple;
@@ -24,18 +25,13 @@ public class ProcesadorItemsPercepReactivo {
 
 //	private static final int CAPACIDAD_BUZON_EVIDENCIAS = 15;
 	
-
-
-
 	private ItfControlAgteReactivo itfControlReactivo;
 	private Object item;
 	private AgenteReactivoAbstracto agente;
    //   private InfoControlAgteReactivo infoControlExtraida = null;
         private String nombreAgente = null;
-
 	private Logger log = Logger.getLogger(ProcesadorItemsPercepReactivo.class);
 	private ItfUsoRecursoTrazas trazas= NombresPredefinidos.RECURSO_TRAZAS_OBJ;
-
 	public ProcesadorItemsPercepReactivo(AgenteReactivoAbstracto agente, ItfControlAgteReactivo itfControl) {
 		this.agente = agente;
 
@@ -47,24 +43,14 @@ public class ProcesadorItemsPercepReactivo {
                     } catch (RemoteException ex) {
                     java.util.logging.Logger.getLogger(ProcesadorItemsPercepReactivo.class.getName()).log(Level.SEVERE, null, ex);
                  }
-
-
-
 	}
         public ProcesadorItemsPercepReactivo() {
 		this.agente = null;
 		this.itfControlReactivo = null;
-		
-
-
 	}
-
-     
-
 	// De momento filtra los items que no tengan como destinatario este agente.
 	private boolean filtrarItem() {
 		
-
 		if (item instanceof EventoSimple) {
 			EventoSimple evento = (EventoSimple) item;
 //			log.warn("El evento" + evento.toString()
@@ -128,16 +114,24 @@ public class ProcesadorItemsPercepReactivo {
 	}
 
 
-	public void procesarItem(Object item) throws RemoteException {
+	public synchronized void procesarItem(Object item) throws RemoteException {
             this.item = item;
-            InfoContEvtMsgAgteReactivo infoExtraida = extraerInfoControl();
-		if (infoExtraida != null)
-			itfControlReactivo.procesarInfoControlAgteReactivo(infoExtraida);
+//            InfoContEvtMsgAgteReactivo infoExtraida = extraerInfoControl();
+            Object infoExtraida = null;
+            if (item instanceof EventoInternoAgteReactivo)
+                itfControlReactivo.procesarInput(((EventoInternoAgteReactivo)item).input, ((EventoInternoAgteReactivo)item).valoresParametrosAccion);
+            else {
+                if (item instanceof EventoSimple)
+                 infoExtraida = ((EventoSimple)item).getContenido();		
+                else if (item instanceof MensajeSimple)
+                 infoExtraida = ((MensajeSimple)item).getContenido();
+             if (infoExtraida != null)
+			itfControlReactivo.procesarInfoControlAgteReactivo(infoExtraida);           
 		else{
 			log.error("No se ha podido extraer informacion valida del  " + item + " no reconocido");
 			trazas.aceptaNuevaTraza(new InfoTraza (this.agente.getIdentAgente(),"Percepcion: Item "+ item + " no se ha podido extraer informacion valida",InfoTraza.NivelTraza.debug));
-		}
-
+                    }
+                }
 
 	}
 

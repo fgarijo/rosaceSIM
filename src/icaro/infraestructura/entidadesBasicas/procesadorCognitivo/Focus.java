@@ -50,7 +50,10 @@ public class Focus {
         
 		}
         
-
+    public void inicializar(){
+        this.focosAnteriores = new LinkedBlockingDeque<Objetivo>();
+        objetivoFocalizado = null;
+    }
     /**
      *  Fija el foco al objetivo obj
      *

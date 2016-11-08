@@ -30,7 +30,8 @@
 	<estado idIntermedio="esperandoPeticiones">
 		<transicion input="crear_recurso" accion="crearRecurso" estadoSiguiente="esperandoPeticiones" modoDeTransicion="bloqueante"/>
 		<transicion input="finalizar_recurso" accion="finalizarRecurso" estadoSiguiente="esperandoPeticiones" modoDeTransicion="bloqueante"/>
-		<transicion input="monitorizar" accion="monitorizarRecursos" estadoSiguiente="monitorizando" modoDeTransicion="bloqueante"/>
+		<transicion input="recursos_creados_ok" accion="monitorizarRecursos" estadoSiguiente="monitorizando" modoDeTransicion="bloqueante"/>
+                <transicion input="monitorizar" accion="monitorizarRecursos" estadoSiguiente="monitorizando" modoDeTransicion="bloqueante"/>
 	</estado>
 	<estado idIntermedio="monitorizando">
 		<transicion input="recursos_ok" accion="vacio" estadoSiguiente="esperandoPeticiones" modoDeTransicion="bloqueante"/>

@@ -6,7 +6,7 @@
  -->
 <tablaEstados descripcionTabla="Tabla de transiciones del gestor de agentes general">
 	<estadoInicial idInicial="estadoInicial">
-		<transicion input="comenzar" accion="verificarExistenciaEntidadesDescripcion" estadoSiguiente="creandoRecursosNucleoOrganizacion" modoDeTransicion="bloqueante"/>
+		<transicion input="comenzar" accion="verificarExistenciaEntidadesDescripcion" estadoSiguiente="creandoRecursosNucleoOrganizacion" />
 	</estadoInicial>
 	<estado idIntermedio="creandoRecursosNucleoOrganizacion">
 		<transicion input="existenEntidadesDescripcion" accion="crearRecursosNucleoOrganizacion" estadoSiguiente="creandoRecursosNucleoOrganizacion" modoDeTransicion="bloqueante"/>
@@ -23,7 +23,7 @@
 		<transicion input="error_al_arrancarGestorInicial" accion="generarInformeErrorIrrecuperable" estadoSiguiente="generandoInformeError" modoDeTransicion="bloqueante"/>
 	</estado>
 	<estado idIntermedio="generandoInformeError">
-		<transicion input="informe_generado" accion="vacio" estadoSiguiente="procesandoTerminacion" modoDeTransicion="bloqueante"/>
+		<transicion input="informe_generado" estadoSiguiente="procesandoTerminacion" modoDeTransicion="bloqueante"/>
                 <transicion input="peticion_terminar_todo_usuario" accion="procesarPeticionTerminacion" estadoSiguiente="procesandoTerminacion" modoDeTransicion="bloqueante"/>
         </estado>
 	<estado idIntermedio="procesandoTerminacion">

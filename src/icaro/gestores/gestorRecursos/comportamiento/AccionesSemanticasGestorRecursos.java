@@ -10,18 +10,14 @@ import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.DescInst
 import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.DescInstanciaGestor;
 import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.DescInstanciaRecursoAplicacion;
 import icaro.infraestructura.entidadesBasicas.interfaces.InterfazGestion;
-import icaro.infraestructura.entidadesBasicas.interfaces.InterfazUsoAgente;
 import icaro.infraestructura.patronAgenteReactivo.factoriaEInterfaces.ItfUsoAgenteReactivo;
 import icaro.infraestructura.patronAgenteReactivo.factoriaEInterfaces.imp.HebraMonitorizacion;
 import icaro.infraestructura.patronRecursoSimple.FactoriaRecursoSimple;
 import icaro.infraestructura.patronRecursoSimple.ItfGestionRecursoSimple;
-import icaro.infraestructura.patronRecursoSimple.ItfUsoRecursoSimple;
 import icaro.infraestructura.recursosOrganizacion.configuracion.ItfUsoConfiguracion;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.imp.ClaseGeneradoraRepositorioInterfaces;
 import java.rmi.Remote;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -37,8 +33,7 @@ import java.util.Vector;
  * @created 3 de diciembre de 2007
  */
 
-public class AccionesSemanticasGestorRecursos extends
-		AccionesSemanticasAgenteReactivo {
+public class AccionesSemanticasGestorRecursos extends AccionesSemanticasAgenteReactivo {
 //	public static final int intentosCreacion = 3;
 	/**
 	 * Almac�n de los nombres de los agentes que este gestor debe gestionar
@@ -65,19 +60,21 @@ public class AccionesSemanticasGestorRecursos extends
         private String esteNodo;
         private DescInstanciaGestor descGestorRecursos;
         private Boolean misInterfacesEstanEnElRegistroRMILocal= false;
+        private ItfUsoAgenteReactivo itfUsoPropiadeEsteAgente;
 
 	/**
 	 * Constructor por defecto
 	 */
 	public AccionesSemanticasGestorRecursos() {
 		super();
+               
 		// obtenemos el repositorio de interfaces
-		this.itfUsoRepositorio = ClaseGeneradoraRepositorioInterfaces.instance();
+//		this.itfUsoRepositorio = ClaseGeneradoraRepositorioInterfaces.instance();
 	}
 
 	public void configurarGestor() {
 		try {
-			 config = (ItfUsoConfiguracion) itfUsoRepositorio.obtenerInterfaz(
+			 config = (ItfUsoConfiguracion) NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ.obtenerInterfaz(
 							NombresPredefinidos.ITF_USO
 									+ NombresPredefinidos.CONFIGURACION);
 
@@ -88,10 +85,12 @@ public class AccionesSemanticasGestorRecursos extends
                         String maxIntentos =config.getValorPropiedadGlobal("maxIntentosCompGestionados");
                         if (maxIntentos != null)
                                                  maxNumIntentosCreacionCompGestionados = Integer.parseInt(maxIntentos);
-			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-					"gestor_configurado",
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                         itfUsoPropiadeEsteAgente=(ItfUsoAgenteReactivo)itfUsoRepositorio.obtenerInterfazUso(nombreAgente);
+                        this.informaraMiAutomata("gestor_configurado");
+//			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//					"gestor_configurado",
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 		} catch (Exception e) {
 			e.printStackTrace();
 			 logger.error("GestorRecursos: Hubo problemas al configurar el gestor de recursos.");
@@ -116,9 +115,11 @@ public class AccionesSemanticasGestorRecursos extends
 			List<DescInstancia> lista = config.getDescInstanciaGestor(NombresPredefinidos.NOMBRE_GESTOR_RECURSOS).getComponentesGestionados();
 
 			Object[] parametros = new Object[] { lista, new Integer(0) };
-			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("recursos_listados",
-					parametros, NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                         this.informaraMiAutomata("recursos_listados", lista, 0);
+
+//			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("recursos_listados",
+//					parametros, NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("GestorRecursos: Hubo problemas al listar los recursos desde la configuracion.");
@@ -159,9 +160,9 @@ public class AccionesSemanticasGestorRecursos extends
 					crearUnRecurso(recurso);
 					// si todo ha ido bien, debemos añadirlo a la lista de
 					// objetos gestionados por el gestor
-					logger.debug("GestorRecursos: A�adiendo recurso " + nombre+ " a la lista de objetos gestionados.");
+					logger.debug("GestorRecursos: Añadiendo recurso " + nombre+ " a la lista de objetos gestionados.");
 					trazas.aceptaNuevaTraza(new InfoTraza("GestorRecursos",
-							"A�adiendo recurso " + nombre+ " a la lista de objetos gestionados.",
+							"Añadiendo recurso " + nombre+ " a la lista de objetos gestionados.",
 							InfoTraza.NivelTraza.debug));
 					this.nombresRecursosGestionados.add(nombre);
 				} catch (Exception ex) {
@@ -181,21 +182,26 @@ public class AccionesSemanticasGestorRecursos extends
 			if (error == false && encontrado == true) {
 				parametros = new Object[] { lista,
 						new Integer(indice.intValue() + 1) };
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-						"recurso_creado", parametros,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
-			} else if (error == false && encontrado == false)
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-						"recursos_creados", new Integer(0),
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                                this.informaraMiAutomata("recurso_creado",lista, indice+ 1);
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//						"recurso_creado", parametros,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+			} else if (error == false && encontrado == false){
+                            this.comunicator.enviarInfoAotroAgente("recursos_creados_ok", NombresPredefinidos.NOMBRE_GESTOR_ORGANIZACION);
+                                this.informaraMiAutomata("recursos_creados", 0);
+                        }
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//						"recursos_creados", new Integer(0),
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 			else if (error == true) {
 				parametros = new Object[] { lista, recurso, indice };
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-						"error_en_creacion_recurso", parametros,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                                this.informaraMiAutomata("error_en_creacion_recurso", recurso, indice);
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//						"error_en_creacion_recurso", parametros,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -232,6 +238,7 @@ public class AccionesSemanticasGestorRecursos extends
 			if (nodoDestino.equals(esteNodo)) {
              // Se crea el recurso en el mismo nodo
 				FactoriaRecursoSimple.instance().crearRecursoSimple(recurso);
+                              
             // Si la organizacion esta desplegada en varios nodos entonces hay que registrarlo en el RMI local
             
                                 if (! this.config.despliegueOrgEnUnSoloNodo())
@@ -369,10 +376,11 @@ public class AccionesSemanticasGestorRecursos extends
 					InfoTraza.NivelTraza.error));
 			e.printStackTrace();
 			try {
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-						"error_en_creacion_recurso",
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                            this.informaraMiAutomata("error_en_creacion_recurso");
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//						"error_en_creacion_recurso",
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -402,9 +410,10 @@ public class AccionesSemanticasGestorRecursos extends
 				"Comenzando los reintentos de creacion para el recurso "+ idRecurso + ".",
 				InfoTraza.NivelTraza.debug));
 		try {
-			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("reintenta",
-					parametros, NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                        this.informaraMiAutomata("reintenta");
+//			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("reintenta",
+//					parametros, NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -466,23 +475,26 @@ public class AccionesSemanticasGestorRecursos extends
 						InfoTraza.NivelTraza.debug));
 				parametros = new Object[] { lista, recurso,
 						new Integer((reintento.intValue() - 1)), indice };
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-						"continua_creacion", parametros,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                                this.informaraMiAutomata("continua_creacion");
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//						"continua_creacion", parametros,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 			} else if (error) {
 				parametros = new Object[] { lista, recurso,
 						new Integer((reintento.intValue() - 1)), indice };
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-						"reintento_error", parametros,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                                 this.informaraMiAutomata("reintento_error", lista,recurso,reintento-1);
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//						"reintento_error", parametros,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 			} else if (!error) {
 				parametros = new Object[] { lista,
 						new Integer((indice.intValue() + 1)) };
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("reintento_ok",
-						parametros, NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                                this.informaraMiAutomata("reintento_ok", lista, indice+1);
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("reintento_ok",
+//						parametros, NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -579,10 +591,11 @@ public class AccionesSemanticasGestorRecursos extends
 		if (errorEnArranque) { // ha ocurrido alg�n problema en el arranque del
 								// recurso
 			try {
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-						"error_en_arranque_recurso",
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                             this.informaraMiAutomata("error_en_arranque_recurso");
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//						"error_en_arranque_recurso",
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -604,14 +617,16 @@ public class AccionesSemanticasGestorRecursos extends
 						"Terminado proceso de arranque autom�tico de recursos.",
 						InfoTraza.NivelTraza.debug));
 				try {
-					this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-							"recursos_arrancados_ok",
-							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
-					this.itfUsoGestorAReportar.aceptaEvento(new EventoRecAgte(
-							"gestor_recursos_arrancado_ok",
-							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-							NombresPredefinidos.NOMBRE_GESTOR_ORGANIZACION));
+                                    this.informaraMiAutomata("recursos_arrancados_ok");
+//					this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//							"recursos_arrancados_ok",
+//							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+//					this.itfUsoGestorAReportar.aceptaEvento(new EventoRecAgte(
+//							"gestor_recursos_arrancado_ok",
+//							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//							NombresPredefinidos.NOMBRE_GESTOR_ORGANIZACION));
+                                    this.comunicator.enviarInfoAotroAgente("gestor_recursos_arrancado_ok", NombresPredefinidos.NOMBRE_GESTOR_ORGANIZACION);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -630,11 +645,12 @@ public class AccionesSemanticasGestorRecursos extends
 						"Terminado arranque recurso "+ nombreRec + ". Arrancando el siguiente recurso.",
 						InfoTraza.NivelTraza.debug));
 				try {
-					this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-							"recurso_arrancado", new Integer(
-									indice.intValue() + 1),
-							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                                    this.informaraMiAutomata("recurso_arrancado", indice+1);
+//					this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//							"recurso_arrancado", new Integer(
+//									indice.intValue() + 1),
+//							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//							NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -667,10 +683,11 @@ public class AccionesSemanticasGestorRecursos extends
 				"Se decide cerrar el sistema ante un error cr�tico irrecuperable.",
 				InfoTraza.NivelTraza.debug));
 		try {
-			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-					"tratamiento_terminar_recursos_y_gestor_recursos",
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                     this.informaraMiAutomata("tratamiento_terminar_recursos_y_gestor_recursos");
+//			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//					"tratamiento_terminar_recursos_y_gestor_recursos",
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -681,7 +698,7 @@ public class AccionesSemanticasGestorRecursos extends
 	 * problemas.
 	 */
 	public void recuperarErrorArranqueRecurso() {
-		// por defecto no se implementan pol�ticas de recuperaci�n
+		// por defecto no se implementan pol�ticas de recuperacion
 		logger.debug("GestorRecursos: Fue imposible recuperar el error en el arranque de los recursos.");
 		trazas.aceptaNuevaTraza(new InfoTraza("GestorRecursos",
 				"Fue imposible recuperar el error en el arranque de los recursos.",
@@ -691,10 +708,11 @@ public class AccionesSemanticasGestorRecursos extends
 					"error_en_arranque_gestores",
 					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
 					NombresPredefinidos.NOMBRE_GESTOR_ORGANIZACION));
-			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-					"imposible_recuperar_arranque",
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                        this.informaraMiAutomata("imposible_recuperar_arranque");
+//			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//					"imposible_recuperar_arranque",
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -703,9 +721,9 @@ public class AccionesSemanticasGestorRecursos extends
 	/**
 	 * Esta acci�n no hace nada.
 	 */
-    @Override
-	public void vacio() {
-	}
+//    @Override
+//	public void vacio() {
+//	}
 
 	/**
 	 * Elabora un informe del estado en el que se encuentran los recursos y lo
@@ -726,7 +744,7 @@ public class AccionesSemanticasGestorRecursos extends
 //			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("informe_generado",
 //					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
 //					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
-                        this.informaraMiAutomata("informe_generado", null);
+                        this.informaraMiAutomata("informe_generado");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -748,14 +766,14 @@ public class AccionesSemanticasGestorRecursos extends
 	 * Crea y arranca un recurso. Es necesario pasar las caracter�sticas del
 	 * recurso a crear por par�metro.
 	 */
-	public void crearRecurso() {
-		// esto hay que recuperarlo de los par�metros
-		logger.debug("GestorRecursos: crearRecurso():Este metodo no esta implementado");
-		trazas.aceptaNuevaTraza(new InfoTraza("GestorRecursos",
-				"crearRecurso():Este m�todo no est� implementado",
-				InfoTraza.NivelTraza.debug));
-		throw new UnsupportedOperationException();
-	}
+//	public void crearRecurso() {
+//		// esto hay que recuperarlo de los par�metros
+//		logger.debug("GestorRecursos: crearRecurso():Este metodo no esta implementado");
+//		trazas.aceptaNuevaTraza(new InfoTraza("GestorRecursos",
+//				"crearRecurso():Este m�todo no est� implementado",
+//				InfoTraza.NivelTraza.debug));
+//		throw new UnsupportedOperationException();
+//	}
 
 	/**
 	 * Monitoriza secuencialmente todos los recursos activos que est�n definidos
@@ -782,9 +800,9 @@ public class AccionesSemanticasGestorRecursos extends
 				// TODO poner condiciones de monitorizacion
 				if (monitoriz == 0) {
 					errorEncontrado = true;
-					logger.debug("GestorRecursos:Recurso " + nombre	+ " est� en estado err�neo o terminado.");
+					logger.debug("GestorRecursos:Recurso " + nombre	+ " esta en estado err�neo o terminado.");
 					trazas.aceptaNuevaTraza(new InfoTraza("GestorRecursos",
-							"Recurso " + nombre	+ " est� en estado err�neo o terminado.",
+							"Recurso " + nombre	+ " esta en estado erroneo o terminado.",
 							InfoTraza.NivelTraza.debug));
 				} else
 					System.out.println("GestorRecursos:Recurso " + nombre
@@ -802,18 +820,20 @@ public class AccionesSemanticasGestorRecursos extends
 
 		if (errorEncontrado)
 			try {
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-						"error_al_monitorizar",
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                            this.informaraMiAutomata("error_al_monitorizar");
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//						"error_al_monitorizar",
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		else
 			try {
-				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("recursos_ok",
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                            this.informaraMiAutomata("recursos_ok");
+//				this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("recursos_ok",
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//						NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -824,9 +844,9 @@ public class AccionesSemanticasGestorRecursos extends
 	 * activos/arrancando
 	 */
 	public void terminarRecursosActivos() {
-		logger.debug("GestorRecursos: Terminando los recursos que est�n activos.");
+		logger.debug("GestorRecursos: Terminando los recursos que estan activos.");
 		trazas.aceptaNuevaTraza(new InfoTraza("GestorRecursos",
-				"Terminando los recursos que est�n activos.",
+				"Terminando los recursos que estan activos.",
 				InfoTraza.NivelTraza.debug));
 		// recorremos todos los recursos gestionados
 		Enumeration enumRecursos = this.nombresRecursosGestionados.elements();
@@ -866,13 +886,14 @@ public class AccionesSemanticasGestorRecursos extends
 		}
 		logger.debug("GestorRecursos: Finalizado proceso de terminaci�n de todos los recursos.");
 		trazas.aceptaNuevaTraza(new InfoTraza("GestorRecursos",
-				"Finalizado proceso de terminaci�n de todos los recursos.",
+				"Finalizado proceso de terminacion de todos los recursos.",
 				InfoTraza.NivelTraza.debug));
 		try {
-			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-					"recursos_terminados",
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                     this.informaraMiAutomata("recursos_terminados");
+//			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//					"recursos_terminados",
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -890,10 +911,11 @@ public class AccionesSemanticasGestorRecursos extends
 				"No se pudo recuperar el error de monitorizaci�n.",
 				InfoTraza.NivelTraza.debug));
 		try {
-			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
-					"imposible_recuperar_error_monitorizacion",
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                    this.informaraMiAutomata("imposible_recuperar_error_monitorizacion");
+//			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte(
+//					"imposible_recuperar_error_monitorizacion",
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -932,10 +954,11 @@ public class AccionesSemanticasGestorRecursos extends
 			ex.printStackTrace();
 		}
 		try {
-			this.itfUsoGestorAReportar.aceptaEvento(new EventoRecAgte(
-					"gestor_recursos_terminado",
-					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-					NombresPredefinidos.NOMBRE_GESTOR_ORGANIZACION));
+                    this.informaraMiAutomata("gestor_recursos_terminado");
+//			this.itfUsoGestorAReportar.aceptaEvento(new EventoRecAgte(
+//					"gestor_recursos_terminado",
+//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
+//					NombresPredefinidos.NOMBRE_GESTOR_ORGANIZACION));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -958,13 +981,13 @@ public class AccionesSemanticasGestorRecursos extends
                                          trazas.aceptaNuevaTraza(new InfoTraza(nombreAgente,
 					"No he podido añadir la entidad :" +identEntity + " -- al RMI registry local.",
 					InfoTraza.NivelTraza.error));
-                                         informaraMiAutomata("error_en_registroRemoto_recurso", null);
+                                         informaraMiAutomata("error_en_registroRemoto_recurso");
                                          return interfacesRegistradas;
                                 } else {
                                     trazas.aceptaNuevaTraza(new InfoTraza(nombreAgente,
 					"No he podido añadir la entidad :" +identEntity + " -- al RMI registry. La entidad no ha sido registrada en el registro local",
 					InfoTraza.NivelTraza.error));
-                                        informaraMiAutomata("error_en_registroRemoto_recurso", null);
+                                        informaraMiAutomata("error_en_registroRemoto_recurso");
                                         return interfacesRegistradas;
                                 }
          itfEntity = (Remote)itfUsoRepositorio.obtenerInterfaz(NombresPredefinidos.ITF_GESTION+identEntity);
@@ -978,13 +1001,13 @@ public class AccionesSemanticasGestorRecursos extends
                                          trazas.aceptaNuevaTraza(new InfoTraza(nombreAgente,
 					"No he podido añadir la entidad :" +identEntity + " -- al RMI registry local.",
 					InfoTraza.NivelTraza.error));
-                                         informaraMiAutomata("error_en_registroRemoto_recurso", null);
+                                         informaraMiAutomata("error_en_registroRemoto_recurso");
                                          return false;
                                 } else {
                                     trazas.aceptaNuevaTraza(new InfoTraza(nombreAgente,
 					"No he podido añadir la entidad :" +identEntity + " -- al RMI registry. La entidad no ha sido registrada en el registro local",
 					InfoTraza.NivelTraza.error));
-                                        informaraMiAutomata("error_en_registroRemoto_recurso", null);
+                                        informaraMiAutomata("error_en_registroRemoto_recurso");
                                         return false;
                                 }
 
@@ -993,7 +1016,7 @@ public class AccionesSemanticasGestorRecursos extends
 					"Error al registrar  la entidad " + identEntity+ ".",
 					InfoTraza.NivelTraza.error));
 			logger.error("GestorRecursos: Error al crear el recurso " + identEntity+ ". En el registro RMI local", ex);
-                        informaraMiAutomata("error_en_registroRemoto_recurso", null);
+                        informaraMiAutomata("error_en_registroRemoto_recurso");
 //			throw ex;
 		}
             return interfacesRegistradas;

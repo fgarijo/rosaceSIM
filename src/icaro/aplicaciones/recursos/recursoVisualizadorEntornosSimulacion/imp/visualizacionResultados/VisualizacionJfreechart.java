@@ -215,7 +215,7 @@ public class VisualizacionJfreechart extends JFrame{
  public void crearBarChartCosteEnergiaRescateVictimas(CategoryDataset dataset) {
          JFreeChart chart = ChartFactory.createBarChart(
         "Energía consumida para salvar las victimas ", // chart title
-        "Victimas", // domain axis label
+        "Victimas ordenadas por tiempo de rescate", // domain axis label
         "Energía consumida", // range axis label
         dataset, // data
         PlotOrientation.VERTICAL, // orientation
@@ -280,8 +280,8 @@ public class VisualizacionJfreechart extends JFrame{
    public  JFreeChart crearLineChartAsignRescateVict(CategoryDataset dataset) {
        
        chartNotifAsigResc = ChartFactory.createLineChart(
-          "Tiempos de Rescate de Victimas ",      // chart title Titulo local del grafico
-          "Victimas Rescatadas  en Entorno",                      // x axis label
+          "Tiempos de Notificación, asiganción y Rescate de Victimas ",      // chart title Titulo local del grafico
+          "Victimas Ordenadas por tiempo de rescate ",                      // x axis label
           "Tiempo milisegundos",                      // y axis label
           dataset,                  // data
           PlotOrientation.VERTICAL,
@@ -405,7 +405,7 @@ public class VisualizacionJfreechart extends JFrame{
         renderer2.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator());
         CategoryPlot subplot2 = new CategoryPlot(dataset2, null, rangeAxis2, renderer2);
         subplot2.setDomainGridlinesVisible(true);
-        CategoryAxis domainAxis = new CategoryAxis("Victimas rescatadas");
+        CategoryAxis domainAxis = new CategoryAxis("Victimas ordenadas por tiempos de rescate");
         CombinedDomainCategoryPlot plot = new CombinedDomainCategoryPlot(domainAxis);
         plot.add(subplot1, 2);
         plot.add(subplot2, 1);

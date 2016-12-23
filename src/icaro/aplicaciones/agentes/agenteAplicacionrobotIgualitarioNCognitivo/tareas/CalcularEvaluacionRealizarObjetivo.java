@@ -48,7 +48,10 @@ public class CalcularEvaluacionRealizarObjetivo extends TareaSincrona {
             trazarCalculoCoste=true;
             Coste coste = new Coste();
             coste.setTrazar(true);
-            robotLocation = robot.getInfoCompMovt().getCoordenadasActuales();
+            // si el robot esta bloqueado le ponemos como coste el valor mayor para que se le excluya del objetivo
+            if(!robot.getBloqueado()){
+            
+                robotLocation = robot.getInfoCompMovt().getCoordenadasActuales();
 
 //            
             //Las dos sentencias siguientes permiten utilizar la funcion de evaluacion 1 que solo considera la distancia entre el robot y la nueva victima
@@ -73,20 +76,21 @@ public class CalcularEvaluacionRealizarObjetivo extends TareaSincrona {
             double distanciaCamino = coste.CalculaDistanciaCamino(this.identAgente, robotLocation, victim, victims2R, misObjs);
             double tiempoAtencionVictimas = coste.CalculaTiempoAtencion(3.0, victim, victims2R, misObjs);
             funcionEvaluacion = coste.FuncionEvaluacion3(distanciaCamino, 5.0, tiempoAtencionVictimas, 9.0, robot, victim);
-	    if(trazarCalculoCoste) {
-                this.trazas.aceptaNuevaTrazaEjecReglas(identAgente, coste.getTrazaCalculoCoste());
-            }           
-            mi_eval = (int)funcionEvaluacion;   //convierto de double a int porque la implementacion inicial de Paco usaba int                                  
+                if(trazarCalculoCoste) {
+                    this.trazas.aceptaNuevaTrazaEjecReglas(identAgente, coste.getTrazaCalculoCoste());
+                }           
+                mi_eval = (int)funcionEvaluacion;   //convierto de double a int porque la implementacion inicial de Paco usaba int                                  
             
-            if (mi_eval>=0){            
-                mi_eval_nueva = Integer.MAX_VALUE; 
-//              mi_eval_nueva = cotaMaxima; 
-                //como va el que menor rango tiene, lo inicializamos a la peor                        
-            	//Para que gane el que mayor valor tiene de evaluacion le resto el valor de la distancia obtenida al valor máximo de Integer
-            	//El que este más cercano hará decrecer menos ese valor y por tanto es el MEJOR
-            	mi_eval = mi_eval_nueva - mi_eval;
-            }
-            
+                if (mi_eval>=0){            
+                    mi_eval_nueva = Integer.MAX_VALUE; 
+    //              mi_eval_nueva = cotaMaxima; 
+                    //como va el que menor rango tiene, lo inicializamos a la peor                        
+                    //Para que gane el que mayor valor tiene de evaluacion le resto el valor de la distancia obtenida al valor máximo de Integer
+                    //El que este mas cercano hara� decrecer menos ese valor y por tanto es el MEJOR
+                    mi_eval = mi_eval_nueva - mi_eval;
+                }
+            }else // Robot bloqueado
+                mi_eval = Integer.MAX_VALUE; 
             EvaluacionAgente eval = new  EvaluacionAgente (identAgente, mi_eval);
             eval.setObjectEvaluationId(victim.getName());// Referenciamos la evaluacion con el ident de la victima
             infoDecision.setMi_eval(mi_eval);

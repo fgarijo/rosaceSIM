@@ -181,7 +181,7 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
             // El foco debe ponerse en la ultima decision pendiente o en su caso al ultimo objetivo solving
             // esto implica que una vez conseguido el objetivo continua con lo que estaba haciendo
 //            focoActual.setfaseProcesoConsecObjetivos("DecisionAsignacionVictima");
-            trazas.aceptaNuevaTrazaEjecReglas(identAgente,"Reinicializao sesion"+ "\n");
+            trazas.aceptaNuevaTrazaEjecReglas(identAgente,"Refocalizo en el ultimo objetivo solving"+ "\n");
             focoActual.refocusUltimoObjetivoSolving();
             this.getEnvioHechos().actualizarHecho(focoActual);
             
@@ -192,19 +192,8 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
             e.printStackTrace();
         }
     }
-    private void informarControladorAsignacionVictima(String idVictimaAsignada){
-    //ACTUALIZAR ESTADISTICAS
-            //Inicializar y recuperar la referencia al recurso de estadisticas        	
+    private void informarControladorAsignacionVictima(String idVictimaAsignada){       	
             long tiempoActual = System.currentTimeMillis();
-//            String refVictima = objetivoAsignado.getobjectReferenceId();
-            //      	 itfUsoRecursoEstadistica.escribeEstadisticaFicheroTextoPlanoTRealAsignacionVictimasRobots(tiempoActual, refVictima, nombreAgenteEmisor, coste);
-            ////////////////////////////////////////////////////////
-            //ENVIAR INFORMACION AL AGENTE CONTROLADOR DEL SIMULADOR           
-//            Object[] valoresParametrosAccion = new Object[4];
-//            valoresParametrosAccion[0] = tiempoActual;
-//            valoresParametrosAccion[1] = refVictima;
-//            valoresParametrosAccion[2] = nombreAgenteEmisor;
-//            valoresParametrosAccion[3] = miEvaluacion;
             InfoAgteAsignacionVictima infoVictimaAsignada = new InfoAgteAsignacionVictima (this.identAgente,idVictimaAsignada,tiempoActual,miEvaluacion);
             InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo("victimaAsignadaARobot",infoVictimaAsignada);
             this.getComunicator().enviarInfoAotroAgente(msg, VocabularioRosace.IdentAgteControladorSimulador);

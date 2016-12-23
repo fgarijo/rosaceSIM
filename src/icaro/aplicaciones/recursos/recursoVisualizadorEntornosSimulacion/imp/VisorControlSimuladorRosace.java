@@ -34,6 +34,9 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
     private String identEscenarioActual;
     private String identRobotSeleccionado;
     private String identVictimaSeleccionada;
+    private ControladorGestionEscenariosRosace controladorGestionEscenarios;
+    private File ultimoFicheroEscenarioSeleccionado;
+    
      
     
     public VisorControlSimuladorRosace(ControladorVisualizacionSimulRosace controlador) {
@@ -43,7 +46,9 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
 //         listaComponentes.setVisible(false);
        
     }
-//    public VisorControlSimuladorRosace( ) {
+    public void setControladorGestionEscenarios( ControladorGestionEscenariosRosace controladorGestionEsc) {
+        this.controladorGestionEscenarios = controladorGestionEsc;
+    }
 ////        this.notifEvts = notifEvt;
 //        this.identsRobotsEquipo =identsRobotsEquipo;
 // //       this.cgen = cgenRec;
@@ -70,8 +75,8 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
         jButtonSendVictim = new javax.swing.JButton();
         jButtonSendVictimsSequence = new javax.swing.JButton();
         jtextTextFieldIntervaloEnvioMensajes = new javax.swing.JTextField();
-        jButtonComenzar = new javax.swing.JButton();
-        jPararEnvioMensajes = new javax.swing.JButton();
+        jButtonTerminarSimulacion = new javax.swing.JButton();
+        jPararRobotEnvioMensajes = new javax.swing.JButton();
         jButtonMostrarEscenarioActual = new javax.swing.JButton();
         jScrollPanelistaIdentsVictimas = new javax.swing.JScrollPane();
         jListIdentsVictims = new javax.swing.JList();
@@ -102,6 +107,7 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                jPopupMenuAcionesRobotsPopupMenuWillBecomeInvisible(evt);
             }
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
                 jPopupMenuAcionesRobotsPopupMenuWillBecomeVisible(evt);
@@ -144,18 +150,18 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
             }
         });
 
-        jButtonComenzar.setText("Comenzar");
-        jButtonComenzar.setNextFocusableComponent(jPararEnvioMensajes);
-        jButtonComenzar.addActionListener(new java.awt.event.ActionListener() {
+        jButtonTerminarSimulacion.setText("Terminar Simulación");
+        jButtonTerminarSimulacion.setNextFocusableComponent(jPararRobotEnvioMensajes);
+        jButtonTerminarSimulacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonComenzarActionPerformed(evt);
+                jButtonTerminarSimulacionActionPerformed(evt);
             }
         });
 
-        jPararEnvioMensajes.setText("Parar");
-        jPararEnvioMensajes.addActionListener(new java.awt.event.ActionListener() {
+        jPararRobotEnvioMensajes.setText("Parar Robot");
+        jPararRobotEnvioMensajes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPararEnvioMensajesActionPerformed(evt);
+                jPararRobotEnvioMensajesActionPerformed(evt);
             }
         });
 
@@ -265,10 +271,10 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonComenzar))
+                            .addComponent(jButtonTerminarSimulacion))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPararEnvioMensajes)
+                            .addComponent(jPararRobotEnvioMensajes)
                             .addComponent(jtextTextFieldIntervaloEnvioMensajes, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButtonMostrarEscenarioActual)
@@ -334,8 +340,8 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jButtonComenzar)
-                                    .addComponent(jPararEnvioMensajes))
+                                    .addComponent(jButtonTerminarSimulacion)
+                                    .addComponent(jPararRobotEnvioMensajes))
                                 .addGap(55, 55, 55))))))
         );
 
@@ -365,81 +371,20 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
          System.out.println("Ha pulsado el boton send victims");
          this.solicitarDefinicionItervaloSecuencia();
          controladorEscSim.peticionComenzarSimulacion(identEscenarioActual, intervaloSecuencia);
-//         jButtonStart.setEnabled(true);
-         
-//         String valorIntervaloDefinido=  jtextTextFieldIntervaloEnvioMensajes.getText();
-//         if(valorIntervaloDefinido.length()==0)this.solicitarDefinicionItervaloSecuencia();
-//         else intervaloSecuencia = Integer.parseInt(valorIntervaloDefinido);
-//         setLocationRelativeTo(this);
-//         String msgUsuarioIntervaloEnvioPetcionesNoNull= " El valor del intervalo en ms debe tener un valor positivo. Introduzca de nuevo el valor del intervalo";
-//        while( intervaloSecuencia<=0){ 
-//         valorIntervaloDefinido=JOptionPane.showInputDialog(rootPane, msgUsuarioIntervaloEnvioPetcionesNoNull);
-//         if(valorIntervaloDefinido!=null)
-//                    intervaloSecuencia = Integer.parseInt(valorIntervaloDefinido);
-//                   
-////        intervaloSecuencia = Integer.parseInt(showInputDialog(rootPane, msgUsuarioIntervaloEnvioPetcionesNoNull, intervaloSecuencia));
-//        }
-//          jtextTextFieldIntervaloEnvioMensajes.setText(""+intervaloSecuencia);
-        // se obtiene el valor del campo de texto donde se define el intervalo 
-//         intervaloSecuencia = Integer.parseInt(jtextTextFieldIntervaloEnvioMensajes.getText());
 
-//         String smsg = "Este es el valor en milisegundos leido de la propiedad global \nintervaloMilisegundosEnvioMensajesDesdeCC establecido \n en la descripcion de la organizacion lanzada";         		 
-//         valor = JOptionPane.showInputDialog(rootPane, smsg, intervaloSecuencia);
-
-
-          //         String valor = JOptionPane.showInputDialog("Introduce el valor en milisegundos en que deben enviarse las coordenadas");
-         //intervalTextField.setText(valor);
-        // int v = 0;
-//          if(valor!=null){
-//                 try{
-//                    intervaloSecuencia = Integer.parseInt(valor);
-//                    jtextTextFieldIntervaloEnvioMensajes.setText(""+intervaloSecuencia);
-//                 }catch(Exception e){
-//                     System.out.println("El valor debe ser  un numero entero");
-//                     intervaloSecuencia = 0;
-//         while (intervaloSecuencia == 0 ){
-//             valor = JOptionPane.showInputDialog(rootPane, "El valor debe ser  un numero entero. Introduzca de nuevo el valor del intervalo");
-//             System.out.println("El valor ha sido : "+valor);
-//             //intervaloSecuencia = Integer.getInteger(valor) ;
-//             //if (intervaloSecuencia == null)valor = "";
-//             if(valor!=null){
-//                 try{
-//                    intervaloSecuencia = Integer.parseInt(valor);
-//                    jtextTextFieldIntervaloEnvioMensajes.setText(""+intervaloSecuencia);
-//                 }catch(Exception e){
-//                     System.out.println("El valor debe ser  un numero entero");
-//                     intervaloSecuencia = 0;
-//                 }
-//             }else {
-//                 intervaloSecuencia = 1;// si es null es que se ha cancelado y hay que salir
-//             }
-//         }
-//         if(valor==null){System.out.println("Se ha cancelado");};
-         
-         //System.out.println("El valor ha sido : "+valor);
-         
-         
-//            intervalTextField.setOpaque(true);
-//            intervalTextField.setVisible(true);
-//        }
-//         intervalTextField.requestFocusInWindow();
-//         notifEvts.sendInitialRobotCoordenates();
-//         notifEvts.sendFirstSimulatedVictimToRobotTeam();
-//         sendVictimsSequence.setEnabled(false); 
     }//GEN-LAST:event_jButtonSendVictimsSequenceActionPerformed
 
-    private void jButtonComenzarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonComenzarActionPerformed
+    private void jButtonTerminarSimulacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTerminarSimulacionActionPerformed
         // TODO add your handling code here:
-        this.solicitarDefinicionItervaloSecuencia();
-        controladorEscSim.peticionComenzarSimulacion(identEscenarioActual, intervaloSecuencia); 
+        controladorEscSim.peticionTerminarCasoSimulacion(); 
 //        notifEvts.sendPeticionSimulacionSecuenciaVictimasToRobotTeam(intervaloSecuencia);
-    }//GEN-LAST:event_jButtonComenzarActionPerformed
+    }//GEN-LAST:event_jButtonTerminarSimulacionActionPerformed
 
-    private void jPararEnvioMensajesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPararEnvioMensajesActionPerformed
+    private void jPararRobotEnvioMensajesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPararRobotEnvioMensajesActionPerformed
         // TODO add your handling code here:
         
-        controladorEscSim.peticionPararSimulacion();
-    }//GEN-LAST:event_jPararEnvioMensajesActionPerformed
+        controladorEscSim.peticionPararRobot();
+    }//GEN-LAST:event_jPararRobotEnvioMensajesActionPerformed
 
     private void jButtonMostrarEscenarioActualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMostrarEscenarioActualActionPerformed
         // TODO add your handling code here:
@@ -452,7 +397,8 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
 //    	        notifEvts.sendPeticionPararAgente ((String)identsRobotsEquipo.get(index));
     	       //      clasificadorV.muestraVentanaEspecifica(listaComponentes.getSelectedValue().toString());
                     identRobotSeleccionado = (String)identsRobotsEquipo.get(index);
-                    jPopupMenuAcionesRobots.setVisible(true);
+//                    jPopupMenuAcionesRobots.setVisible(true);
+                    controladorEscSim.robotSeleccionadoParaParar(identRobotSeleccionado);
     	          }
     }//GEN-LAST:event_jlistIdentsRobotsMouseClicked
 
@@ -464,55 +410,18 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
         // Usuario quiere crear un escenario
         // se abre una  ventana vacia , si tiene otra abierta se le debería avisar de que se guardar
         // lo que tiene
-        controladorEscSim.peticionCrearEscenario();
-//        if (escenarioActualComp.getNumRobots()> 0){
-//            peticionGuardarEscenario();
-//            // Se avisa de que el escenario actual se va a guardar antes de abrir el nuevo
-//            //            escenarioActualComp.setIdentEscenario(jTextFieldIdentEquipo.getText());
-//            //
-//            //
-//            //        //         String smsg = "Puede cambiar el valor en milisegundos en que deben enviarse las coordenadas";
-//            //
-//            //        String smsg = "Se va a guardar el escenario: " +jTextFieldIdentEquipo.getText() ;
-//            //        JOptionPane.showConfirmDialog(rootPane, smsg,"Confirmar GuardarEscenario",JOptionPane.OK_CANCEL_OPTION );
-//            //         persistencia.guardarInfoEscenarioSimulacion(directorioPersistencia, escenarioActualComp);
-//        }
-//        escenarioActualComp = gestionEscComp.crearEscenarioSimulación();
-//        //        jTextFieldIdentEquipo.setText()
-//        eliminarEntidadesEscenario();
-//        jTextFieldIdentEquipo.setText(escenarioActualComp.getIdentEscenario());
-//        intervalNumRobots.setText(""+0);
-//        intervalNumVictimas.setText(""+0);
-
+        controladorGestionEscenarios.peticionCrearEscenario();
     }//GEN-LAST:event_jMenuItemCrearEscenarioActionPerformed
 
     private void jMenuItemAbrirEscenarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirEscenarioActionPerformed
         // TODO add your handling code here:
-        controladorEscSim.peticionAbrirEscenario();
-//         FileNameExtensionFilter filter = new FileNameExtensionFilter("ficheros xml","xml","txt" );
-//   
-//      jFileChooser1.setFileFilter(filter);
-//      jFileChooser1.setCurrentDirectory(new File(directorioPersistencia));
-//      jFileChooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
-//       int returnVal = jFileChooser1.showOpenDialog(this);
-//    if (returnVal == JFileChooser.APPROVE_OPTION) {
-//        File selectedFile = jFileChooser1.getSelectedFile();
-//        escenarioActualComp = persistencia.obtenerInfoEscenarioSimulacion(selectedFile.getAbsolutePath());
-//        escenarioActualComp.setGestorEscenarios(gestionEscComp);
-//        visualizarEscenario(escenarioActualComp);
-//        
-////               fileName = selectedFile.getName();
-//        // enviariamos el fichero a la persistencia para que nos diera el contenido
-//        // se visualiza un escenario a partir de la información almacenada
-//        System.out.println("Ejecuto  accion sobre el fichero "+selectedFile.getAbsolutePath());
-//    } else {
-//        System.out.println("File access cancelled by user.");
-//    }
+        controladorGestionEscenarios.peticionAbrirEscenarioEdicion();
+
     }//GEN-LAST:event_jMenuItemAbrirEscenarioActionPerformed
 
     private void jMenuItemEliminarEscenarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemEliminarEscenarioActionPerformed
         // TODO add your handling code here:
-        controladorEscSim.peticionEliminarEscenario();
+        controladorGestionEscenarios.peticionEliminarEscenario();
     }//GEN-LAST:event_jMenuItemEliminarEscenarioActionPerformed
 
     private void jMenuItemPararActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPararActionPerformed
@@ -530,6 +439,7 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
         // TODO add your handling code here:
+        if(evt.getActionCommand().matches(JFileChooser.CANCEL_SELECTION)){}
 
     }//GEN-LAST:event_jFileChooser1ActionPerformed
 
@@ -544,12 +454,23 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
     	          }
         
     }//GEN-LAST:event_jListIdentsVictimsMouseClicked
+
+    private void jPopupMenuAcionesRobotsPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jPopupMenuAcionesRobotsPopupMenuWillBecomeInvisible
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPopupMenuAcionesRobotsPopupMenuWillBecomeInvisible
     public void setIntervaloEnvioMensajesDesdeCC(int intervalo){
 		intervaloSecuencia = intervalo ;
                 jtextTextFieldIntervaloEnvioMensajes.setText(String.valueOf(intervalo));
 		int intervaloEnvioMensajesDesdeCC = 1000;
 		String strintervaloEnvioMensajesDesdeCC = "";
     }
+     public void inicializarInfoEscenarioSimul(){
+         setIdentEscenarioActual("Indefinido");
+         identsVictimas= new ArrayList(1);
+         identsVictimas.add(0,"");
+         this.jListIdentsVictims.setListData(identsVictimas.toArray());
+         
+     }
     public void setIdentEscenarioActual(String escenarioId){
         identEscenarioActual = escenarioId;
         jTextFieldIdentEscenarioActual.setText(escenarioId);
@@ -571,12 +492,22 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
          jTextFieldIdentEscenarioActual.setText(identEquipo);
          
      }
+
      public boolean solicitarConfirmacion(String texto){
         return( JOptionPane.showConfirmDialog(rootPane, texto)==JOptionPane.OK_OPTION);  
      }
      
      public void visualizarConsejo (String titulo, String msgConsejo, String recomendacion){
-         JOptionPane.showMessageDialog(rootPane,msgConsejo + "  "+ recomendacion, titulo,2);
+        String nl = System.getProperty("line.separator");
+        Object msgConsjyRec = msgConsejo+nl+recomendacion;
+         JOptionPane.showMessageDialog(rootPane,msgConsjyRec, titulo,2);
+     }
+      public void visualizarRecomenSeleccionFicheroSimulacion (String titulo, String modOrganizativo, int numRobots){
+        String nl = System.getProperty("line.separator");
+        Object msgRecAbrirFicheroEscenario = " Abrir un escenario con el menu de edicion" + nl + "o crear un escenario nuevo"+
+         nl+" El fichero de simulación debe ser de un equipo : " +modOrganizativo +nl+ " y numero de robots : " + numRobots;
+             
+         JOptionPane.showMessageDialog(rootPane,msgRecAbrirFicheroEscenario, titulo,2);
      }
      
      public void solicitarDefinicionItervaloSecuencia(){
@@ -623,8 +554,25 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
        jFileChooser1.setCurrentDirectory(dir);
 //       int returnVal = jFileChooser1.showOpenDialog(this);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-        return jFileChooser1.getSelectedFile();
-     }else return null; // no ha seleccionado nada
+        ultimoFicheroEscenarioSeleccionado = jFileChooser1.getSelectedFile();
+        return ultimoFicheroEscenarioSeleccionado;
+     }return null; // no ha seleccionado nada
+     }
+     public int selecciondeFichero(){
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("ficheros xml","xml","txt" );
+      jFileChooser1.setFileFilter(filter);
+      File dir = jFileChooser1.getCurrentDirectory();
+     int returnVal = jFileChooser1.showOpenDialog(this);
+      jFileChooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
+       jFileChooser1.setCurrentDirectory(dir);
+//       int returnVal = jFileChooser1.showOpenDialog(this);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+        ultimoFicheroEscenarioSeleccionado = jFileChooser1.getSelectedFile();
+     }return returnVal; // no ha seleccionado nada
+     }
+     
+     public File getUltimoFicheroEscenarioSeleccionado(){
+         return ultimoFicheroEscenarioSeleccionado;
      }
     /**
      * @param args the command line arguments
@@ -666,10 +614,10 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonComenzar;
     private javax.swing.JButton jButtonMostrarEscenarioActual;
     private javax.swing.JButton jButtonSendVictim;
     private javax.swing.JButton jButtonSendVictimsSequence;
+    private javax.swing.JButton jButtonTerminarSimulacion;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -689,7 +637,7 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemParar;
     private javax.swing.JMenuItem jMenuItemSalir;
     private javax.swing.JMenuItem jMenuItemVerEstado;
-    private javax.swing.JButton jPararEnvioMensajes;
+    private javax.swing.JButton jPararRobotEnvioMensajes;
     private javax.swing.JPopupMenu jPopupMenuAcionesRobots;
     private javax.swing.JScrollPane jScrollPaneIdentsRobots;
     private javax.swing.JScrollPane jScrollPanelistaIdentsVictimas;
@@ -702,4 +650,7 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
     private javax.swing.JList jlistIdentsRobots;
     private javax.swing.JTextField jtextTextFieldIntervaloEnvioMensajes;
     // End of variables declaration//GEN-END:variables
+
+
+    
 }

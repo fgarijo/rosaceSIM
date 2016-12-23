@@ -188,7 +188,14 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
 
     @Override
         public synchronized void parar(){
-		estadoActual.parar(); 
+		if(this.identEstadoActual.equals(EstadoMovimientoRobot.RobotEnMovimiento.name())){
+                        estadoActual.parar();
+                         trazas.trazar(identAgente, "Se recibe una  orden de Parada. El robot esta en el estado :"+ identEstadoActual
+                + " CoordActuales =  "+this.robotposicionActual.toString() + " CoordDestino =  " +this.destinoCoord.toString(), InfoTraza.NivelTraza.debug);
+                        this.estadoActual = this.cambiarEstado(EstadoMovimientoRobot.RobotParado);
+                }
+               
+                
         }
 
     @Override

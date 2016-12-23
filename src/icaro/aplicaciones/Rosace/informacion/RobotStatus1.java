@@ -53,6 +53,7 @@ public class RobotStatus1 implements Cloneable{
     private boolean bloqueado;
     private String identDestino;
     private String estadoMovimiento;
+    private String causaCambioEstado;
 
     public RobotStatus1() {
         robotCoordinateAnteriorP = new Point(0,0);
@@ -214,6 +215,12 @@ public class RobotStatus1 implements Cloneable{
     public String getestadoMovimiento(){
         return estadoMovimiento;
     }
+    public void setcausaCambioEstado(String causaCambio){
+         causaCambioEstado=causaCambio ;
+    }
+    public String getcausaCambioEstado(){
+        return causaCambioEstado;
+    }
     @Override
     public Object clone(){
         Object obj=null;
@@ -233,6 +240,7 @@ public class RobotStatus1 implements Cloneable{
     			" ; coordinate->" + this.getRobotCoordinate() + 
     			" ; healrange->" + this.getHealRange() +
                         " ; identDestino->" + this.getidentDestino() +
-                        " ; estadoMovimiento->" + this.getestadoMovimiento () ;
+                        " ; estadoMovimiento->" + this.getestadoMovimiento ()+
+                        " ; esta boqueado ? ->" +  this.getBloqueado() ;
     }
 }

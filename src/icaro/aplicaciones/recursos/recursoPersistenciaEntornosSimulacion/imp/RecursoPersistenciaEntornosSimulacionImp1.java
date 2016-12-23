@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -48,19 +49,21 @@ public class RecursoPersistenciaEntornosSimulacionImp1 extends ImplRecursoSimple
     private ArrayList<Victim> victimasDefinidas;    //Victimas que hay en el entorno 
     private ArrayList<RobotStatus> robotsDefinidos;    //Victimas que hay en el entorno 
     private File[] ficherosEscenarios; 
-    private File directorioFicherosPersistencia;
+    private File[] ficherosResultadosSimulacion;
+    private File directorioFicherosPersistenciaEscenarios;
+    private File directorioResultadosSimulacion;
     HashSet identsEscenarioSimulacion ;
+    HashSet identsResultadosSimulacion;
     protected ComunicacionAgentes comunicacion;
     protected InfoEquipo equipo;
     protected ArrayList identsAgtesEquipo;
     protected String identificadorEquipo;
     private String directorioPersistencia;
     private String identFicheroInfoAsigVictimasObj;
-    private String identFicheroInfoAsigVictimasXML;
     private String extFicheroXML= ".xml";
 //    private ObjectOutputStream  oPersAsignVictima;
 //    private ObjectInputStream  inPersAsignVictima;
-    private  ArrayList<InfoAsignacionVictima> infoVictimasAsigandas  ;
+    private  ArrayList<InfoAgteAsignacionVictima> infoVictimasAsigandas  ;
     public RecursoPersistenciaEntornosSimulacionImp1 (String recursoId) throws RemoteException{
         super (recursoId);
     }
@@ -77,15 +80,19 @@ public class RecursoPersistenciaEntornosSimulacionImp1 extends ImplRecursoSimple
 //                                numeroVictimasDiferentesSimulacion = rXMLTSeq.getNumberOfVictimsInSequence(nodeLst);
 //                                // se obtienen tambien el conjunto de vicitmas definidas
 //           //    String nombreFicheroAsignVictim = "asigVictimasObjetos";
-                directorioPersistencia = VocabularioRosace.NombreDirectorioPersistenciaEscenarios;
+//                directorioPersistencia = VocabularioRosace.NombreDirectorioPersistenciaEscenarios;
                 identFicheroInfoAsigVictimasObj = VocabularioRosace.NombreFicheroSerieInfoAsignacionVictimas+".tmp";
-                identFicheroInfoAsigVictimasXML = VocabularioRosace.NombreFicheroSerieInfoAsignacionVictimas+".xml";
-                directorioFicherosPersistencia = new File(directorioPersistencia);
-                if(!directorioFicherosPersistencia.exists())directorioFicherosPersistencia.mkdir();
-                rutaFicherosPersistencia = directorioFicherosPersistencia.getAbsolutePath();
-                ficherosEscenarios = directorioFicherosPersistencia.listFiles();
-                infoVictimasAsigandas = new ArrayList<InfoAsignacionVictima>();
+                directorioFicherosPersistenciaEscenarios = new File(VocabularioRosace.NombreDirectorioPersistenciaEscenarios);
+                directorioResultadosSimulacion= new File(VocabularioRosace.NombreDirectorioPersistenciaResSimulacion);
+                if(!directorioFicherosPersistenciaEscenarios.exists())directorioFicherosPersistenciaEscenarios.mkdir();
+                 if(!directorioResultadosSimulacion.exists())directorioResultadosSimulacion.mkdir();
+//                rutaFicherosPersistencia = directorioFicherosPersistenciaEscenarios.getAbsolutePath();
+                
+                ficherosEscenarios = directorioFicherosPersistenciaEscenarios.listFiles();
+                ficherosResultadosSimulacion = directorioResultadosSimulacion.listFiles();
+                infoVictimasAsigandas = new ArrayList<InfoAgteAsignacionVictima>();
                 identsEscenarioSimulacion = new HashSet<String>();
+                identsResultadosSimulacion = new HashSet<String>();
                 // pruebas 
 //            File f =    obtenerFicheroEscenario("modeloOrg_JerarquicoNumRobts_5NumVicts_5");
 //            HashSet set = obtenerIdentsEscenarioSimulacion(directorioPersistencia);
@@ -107,7 +114,7 @@ public class RecursoPersistenciaEntornosSimulacionImp1 extends ImplRecursoSimple
              if (identsEscenarioSimulacion.contains(identFichero)){// Se renombra el fichero agnadiendo 
                  identFichero = this.renombrarFichero(identFichero);
              }
-             identFichero = rutaFicherosPersistencia+File.separator+identFichero;
+             identFichero = directorioFicherosPersistenciaEscenarios+File.separator+identFichero;
              File ficheroEscenario = new File (identFichero);
              serializer.write(escenario, ficheroEscenario);
              ArrayList<String> robotNombres = escenario.getListIdentsRobots();
@@ -151,9 +158,32 @@ public class RecursoPersistenciaEntornosSimulacionImp1 extends ImplRecursoSimple
                 }   
                 }catch (Exception e) { // catches ANY exception
         e.printStackTrace();
+        }
+         return null;
+     }
+ public   InfoCasoSimulacion obtenerInfoCasoSimulacion(String identFicheroCaso) {
+       try {
+              File ficheroEscenario = this.obtenerFicheroCasoSimulacion(identFicheroCaso);
+             
+                if(ficheroEscenario== null){
+//                    dirFicherosPersistencia.mkdir();
+//                    rutaFicheroInfoPersistencia= dirFicherosPersistencia.getAbsolutePath()+"\\";
+                System.out.println("El fichero   : "+ identFicheroCaso+ " No existe " );
+             
+                }else {
+                   Serializer serializer = new Persister();
+//                 EscenarioSimulacionRobtsVictms escenario = serializer.read(EscenarioSimulacionRobtsVictms.class,ficheroEscenario, false);
+                return serializer.read(InfoCasoSimulacion.class,ficheroEscenario, false);
+
+                    
+                }   
+                }catch (Exception e) { // catches ANY exception
+        e.printStackTrace();
     }
          return null;
      }
+   
+     
       public boolean  eliminarEscenarioSimulacion(String identFicheroInfoPersistencia){
          try {
               File ficheroEscenario = this.obtenerFicheroEscenario(identFicheroInfoPersistencia);
@@ -167,7 +197,7 @@ public class RecursoPersistenciaEntornosSimulacionImp1 extends ImplRecursoSimple
                     //confirmar eliminacion y si lo confirma eliminar
                     identsEscenarioSimulacion.remove(ficheroEscenario.getName());
                     ficheroEscenario.delete();
-                    ficherosEscenarios = directorioFicherosPersistencia.listFiles();
+                    ficherosEscenarios = directorioFicherosPersistenciaEscenarios.listFiles();
                     return true;
                 }
          }catch (Exception e) { // catches ANY exception
@@ -177,7 +207,11 @@ public class RecursoPersistenciaEntornosSimulacionImp1 extends ImplRecursoSimple
      }
      public HashSet obtenerIdentsEscenarioSimulacion(String identDirectorioInfoPersistencia){
          
-        if (identsEscenarioSimulacion.isEmpty()){
+        if(!identDirectorioInfoPersistencia.equals(VocabularioRosace.NombreDirectorioPersistenciaEscenarios)){
+           System.out.println(" El directorio especificado  : " +identDirectorioInfoPersistencia + " No es valido ");
+           return null;
+        }
+         if (identsEscenarioSimulacion.isEmpty()){
             try {
               if(ficherosEscenarios == null) return null;
                 String identFichero;
@@ -191,6 +225,26 @@ public class RecursoPersistenciaEntornosSimulacionImp1 extends ImplRecursoSimple
             } 
         }
     return identsEscenarioSimulacion;
+}
+     public HashSet obtenerIdentsFicherosResultadosSimulador(String identDirectorioResultados){
+          if(!identDirectorioResultados.equals(VocabularioRosace.NombreDirectorioPersistenciaResSimulacion)){
+           System.out.println(" El directorio especificado  : " +identDirectorioResultados + " No es valido ");
+           return null;
+        }
+        if (identsResultadosSimulacion.isEmpty()){
+            try {
+              if(ficherosResultadosSimulacion == null) return null;
+                String identFichero;
+                for (int i=0;i<ficherosResultadosSimulacion.length;i++){
+                     identFichero = ficherosResultadosSimulacion[i].getName();
+                    System.out.println(" Fichero obtenido : " +identFichero);
+                    identsResultadosSimulacion.add(identFichero);
+                    } 
+            }catch (Exception e) { // catches ANY exception
+                e.printStackTrace();
+            } 
+        }
+    return identsResultadosSimulacion;
 }
      private String renombrarFichero( String identfichero){
          String idFicheroSinXml = identfichero.replace(extFicheroXML, "");
@@ -221,18 +275,6 @@ public class RecursoPersistenciaEntornosSimulacionImp1 extends ImplRecursoSimple
     }   
      }
      
-     /**
- * Saves the current person data to the specified file.
- * 
- * @param file
- */
-    
-    public ReadXMLTestSequence getSecuenciaVictimasClase(String rutaFicheroVictimasTest) throws Exception{    	
-    	ReadXMLTestSequence rXMLTSeq;    	    	
-    	rXMLTSeq = new ReadXMLTestSequence(rutaFicheroVictimasTest);    	
-    	return rXMLTSeq;
-    }
-   
     public Document getDocumentVictimas(ReadXMLTestSequence rXMLTSeq) throws Exception{        
     	if (rXMLTSeq!=null)    	
     	    return rXMLTSeq.getDocument(rXMLTSeq.gettestFilePaht());
@@ -303,13 +345,45 @@ public class RecursoPersistenciaEntornosSimulacionImp1 extends ImplRecursoSimple
 //		  return strnumtiempoEnSegundosUnDecimal;
 	}
 
-public void guardarInfoCasoSimulacion(InfoCasoSimulacion infoCaso) throws Exception {
- // se guarda la serie asignacion de victimas. Las series graficas se guardan por orden del agente 
+    public void guardarInfoCasoSimulacion(InfoCasoSimulacion infoCaso) throws Exception {
+     // se guarda la serie asignacion de victimas. Las series graficas se guardan por orden del agente 
+        Serializer serializer = new Persister();
+    //    String identFichero = VocabularioRosace.NombreDirectorioPersistenciaResSimulacion+File.separator+infoCaso.getidentCaso();
+        try {
+             String identFichero = infoCaso.getidentCaso()+extFicheroXML;
+             
+//             File ficheroEscenario = this.obtenerFicheroEscenario(identFichero);
+             if (identsResultadosSimulacion.contains(identFichero)){// Se renombra el fichero agnadiendo 
+                 identFichero = this.renombrarFichero(identFichero);
+             }
+             identFichero = VocabularioRosace.NombreDirectorioPersistenciaResSimulacion+File.separator+identFichero;
+             File ficheroEscenario = new File (identFichero);
+             serializer.write(infoCaso, ficheroEscenario);
+             Map<String, VictimasSalvadas> victimasSalvadas = infoCaso.getRobotRescateVictimas();
+             Set<String> robotNombres= victimasSalvadas.keySet();
+             VictimasSalvadas listaVictimas;
+             for (String ideRobot:robotNombres){
+//                 String ideRobot = (String)robtIter.next();
+               listaVictimas = (VictimasSalvadas) victimasSalvadas.get(ideRobot);
+                 System.out.println(" Desde persistencia Lista de victimas rescatadas por el robot  : " + ideRobot+" Victimas rescatadas : "+ listaVictimas.toString() );
+             }
+              System.out.println("Desde peticion Guardar Infocaso Simulacion  : " + infoCaso.getidentCaso()+" Numero de victimas : "+ infoCaso.getNumeroVictimasEntorno());
+
+//          serializer.write(escenario, new File(rutaFicheroInfoPersistencia+identFichero+".xml"));
+          
+          System.out.println("En el fichero   : "+ identFichero);
+          System.out.println("Se va a guardar  : "+ infoCaso.getidentCaso() );
+        
+        } catch (Exception e) { // catches ANY exception
+            e.printStackTrace();
+           
+        }  
     } 
- public void guardarInfoAsignacionVictima (InfoAsignacionVictima infoAsignVictima)throws Exception{
+ public void guardarInfoAsignacionVictima (InfoAgteAsignacionVictima infoAsignVictima)throws Exception{
     
      infoVictimasAsigandas.add(infoAsignVictima);
-     FileOutputStream fInfoAsignVictima = new FileOutputStream(identFicheroInfoAsigVictimasObj);
+     String identFichero = VocabularioRosace.NombreDirectorioPersistenciaResSimulacion+File.separator+identFicheroInfoAsigVictimasObj;
+     FileOutputStream fInfoAsignVictima = new FileOutputStream(identFichero);
      ObjectOutputStream  oPersAsignVictima = new ObjectOutputStream (fInfoAsignVictima);
      oPersAsignVictima.writeObject(infoVictimasAsigandas);
      oPersAsignVictima.close();
@@ -317,11 +391,11 @@ public void guardarInfoCasoSimulacion(InfoCasoSimulacion infoCaso) throws Except
      
  }
          
-  public ArrayList<InfoAsignacionVictima> obtenerInfoAsignacionVictimas ()throws Exception{
+  public ArrayList<InfoAgteAsignacionVictima> obtenerInfoAsignacionVictimas ()throws Exception{
    //   String nombreFicheroAsignVictim = "pruebaAsigVictimas";
       if (infoVictimasAsigandas.isEmpty())return null;
-                String directorioPersistencia = VocabularioRosace.IdentDirectorioPersistenciaSimulacion+File.separator;
-   //             String identFichero = directorioPersistencia+nombreFicheroAsignVictim;
+                String directorioPersistencia = VocabularioRosace.NombreDirectorioPersistenciaResSimulacion+File.separator;
+                String identFichero = directorioPersistencia+identFicheroInfoAsigVictimasObj;
                 File ficheroPersistencia = new File(identFicheroInfoAsigVictimasObj);
                 if(ficheroPersistencia.exists()){
     
@@ -329,7 +403,7 @@ public void guardarInfoCasoSimulacion(InfoCasoSimulacion infoCaso) throws Except
                 ObjectInputStream   inPersAsignVictima = new ObjectInputStream (fInInfoAsignVictima);
  //               ArrayList<InfoAsignacionVictima> infoAsignVictimas = new ArrayList<InfoAsignacionVictima>();
  //               infoAsignVictimas = 
-                return (ArrayList<InfoAsignacionVictima>)inPersAsignVictima.readObject();
+                return (ArrayList<InfoAgteAsignacionVictima>)inPersAsignVictima.readObject();
                 }
                 else return null;
   } 
@@ -407,5 +481,28 @@ public ArrayList<RobotStatus> getTeamRobotStatus ( )throws Exception{
                 }
                 return robotsDefinidos;
 }
+
+    private File obtenerFicheroCasoSimulacion(String identFicheroCaso) {
+       Boolean encontrado = false ;
+         if(!identFicheroCaso.endsWith(extFicheroXML))identFicheroCaso=identFicheroCaso+extFicheroXML;
+         try {
+              if(ficherosResultadosSimulacion == null) return null;
+                File ficheroObtenido=null ;
+                 int i=0;
+                while (i<ficherosResultadosSimulacion.length&&!encontrado){
+                     ficheroObtenido = ficherosResultadosSimulacion[i];
+                     if (ficheroObtenido.getName().equals(identFicheroCaso))encontrado = true;
+                     else i++;
+                    System.out.println(" Fichero obtenido : " +ficheroObtenido.getName());
+                    }
+                if (encontrado) return ficheroObtenido;
+                else return null;
+     }catch (Exception e) { // catches ANY exception
+        e.printStackTrace();
+         return null;
+    } 
+    }
+
+    
 
 }

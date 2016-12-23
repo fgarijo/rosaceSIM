@@ -52,6 +52,8 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
     private boolean escenarioMovAbierto;
     private org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass().getSimpleName());
 //    private VisorMovimientoEscenario visorMovimiento;
+    private ControladorGestionEscenariosRosace controladorGestEscenarios;
+    private MemComunControladores memoriaComunControladores;
 
     public ClaseGeneradoraRecursoVisualizadorEntornosSimulacion(String idRecurso) throws Exception {
         //#start_nodeconstructorMethod:constructorMethod <--constructorMethod-- DO NOT REMOVE THIS
@@ -64,7 +66,17 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
 //            visorEscenarios = new VisorEscenariosRosace3();
 //            visorEscenarios = new VisorEscenariosRosace();
 //            ventanaControlCenterGUI = new ControlCenterGUI4(notifEvt);
+            
             controladorIUSimulador = new ControladorVisualizacionSimulRosace(notifEvt);
+            controladorGestEscenarios= new ControladorGestionEscenariosRosace(notifEvt);
+            VisorControlSimuladorRosace visorControl = new VisorControlSimuladorRosace(controladorIUSimulador);
+            visorControl.setControladorGestionEscenarios(controladorGestEscenarios);
+            visorControl.setVisible(true);
+            memoriaComunControladores = new MemComunControladores();
+            controladorIUSimulador.setVisorControlSimulador(visorControl);
+            controladorIUSimulador.setMemComunControladores(memoriaComunControladores);
+            controladorGestEscenarios.setVisorControlSimulador(visorControl);
+            controladorGestEscenarios.setMemComunControladores(memoriaComunControladores);
             controladorResultados = new ControladorVisualizResultados ();
             
         } catch (Exception e) {
@@ -87,18 +99,17 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
     public void mostrarVentanaControlSimulador(EscenarioSimulacionRobtsVictms escenarioSimulacion)throws Exception{
 //    ventanaControlCenterGUI.setVisible(true);
         // debe devolver un booleano cuando no se pueda abrir el fichero por las causas que sea
-        controladorIUSimulador.abrirVisorConEscenarioComp(escenarioSimulacion);
-//      if ( escenarioSimulacion !=null)
-//        trazas.aceptaNuevaTraza(new InfoTraza(recursoId, "Se abre el  escenario  : " + escenarioSimulacion.getIdentEscenario() , InfoTraza.NivelTraza.info));
-//      controladorIUSimulador.abrirVisorMovimientoConEscenario(identFicheroEscenarioSimulacion);
+      if ( escenarioSimulacion !=null)
+        trazas.aceptaNuevaTraza(new InfoTraza(recursoId, "Se abre el  escenario  : " + escenarioSimulacion.getIdentEscenario() , InfoTraza.NivelTraza.info));
+      this.controladorIUSimulador.abrirVisorControlSimConEscenario(escenarioSimulacion);
 }
     @Override
     public boolean escenarioSimulacionDefinido()throws Exception {
-       return controladorIUSimulador.hayEscenarioAbierto();
+       return controladorGestEscenarios.hayEscenarioSimulAbierto();
     }
     @Override
     public void obtenerEscenarioSimulacion (String modOrganizativo, int numRobots )throws Exception {
-        this.controladorIUSimulador.peticionObtenerEscenarioSimulacion( modOrganizativo,  numRobots);
+        this.controladorGestEscenarios.peticionObtenerEscenarioSimulacion( modOrganizativo,  numRobots);
 //       EscenarioSimulacionRobtsVictms escenarioActual= null;
 //       int numerointentos = 0;int maxIntentos = 2;
 //       while ( numerointentos<maxIntentos && escenarioActual==null ){
@@ -109,9 +120,17 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
 //       this.notifEvt.informaraOtroAgenteReactivo(new InfoContEvtMsgAgteReactivo("escenarioDefinidoPorUsuario", escenarioActual), identAgenteaReportar);
     }
     @Override
+     public void obtenerEscenarioSimulacion (String identFichero,String modOrganizativo, int numRobots  )throws Exception{
+         this.controladorGestEscenarios.peticionObtenerEscenarioSimulacion( identFichero, modOrganizativo,  numRobots);
+     }
+    @Override
     public void notificarRecomendacion (String titulo, String motivo, String recomendacion)throws Exception{
         this.controladorIUSimulador.notifRecomendacionUsuario( titulo,  motivo,  recomendacion);
     }
+    @Override
+     public boolean peticionConfirmacionInformacion(String preguntaAconfirmar){
+         return this.controladorIUSimulador.peticionConfirmacionInformacion( preguntaAconfirmar);
+     }
     @Override
     public void crearEInicializarVisorGraficaEstadisticas(String tituloVentanaVisor,
             String tituloLocalGrafico,
@@ -306,17 +325,17 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
 ////        Temporizador informeTemp = new Temporizador (500,itfProcObjetivos,informeLlegada);  
 //        }
 //        else {
-            if(visorEscenarioMov==null){
-                visorEscenarioMov = controladorIUSimulador.getVisorMovimiento();
-                if(visorEscenarioMov==null)controladorIUSimulador.peticionAbrirEscenario();
-            }else{
-                visorEscenarioMov.setVisible(true);
-                visorEscenarioMov.cambiarPosicionRobot(identRobot, coordX, coordY);
-//            controladorIUSimulador.peticionCambiarPosicionRobot(identRobot, coordX, coordY);
-            }
+//            if(visorEscenarioMov==null){
+//                visorEscenarioMov = controladorIUSimulador.getVisorMovimiento();
+//                if(visorEscenarioMov==null)controladorGestEscenarios.peticionAbrirEscenario(this.);
+//            }else{
+//                visorEscenarioMov.setVisible(true);
+//                visorEscenarioMov.cambiarPosicionRobot(identRobot, coordX, coordY);
+////            controladorIUSimulador.peticionCambiarPosicionRobot(identRobot, coordX, coordY);
+//            }
             
 //        visorEscenarios.moverRobot(identRobot, coordX, coordX);
-        
+        controladorIUSimulador.peticionCambiarPosicionRobot(identRobot, coordX, coordY);
       }
 //    @Override
 //    public synchronized void mostrarPosicionActualRobot(String identRobot)throws Exception{
@@ -385,12 +404,18 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
 
     @Override
     public void setItfUsoPersistenciaSimulador(ItfUsoRecursoPersistenciaEntornosSimulacion itfUsopersistencia) throws Exception {
+        this.controladorGestEscenarios.setIftRecPersistencia(itfUsopersistencia);
         this.controladorIUSimulador.setIftRecPersistencia(itfUsopersistencia);
+        this.controladorGestEscenarios.initModelosYvistas();
         this.controladorIUSimulador.initModelosYvistas();
     }
 
     @Override
     public void visualizarCosteEnergiaRescateVicitimas(InfoCasoSimulacion infoCasoSimul ) throws Exception {
         this.controladorResultados.visualizarCosteEnergiaRescateVictimas( infoCasoSimul );
+    }
+    @Override
+    public void finCasoSimulacion()throws Exception{
+        this.controladorIUSimulador.finCasoSimulacion();
     }
 }

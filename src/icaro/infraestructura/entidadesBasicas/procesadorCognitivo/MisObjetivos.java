@@ -41,10 +41,10 @@ public class MisObjetivos {
         // verificamos que el objetivo no esta en la cola de objetivos
         String goalRefId = obj.getobjectReferenceId();
         if(goalRefId==null)goalRefId= obj.getgoalId();
-        if (! existeObjetivoConEsteIdentRef(goalRefId)){    
-                    misObjetivosPriorizados.add((Objetivo)obj);
-                    setOfIGoalRefIds.add(goalRefId);
-        }
+        if ( existeObjetivoConEsteIdentRef(goalRefId))this.eliminarObjetivo(obj);
+        misObjetivosPriorizados.add((Objetivo)obj);
+        setOfIGoalRefIds.add(goalRefId);
+        
     }
     public void inicializar(){
         misObjetivosPriorizados = new PriorityBlockingQueue <Objetivo> (11,c);
@@ -53,7 +53,6 @@ public class MisObjetivos {
     }
     public boolean eliminarObjetivo ( Objetivo obj){
         String goalRefId = obj.getobjectReferenceId();
-        if(goalRefId==null)goalRefId= obj.getgoalId();
         if (goalRefId==null)return false;
         if ( existeObjetivoConEsteIdentRef(goalRefId)){
             setOfIGoalRefIds.remove(goalRefId);

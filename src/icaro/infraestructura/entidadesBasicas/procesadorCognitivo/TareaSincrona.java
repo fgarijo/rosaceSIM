@@ -109,7 +109,7 @@ public abstract class TareaSincrona {
                  if(contenido==null)contenido = NombresPredefinidos.PREFIJO_MSG_TIMEOUT;
                    this.generarInformeTemporizado(valorTimeout, identproperty, contxtGoal, idAgenteOrdenante, contenido);      
                    trazas.trazar(idAgenteOrdenante, "Se ejecuta la tarea " + this.getIdentTarea()+
-                                         " Se activa un informe temporizado :  "+ contenido, NivelTraza.debug);                    
+                    "propiedad en la configuracion: " + identproperty + " Se activa un informe temporizado de :  "+ valorTimeout + "  y contenido : " + contenido, NivelTraza.debug);                    
               
         } catch (ExcepcionEnComponente ex) {
             trazas.trazar(idAgenteOrdenante, "Se ejecuta la tarea " + this.getIdentTarea()+

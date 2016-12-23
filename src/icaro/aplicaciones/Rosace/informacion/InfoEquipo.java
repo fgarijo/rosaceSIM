@@ -31,6 +31,7 @@ public class InfoEquipo {
       private ItfUsoConfiguracion itfConfig  ;
       private ArrayList<String> teamRobotIds;
       private ArrayList<String> teamRobotIdsWithMyRol;
+      private ArrayList<String> teamRobotIdsActivos;
       private Map<String, RobotStatus1> teamInfoAgentStatus;
     
      public  InfoEquipo (String agtePropietarioId, String identEquipo){       
@@ -118,6 +119,12 @@ public class InfoEquipo {
               teamInfoAgentStatus.put(idAgte, estatusAgte);
           }
       }
+     public synchronized void eliminarIdentAgteDeMiEquipo(String idAgte){
+         if (!(idAgte.equals(identAgentePropietario))&&(teamRobotIds.indexOf(idAgte)>0)){
+//             teamInfoAgentStatus.remove(idAgte);
+             teamRobotIds.remove(teamRobotIds.indexOf(idAgte));
+         }
+     }
      public synchronized ArrayList<String> getTeamMemberIDsWithThisRol(String rolId){
          ArrayList<String> agtesConMismoRol = new ArrayList();
        //  int indiceagtesConMirol=0;
@@ -145,15 +152,25 @@ public class InfoEquipo {
      public synchronized ArrayList<String> getTeamMemberIDs (){
          return this.teamRobotIds;
      }
+     public synchronized ArrayList<String> getIDsMiembrosActivos (){
+         RobotStatus1 estatusAgte;
+         String identAgte;
+         ArrayList<String> idsRobotsActivos = new ArrayList();
+         for (int i = 0; i < teamRobotIds.size();  i++ ){
+             identAgte = teamRobotIds.get(i);
+             if ( !identAgte.equals(this.identAgentePropietario)){
+                estatusAgte =teamInfoAgentStatus.get(identAgte);
+                if(estatusAgte != null)
+                    if(!estatusAgte.getBloqueado()){
+                        idsRobotsActivos.add(identAgte);                      
+                    }
+            }
+         }
+         return idsRobotsActivos;
+     }
      public synchronized RobotStatus1 getTeamMemberStatus(String identMember){ 
          return teamInfoAgentStatus.get(identMember);
      }
- /*    
-     public synchronized void setTeamMemberRol(String robtId, String rolId){ 
-         teamInfoAgentStatus.put(robtId,rolId);
-     }
-     * 
-     */
       public synchronized boolean getinicioContactoConEquipo(){ 
          return inicioContactoConEquipo;
      }
@@ -164,8 +181,8 @@ public class InfoEquipo {
          if ( identMiRolEnEsteEquipo != null && identAgte.equals(identAgentePropietario)) return this.identMiRolEnEsteEquipo;
          else return teamInfoAgentStatus.get(identAgte).getIdRobotRol();
      }
-     public synchronized void setTeamMemberStatus(String identMember, RobotStatus1 robotSt){ 
-         teamInfoAgentStatus.put(identMember, robotSt);
+     public synchronized void setTeamMemberStatus( RobotStatus1 robotSt){ 
+         teamInfoAgentStatus.put(robotSt.getIdRobot(), robotSt);
      }
      public synchronized Boolean isRobotStatusDefined(String robtId){ 
         return  teamInfoAgentStatus.containsKey(robtId);

@@ -5,6 +5,7 @@
  */
 package icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp;
 
+import icaro.aplicaciones.recursos.recursoPersistenciaEntornosSimulacion.ItfUsoRecursoPersistenciaEntornosSimulacion;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoPanelEspecifico;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -22,17 +24,28 @@ public class GestionEscenariosSimulacion {
        private HashMap tablaEscenariosDefinidos;
 	//arraylist que contiene los paneles visualizados
     private EscenarioSimulacionRobtsVictms infoEscenario;
+//    private ItfUsoRecursoPersistenciaEntornosSimulacion itfPersistencia;
 //   private LinkedList<String> listaElementosTrazables  ;
     private HashSet identsEscenarios;
-    private String numRobots = "NumRobts_";
-    private String numVictims = "NumVicts_";
-    private String orgModelo = "modeloOrg_";
+    private String numRobots = "Robts_";
+    private String numVictims = "Victs_";
+    private String orgModelo = "Org_";
     private String  orgModeloInicial = "SinDefinir";
 
      public GestionEscenariosSimulacion (){
         tablaEscenariosDefinidos = new HashMap();      
         identsEscenarios = new HashSet();
      }
+//     public void setItfUsoPersistencia (ItfUsoRecursoPersistenciaEntornosSimulacion persitenciaItf){
+//         itfPersistencia = persitenciaItf;
+//     }
+//     public void obtenerEscenariosGuardados (){
+//           try {
+//               identsEscenarios = itfPersistencia.obtenerIdentsEscenarioSimulacion();
+//           } catch (Exception ex) {
+//               Exceptions.printStackTrace(ex);
+//           }
+//}
      public synchronized String getIdentEscenario (String orgTipo,int numRobts, int numVictm){
          String identEscenario = orgModelo+orgTipo+numRobots+numRobts+numVictims+numVictm+"_0";
 //         if (identsEscenarios.isEmpty())return identEscenario+"_0";
@@ -67,5 +80,9 @@ public class GestionEscenariosSimulacion {
      public void eliminarEscenario(String identEscenario){
         tablaEscenariosDefinidos.remove(identEscenario);
         identsEscenarios.remove(identEscenario);
+    }
+
+    boolean hayEscenariosCreados() {
+     return ! identsEscenarios.isEmpty();
     }
 }

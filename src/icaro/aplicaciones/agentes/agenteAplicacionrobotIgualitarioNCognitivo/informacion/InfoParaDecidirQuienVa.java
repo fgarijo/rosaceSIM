@@ -216,35 +216,12 @@ public class InfoParaDecidirQuienVa implements Serializable{
          return nombreAgente ;
      }
  
-     public synchronized boolean tengoLaMejorEval(){
-    /*
-         boolean soyElMejor = true;
- //           mi_eval = miEvaluacion.getEvaluacion();
-            for(int i = 0; i< evaluacionesRecibidas.size();i++){
-                if(mi_eval<((Integer)evaluacionesRecibidas.get(i))){
-                    soyElMejor = false;
-                }
-     *
-
-             tengoLaMejorEvaluacion =  soyElMejor;
-            }
-*/
+     public synchronized boolean settengoLaMejorEval(){
          return tengoLaMejorEvaluacion;
      }
      
-     public synchronized boolean tengoTodasLasEvaluaciones(){
-						   /*
-						       boolean todasLasEvaluaciones = true;
-						            int i = 0;
-						            while (todasLasEvaluaciones & ( i< agentesEquipo.size())){
-						                if((Integer)evaluacionesRecibidas.get(i)== 0){
-						                    todasLasEvaluaciones = false;
-						                } i++;
-						            }
-						    *
-						    */
+     public synchronized boolean tengoTodasLasEvaluaciones(){					   
          return hanLlegadoTodasLasEvaluaciones;      
-       						//    return (agentesEquipo.size() == numEvaluacionesRecibidas());
      }
 
      //El que tiene mejor evaluacion nueva es el que menor Id tiene
@@ -466,6 +443,7 @@ public class InfoParaDecidirQuienVa implements Serializable{
          hanLlegadoTodasLasEvaluaciones = bvalue;
     
     }
+   
      public synchronized Integer getRespuestasEsperadas(){
             //mandar un mensaje a los agentes que no nos han enviado la respuesta aun
             //enviamos el mensaje y la info adicional, que es de donde viene
@@ -537,6 +515,7 @@ public class InfoParaDecidirQuienVa implements Serializable{
      public synchronized Boolean getnoSoyElMejor(){
          return noSoyElMejor;
      }
+    
      public synchronized Boolean getMiEvaluacionEnviadaAtodos(){
          return miEvaluacionEnviadaAtodos;
      }
@@ -590,6 +569,10 @@ public class InfoParaDecidirQuienVa implements Serializable{
       public synchronized String getidElementoDecision(){
          return idElementoDecision ;
      }
+      public synchronized boolean recibidaEvaluacionAgente(int refAgente){
+         return (Integer)evaluacionesRecibidas.get(refAgente)>0 ;
+     }
+      
      public String toString(){
     	 return " idElementoDecision->" + idElementoDecision +
                 "; InfoParaDecidirQuienVa: " + "Agente->" + nombreAgente + 

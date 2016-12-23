@@ -51,34 +51,45 @@ public class NotificadorInfoUsuarioSimulador extends ComunicacionAgentes{
             // inicializo tipos de peticiones que se pueden enviar al aagente controlador
 //            peticionEnvioVictimaSimulada = new InfoContEvtMsgAgteReactivo (VocabularioRosace.peticionSimulacionVictima);
             peticionEnvioSecuenciaVictimas = new InfoContEvtMsgAgteReactivo (VocabularioRosace.peticionSimulacionSecuenciaVictimas);
-            peticionParar = new InfoContEvtMsgAgteReactivo (VocabularioRosace.peticionPararSimulacion);
+//            peticionParar = new InfoContEvtMsgAgteReactivo (VocabularioRosace.peticionPararSimulacion);
             peticionMostrarEscenario= new InfoContEvtMsgAgteReactivo (VocabularioRosace.peticionMostrarEscenarioActualSimulado);
     }
     public void setIdentAgenteAReportar(String identAgenteAReportar) {
         identificadorAgenteaReportar =identAgenteAReportar ;
     }
-    public void sendPeticionSimulacionVictimToRobotTeam (String idVictim){
+    public void sendPeticionInicioSimulacion (EscenarioSimulacionRobtsVictms escenario, String modalidadSimulacion, Object infoComplementaria){
         
         // se manda la peticion al agente para que decida lo que hay que hacer
-     
-            this.informaraOtroAgenteReactivo(new InfoContEvtMsgAgteReactivo (VocabularioRosace.peticionSimulacionVictima,idVictim), identificadorAgenteaReportar);
+             Object[] infoDefinidaPorUsuario = new Object[]{escenario,modalidadSimulacion,infoComplementaria};
+            this.informaraOtroAgenteReactivo(new InfoContEvtMsgAgteReactivo (VocabularioRosace.peticionInicioSimulacion,infoDefinidaPorUsuario), identificadorAgenteaReportar);
       //      comunicacion.enviarInfoAotroAgente(initialOrder, VocabularioRosace.IdentAgteDistribuidorTareas);
     }
-    public void sendPeticionSimulacionSecuenciaVictimasToRobotTeam (int intervaloSecuencia){
+    public void sendPeticionSimulacionVictimToRobotTeam (EscenarioSimulacionRobtsVictms escenarioActual,String idVictim){
         
         // se manda la peticion al agente para que decida lo que hay que hacer
-            Object[] infoDefinidaPorUsuario = new Object[]{intervaloSecuencia};
-            peticionEnvioSecuenciaVictimas.setvaloresParametrosAccion(infoDefinidaPorUsuario);
-            this.informaraOtroAgenteReactivo(peticionEnvioSecuenciaVictimas, identificadorAgenteaReportar);
+//        Object[] parametrosPeticion = new Object[]{escenarioActual,VocabularioRosace.modoSimulacionPeticionesUsuario,idVictim};
+            this.informaraOtroAgenteReactivo(new InfoContEvtMsgAgteReactivo (
+                    VocabularioRosace.peticionSimulacionVictima,new InfoPeticionSimulacion(escenarioActual,VocabularioRosace.modoSimulacionPeticionesUsuario,idVictim)),
+                    identificadorAgenteaReportar);
       //      comunicacion.enviarInfoAotroAgente(initialOrder, VocabularioRosace.IdentAgteDistribuidorTareas);
+    }
+    public void sendPeticionSimulacionSecuenciaVictimasToRobotTeam (EscenarioSimulacionRobtsVictms escenarioActual, int intervSecuencia){
+        
+        // se manda la peticion al agente para que decida lo que hay que hacer
+//            Object[] parametrosPeticion = new Object[]{escenarioActual,VocabularioRosace.modoSimulacionSecuencia,intervSecuencia};
+//            peticionEnvioSecuenciaVictimas.setvaloresParametrosAccion(infoDefinidaPorUsuario);
+            this.informaraOtroAgenteReactivo(new InfoContEvtMsgAgteReactivo (
+                    VocabularioRosace.peticionSimulacionSecuenciaVictimas,new InfoPeticionSimulacion(escenarioActual,VocabularioRosace.modoSimulacionSecuencia,intervSecuencia)),
+                    identificadorAgenteaReportar);
     }
      public void sendPeticionPararAgente (String idAgente){
         
         // se manda la peticion al agente para que decida lo que hay que hacer
-            Object[] infoDefinidaPorUsuario = new Object[]{idAgente};
-            peticionPararAgente = new InfoContEvtMsgAgteReactivo (VocabularioRosace.PeticionAgteControlSimul.pararRobot.name());
-            peticionPararAgente.setvaloresParametrosAccion(infoDefinidaPorUsuario);
-            this.informaraOtroAgenteReactivo(peticionPararAgente, identificadorAgenteaReportar);
+//            Object[] infoDefinidaPorUsuario = new Object[]{idAgente};
+//            peticionPararAgente = new InfoContEvtMsgAgteReactivo (VocabularioRosace.PeticionAgteControlSimul.pararRobot.name());
+//            peticionPararAgente.setvaloresParametrosAccion(infoDefinidaPorUsuario);
+            this.informaraOtroAgenteReactivo(new InfoContEvtMsgAgteReactivo (
+                    VocabularioRosace.peticionPararRobot,idAgente),identificadorAgenteaReportar);
       //      comunicacion.enviarInfoAotroAgente(initialOrder, VocabularioRosace.IdentAgteDistribuidorTareas);
     }
     public void sendPeticionPararSimulacion (){
@@ -120,6 +131,13 @@ public class NotificadorInfoUsuarioSimulador extends ComunicacionAgentes{
             Logger.getLogger(NotificadorInfoUsuarioSimulador.class.getName()).log(Level.SEVERE, null, ex);
         }
      }
+     public void sendInfoEscenarioSeleccionadoValido (EscenarioSimulacionRobtsVictms escenario){
+         try {  
+            this.informaraOtroAgenteReactivo(new InfoContEvtMsgAgteReactivo ("escenarioDefinidoValido",escenario) , identificadorAgenteaReportar);
+        } catch (Exception ex) {
+            Logger.getLogger(NotificadorInfoUsuarioSimulador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+     }
      public void sendInfoIdentEscenarioSeleccionado (String escenarioId){
          try {  
             this.informaraOtroAgenteReactivo(new InfoContEvtMsgAgteReactivo ("escenarioSeleccionadoUsuario",escenarioId) , identificadorAgenteaReportar);
@@ -136,4 +154,12 @@ public class NotificadorInfoUsuarioSimulador extends ComunicacionAgentes{
             Logger.getLogger(NotificadorInfoUsuarioSimulador.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-}
+
+//    void sendPeticionTerminacionSimulacionEnCurso() {
+//        try {  
+//            this.informaraOtroAgenteReactivo(new InfoContEvtMsgAgteReactivo (notifString) , identificadorAgenteaReportar);
+//        } catch (Exception ex) {
+//            Logger.getLogger(NotificadorInfoUsuarioSimulador.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+    }

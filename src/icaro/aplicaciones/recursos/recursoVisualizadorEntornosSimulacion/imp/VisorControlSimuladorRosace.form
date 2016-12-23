@@ -4,6 +4,7 @@
   <NonVisualComponents>
     <Container class="javax.swing.JPopupMenu" name="jPopupMenuAcionesRobots">
       <Events>
+        <EventHandler event="popupMenuWillBecomeInvisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="jPopupMenuAcionesRobotsPopupMenuWillBecomeInvisible"/>
         <EventHandler event="popupMenuWillBecomeVisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="jPopupMenuAcionesRobotsPopupMenuWillBecomeVisible"/>
       </Events>
 
@@ -140,11 +141,11 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel6" alignment="0" min="-2" pref="142" max="-2" attributes="0"/>
-                          <Component id="jButtonComenzar" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonTerminarSimulacion" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jPararEnvioMensajes" min="-2" max="-2" attributes="0"/>
+                          <Component id="jPararRobotEnvioMensajes" min="-2" max="-2" attributes="0"/>
                           <Component id="jtextTextFieldIntervaloEnvioMensajes" min="-2" pref="101" max="-2" attributes="1"/>
                       </Group>
                   </Group>
@@ -230,8 +231,8 @@
                               <Component id="jLabel6" min="-2" pref="44" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jButtonComenzar" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPararEnvioMensajes" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButtonTerminarSimulacion" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jPararRobotEnvioMensajes" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                           </Group>
@@ -261,23 +262,23 @@
     </Component>
     <Component class="javax.swing.JTextField" name="jtextTextFieldIntervaloEnvioMensajes">
     </Component>
-    <Component class="javax.swing.JButton" name="jButtonComenzar">
+    <Component class="javax.swing.JButton" name="jButtonTerminarSimulacion">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Comenzar"/>
+        <Property name="text" type="java.lang.String" value="Terminar Simulaci&#xf3;n"/>
         <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection component="jPararEnvioMensajes" type="bean"/>
+          <Connection component="jPararRobotEnvioMensajes" type="bean"/>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonComenzarActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonTerminarSimulacionActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jPararEnvioMensajes">
+    <Component class="javax.swing.JButton" name="jPararRobotEnvioMensajes">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Parar"/>
+        <Property name="text" type="java.lang.String" value="Parar Robot"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jPararEnvioMensajesActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jPararRobotEnvioMensajesActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonMostrarEscenarioActual">

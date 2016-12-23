@@ -251,4 +251,7 @@ public class InfoCasoSimulacion {
        public boolean todasLasVictimasRescatadas(){ 
         return numeroVictimasRescatadas == numeroVictimasEntorno ;
        }
+        public boolean victimaNotificada(String idVictima){ 
+        return this.infoRescateVictimas.containsKey(idVictima) ;
+       }
 }

@@ -42,7 +42,7 @@ public class InfoRescateVictima implements Serializable,Comparable<InfoRescateVi
     }
     public InfoRescateVictima(String idVictim) {
         victimId=idVictim;
-//        robotRescatadorId=idRobotRescatador;
+        robotRescatadorId="";
 //        idEntornoCasoSimulacion=escenarioId;
     }
 

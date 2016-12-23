@@ -22,18 +22,18 @@ public class OrdenParada extends OrdenAgente implements Serializable {
         justificacion = null;
 
  }
-    public OrdenParada(String identCCEmisor, String msgOrden, Object justificat) {
+    public OrdenParada(String identCCEmisor, Object justificat) {
         identEmisor= identCCEmisor;
         mensajeOrden = VocabularioRosace.MsgeOrdenParar;
         justificacion = justificat;
 
  }
  
-  @Override
-     public String toString(){
-        if ( justificacion == null )
-            return "Agente Emisor :"+identEmisor+ " MensajeOrden :+" + mensajeOrden+ "  Justificacion: null "+"\n ";
-        else 
-            return "Agente Emisor :"+identEmisor+ " MensajeOrden :+" + mensajeOrden+ "  Justificacion: "+justificacion.toString() +"\n ";
-    }
+//  @Override
+//     public String toString(){
+//        if ( justificacion == null )
+//            return "Agente Emisor :"+identEmisor+ " MensajeOrden :+" + mensajeOrden+ "  Justificacion: null "+"\n ";
+//        else 
+//            return "Agente Emisor :"+identEmisor+ " MensajeOrden :+" + mensajeOrden+ "  Justificacion: "+justificacion.toString() +"\n ";
+//    }
 }

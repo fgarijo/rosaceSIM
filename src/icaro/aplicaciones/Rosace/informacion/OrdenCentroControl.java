@@ -39,6 +39,9 @@ public class OrdenCentroControl implements Serializable {
  public String   getMensajeOrden(){
       return mensajeOrden;
  }
+ public void   setIdentCC(String ccId){
+      identCC =ccId;
+ }
 
  public String   getIdentCC(){
       return identCC;

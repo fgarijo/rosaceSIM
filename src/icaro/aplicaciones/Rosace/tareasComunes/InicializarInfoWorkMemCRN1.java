@@ -34,6 +34,8 @@ public class InicializarInfoWorkMemCRN1 extends Tarea{
              this.getItfConfigMotorDeReglas().setDepuracionActivationRulesDebugging(false);
              this.getItfConfigMotorDeReglas().setDepuracionHechosInsertados(false);
              this.getItfConfigMotorDeReglas().setDepuracionHechosModificados(false);
+             this.getItfConfigMotorDeReglas().setFactHandlesMonitoring_beforeActivationFired_DEBUGGING(false);
+             this.getItfConfigMotorDeReglas().setFactHandlesMonitoringRETRACT_DEBUGGING(false);
              this.getItfConfigMotorDeReglas().setfactHandlesMonitoring_afterActivationFired_DEBUGGING(false);
              identEquipo = this.getItfUsoConfiguracion().getValorPropiedadGlobal(NombresPredefinidos.NOMBRE_PROPIEDAD_GLOBAL_IDENT_EQUIPO);
              this.getEnvioHechos().insertarHechoWithoutFireRules(new Focus());
@@ -48,7 +50,7 @@ public class InicializarInfoWorkMemCRN1 extends Tarea{
 //                    itfCompMov.setRobotStatus((RobotStatus1) miStatus.clone());
                     itfCompMov.inicializarInfoMovimiento(miStatus.getAvailableEnergy(),miStatus.getRobotCoordinate(), velocidadCruceroPorDefecto);
                     InfoEquipo miEquipo = new InfoEquipo(miIdentAgte, identEquipo);
-                    miEquipo.setTeamMemberStatus(miIdentAgte, miStatus); 
+                    miEquipo.setTeamMemberStatus( miStatus); 
                     this.getEnvioHechos().insertarHecho(miStatus);
                     this.getEnvioHechos().insertarHecho(miEquipo);
                     this.trazas.aceptaNuevaTrazaEjecReglas(miIdentAgte, this.getIdentTarea()+ "  Actualizo mi estatus. Mi Rol en equipo :  " + miStatus.getIdRobotRol());

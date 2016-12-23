@@ -39,7 +39,8 @@ public  class ClaseGeneradoraRecursoPersistenciaEntornosSimulacion extends ImplR
    private ArrayList<Victim> victimasDefinidas; 
    private RobotStatus statusRobot;
    public ClaseGeneradoraRecursoPersistenciaEntornosSimulacion(String idrecurso) throws Exception {
-            super(idrecurso);           
+            super(idrecurso);
+            idRecurso=idrecurso;
              try {
            impRecPersistenciaXML = new RecursoPersistenciaEntornosSimulacionImp1(idrecurso);
            impRecPersistenciaXML.inicializarRecursoPersistenciaEntornosSimulacion();
@@ -78,21 +79,23 @@ public  class ClaseGeneradoraRecursoPersistenciaEntornosSimulacion extends ImplR
 
     @Override
     public void guardarInfoCasoSimulacion(InfoCasoSimulacion infoCaso) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
+        trazas.trazar(this.idRecurso, "Guardo InfoCasoSimulacion " + infoCaso.getidentCaso() + " ....",InfoTraza.NivelTraza.debug	);
+        this.impRecPersistenciaXML.guardarInfoCasoSimulacion(infoCaso);
     }
 
     @Override
-    public InfoCasoSimulacion obtenerInfoCasoSimulacion(String idCaso) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public InfoCasoSimulacion obtenerInfoCasoSimulacion(String identFicheroCaso) throws Exception {
+       return this.impRecPersistenciaXML.obtenerInfoCasoSimulacion(identFicheroCaso);
     }
 
     @Override
-    public void guardarInfoAsignacionVictima(InfoAsignacionVictima infoAsignVictima) throws Exception {
+    public void guardarInfoAsignacionVictima(InfoAgteAsignacionVictima infoAsignVictima) throws Exception {
         this.impRecPersistenciaXML.guardarInfoAsignacionVictima(infoAsignVictima);
     }
 
     @Override
-    public ArrayList<InfoAsignacionVictima> obtenerInfoAsignacionVictimas() throws Exception {
+    public ArrayList<InfoAgteAsignacionVictima> obtenerInfoAsignacionVictimas() throws Exception {
        return  this.impRecPersistenciaXML.obtenerInfoAsignacionVictimas();
     }
 

@@ -49,7 +49,7 @@ public class RecursoPersistenciaEntornosSimulacionImp extends ImplRecursoSimple{
     private String identFicheroInfoAsigVictimasXML;
 //    private ObjectOutputStream  oPersAsignVictima;
 //    private ObjectInputStream  inPersAsignVictima;
-    private  ArrayList<InfoAsignacionVictima> infoVictimasAsigandas  ;
+    private  ArrayList<InfoAgteAsignacionVictima> infoVictimasAsigandas  ;
     public RecursoPersistenciaEntornosSimulacionImp (String recursoId) throws RemoteException{
         super (recursoId);
     }
@@ -66,12 +66,12 @@ public class RecursoPersistenciaEntornosSimulacionImp extends ImplRecursoSimple{
                                 numeroVictimasDiferentesSimulacion = rXMLTSeq.getNumberOfVictimsInSequence(nodeLst);
                                 // se obtienen tambien el conjunto de vicitmas definidas
            //    String nombreFicheroAsignVictim = "asigVictimasObjetos";
-                 directorioPersistencia = VocabularioRosace.IdentDirectorioPersistenciaSimulacion+File.separator;
+                 directorioPersistencia = VocabularioRosace.NombreDirectorioPersistenciaResSimulacion+File.separator;
                 identFicheroInfoAsigVictimasObj = directorioPersistencia+VocabularioRosace.NombreFicheroSerieInfoAsignacionVictimas+".tmp";
                 identFicheroInfoAsigVictimasXML = directorioPersistencia+VocabularioRosace.NombreFicheroSerieInfoAsignacionVictimas+".xml";
                 File dirFicherosPersistencia = new File(directorioPersistencia);
                 if(!dirFicherosPersistencia.exists())dirFicherosPersistencia.mkdir();
-                infoVictimasAsigandas = new ArrayList<InfoAsignacionVictima>();
+                infoVictimasAsigandas = new ArrayList<InfoAgteAsignacionVictima>();
                 robotsDefinidos = getTeamRobotStatus();
         } catch (Exception ex) {
             Logger.getLogger(RecursoPersistenciaEntornosSimulacionImp.class.getName()).log(Level.SEVERE, null, ex);
@@ -158,7 +158,7 @@ public class RecursoPersistenciaEntornosSimulacionImp extends ImplRecursoSimple{
 public void guardarInfoCasoSimulacion(InfoCasoSimulacion infoCaso) throws Exception {
  // se guarda la serie asignacion de victimas. Las series graficas se guardan por orden del agente 
     } 
- public void guardarInfoAsignacionVictima (InfoAsignacionVictima infoAsignVictima)throws Exception{
+ public void guardarInfoAsignacionVictima (InfoAgteAsignacionVictima infoAsignVictima)throws Exception{
     
      infoVictimasAsigandas.add(infoAsignVictima);
      FileOutputStream fInfoAsignVictima = new FileOutputStream(identFicheroInfoAsigVictimasObj);
@@ -169,10 +169,10 @@ public void guardarInfoCasoSimulacion(InfoCasoSimulacion infoCaso) throws Except
      
  }
          
-  public ArrayList<InfoAsignacionVictima> obtenerInfoAsignacionVictimas ()throws Exception{
+  public ArrayList<InfoAgteAsignacionVictima> obtenerInfoAsignacionVictimas ()throws Exception{
    //   String nombreFicheroAsignVictim = "pruebaAsigVictimas";
       if (infoVictimasAsigandas.isEmpty())return null;
-                String directorioPersistencia = VocabularioRosace.IdentDirectorioPersistenciaSimulacion+File.separator;
+                String directorioPersistencia = VocabularioRosace.NombreDirectorioPersistenciaResSimulacion+File.separator;
    //             String identFichero = directorioPersistencia+nombreFicheroAsignVictim;
                 File ficheroPersistencia = new File(identFicheroInfoAsigVictimasObj);
                 if(ficheroPersistencia.exists()){
@@ -181,7 +181,7 @@ public void guardarInfoCasoSimulacion(InfoCasoSimulacion infoCaso) throws Except
                 ObjectInputStream   inPersAsignVictima = new ObjectInputStream (fInInfoAsignVictima);
  //               ArrayList<InfoAsignacionVictima> infoAsignVictimas = new ArrayList<InfoAsignacionVictima>();
  //               infoAsignVictimas = 
-                return (ArrayList<InfoAsignacionVictima>)inPersAsignVictima.readObject();
+                return (ArrayList<InfoAgteAsignacionVictima>)inPersAsignVictima.readObject();
                 }
                 else return null;
   } 

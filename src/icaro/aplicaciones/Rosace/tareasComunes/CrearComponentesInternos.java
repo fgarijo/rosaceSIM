@@ -25,9 +25,6 @@ import java.util.logging.Logger;
  */
 public class CrearComponentesInternos extends TareaAsincrona {
 
-    /** Creates a new instance of GenerarInfoTerminacion */
-  
-
     @Override
     public void ejecutar(Object... params) {
         try {

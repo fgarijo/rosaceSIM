@@ -52,8 +52,6 @@ import org.openide.util.Exceptions;
                if(monitorizacionLlegadaDestino!=null ){
                    monitorizacionLlegadaDestino.finalizar();
                    this.trazas.trazar (this.identComponente, " Se da orden de finalizar a la hebra de monitorizacion", InfoTraza.NivelTraza.debug);
-                   
-//                       ejecucionHebra.get();
                        ejecucionHebra.cancel(true);
 //                   executorService1.shutdown();
                    
@@ -91,8 +89,15 @@ import org.openide.util.Exceptions;
     @Override
         public void parar(){
             if (monitorizacionLlegadaDestino!=null ){
-                this.maquinaEstados.setCoordenadasActuales(monitorizacionLlegadaDestino.getCoordRobot());
                 this.monitorizacionLlegadaDestino.finalizar();
+                
+//                this.trazas.trazar (this.identComponente, " Se ejecuta una orden de parada y se da orden de finalizar a la hebra de monitorizacion", InfoTraza.NivelTraza.debug);
+                try{       
+                ejecucionHebra.cancel(true);
+                } catch (Exception e) {
+                    this.trazas.trazar (this.identComponente, " Se ejecuta una orden de parada. La hebra ha finalizado", InfoTraza.NivelTraza.debug);
+               }
+                this.maquinaEstados.setCoordenadasActuales(monitorizacionLlegadaDestino.getCoordRobot());
             }
             
             this.maquinaEstados.cambiarEstado (MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot.RobotParado).parar();

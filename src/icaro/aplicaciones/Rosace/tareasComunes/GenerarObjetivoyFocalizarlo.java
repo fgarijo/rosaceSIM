@@ -22,14 +22,13 @@ public class GenerarObjetivoyFocalizarlo extends TareaSincrona{
              Objetivo objetivoaGenerar = (Objetivo)params[0];
              MisObjetivos misObjetivosActuales = (MisObjetivos)params[1];
              Focus miFocoActual = (Focus) params[2];
-             String nombreAgenteEmisor = this.getIdentAgente();
              objetivoaGenerar.setSolving();
              miFocoActual.setFoco(objetivoaGenerar);
              misObjetivosActuales.addObjetivo(objetivoaGenerar);
              this.getEnvioHechos().insertarHecho(objetivoaGenerar);
              this.getEnvioHechos().insertarHechoWithoutFireRules(misObjetivosActuales);
              this.getEnvioHechos().actualizarHecho(miFocoActual);
-             this.trazas.trazar(nombreAgenteEmisor, "Se genera el objetivo : " +objetivoaGenerar , InfoTraza.NivelTraza.debug);       	        	      
+             this.trazas.aceptaNuevaTrazaEjecReglas(this.identAgente," Ejecucion de la tarea : " + this.getIdentTarea()+ "  Se genera el objetivo : " +objetivoaGenerar );      	        	      
        } catch (Exception e) {
 	e.printStackTrace();
        }

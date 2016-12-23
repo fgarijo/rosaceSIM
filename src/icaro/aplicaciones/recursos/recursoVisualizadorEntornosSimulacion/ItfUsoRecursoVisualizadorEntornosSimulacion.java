@@ -44,7 +44,9 @@ public void aniadirSerieAVisorGraficaEstadisticas( String tituloSerie, int index
  public void mostrarIdentsEquipoRobots(ArrayList identList)throws Exception;
  public boolean escenarioSimulacionDefinido()throws Exception;
  public void obtenerEscenarioSimulacion (String modOrganizativo, int numRobots )throws Exception ;
+ public void obtenerEscenarioSimulacion (String identFichero,String modOrganizativo, int numRobots  )throws Exception ;
  public void notificarRecomendacion (String titulo, String motivo, String recomendacion)throws Exception ;
  public void setItfUsoPersistenciaSimulador (ItfUsoRecursoPersistenciaEntornosSimulacion itfUsopersistencia)throws Exception;
- 
+ public boolean peticionConfirmacionInformacion(String preguntaAconfirmar)throws Exception;
+ public void finCasoSimulacion()throws Exception;
 }

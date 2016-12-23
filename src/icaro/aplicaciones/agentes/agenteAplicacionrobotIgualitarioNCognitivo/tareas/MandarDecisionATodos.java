@@ -25,15 +25,10 @@ public class MandarDecisionATodos extends TareaSincrona {
                  InfoParaDecidirQuienVa  infoDecision = (InfoParaDecidirQuienVa)params[1];
                  String msgDecision = (String) params[2];
                  String identObjetoDecision = (String) params[3];
-                 String nombreAgenteEmisor = this.getIdentAgente();
-                           //             String identTareaLong = getClass().getName();
-                 String identTarea = this.getIdentTarea();
-                
-                 trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Se Ejecuta la Tarea :"+ identTarea , InfoTraza.NivelTraza.debug));
-                 DecisionAgente decision = new DecisionAgente (nombreAgenteEmisor,msgDecision);
+                 DecisionAgente decision = new DecisionAgente (this.identAgente,msgDecision);
                              decision.setidentObjectRefDecision(identObjetoDecision); // En este caso el identificador se refiere a la victima
                              decision.setJustificacion(infoDecision.getMi_eval());
-                 trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Enviamos la decision " + decision, InfoTraza.NivelTraza.debug)); 
+                 trazas.aceptaNuevaTrazaEjecReglas(this.identAgente, "Enviamos la decision " + decision); 
                  trazas.aceptaNuevaTraza(new InfoTraza("OrdenAsignacion",
                                                      "El robot " + this.identAgente + " se hace cargo de la victima " + identObjetoDecision,
                                                      InfoTraza.NivelTraza.debug));
@@ -41,7 +36,7 @@ public class MandarDecisionATodos extends TareaSincrona {
                  infoDecision.setMiDecisionParaAsumirElObjetivoEnviadaAtodos(Boolean.TRUE);
                 // se prodria quitar
                 this.getEnvioHechos().actualizarHechoWithoutFireRules(infoDecision);
-                this.generarInformeOK(identTarea, objetivoEjecutantedeTarea, nombreAgenteEmisor, "DecisionDeIrEnviadaAtodos");
+                this.generarInformeOK(identTarea, objetivoEjecutantedeTarea, this.identAgente, "DecisionDeIrEnviadaAtodos");
                            //     trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Numero de agentes de los que espero respuesta:" + agentesEquipo.size(), InfoTraza.NivelTraza.info));
                            //            tiempoSinRecibirRespuesta.start();
 

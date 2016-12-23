@@ -36,7 +36,7 @@ public class InicializarInfoWorkMemCR extends Tarea{
              RobotStatus1 miStatus = getRobotStatusInicial ( identRolAgte);        
                 if (  miStatus != null){
                     InfoEquipo miEquipo = new InfoEquipo(miIdentAgte, identEquipo);
-                    miEquipo.setTeamMemberStatus(miIdentAgte, miStatus); 
+                    miEquipo.setTeamMemberStatus(miStatus); 
                     this.getEnvioHechos().insertarHechoWithoutFireRules(miStatus);
                     this.getEnvioHechos().insertarHecho(miEquipo);
                     }

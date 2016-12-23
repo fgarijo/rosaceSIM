@@ -90,7 +90,7 @@ public class MoverseAsalvarVictima extends TareaSincrona {
             else{
                 
                 trazas.aceptaNuevaTrazaEjecReglas(identAgente, "Se ejecuta la tarea " + identTarea
-                            + "Nuevo objetivo a focalizar  :  " + nuevoObj + " Prioridad del objetivo : " + nuevoObj.getPriority()
+                            + " Nuevo objetivo a focalizar  :  " + nuevoObj + " Prioridad del objetivo : " + nuevoObj.getPriority()
                             + " Sin orden de movimiento por no tener victimas en la cola."
                             + " Los objetivos en la cola son  :  " + misObjs.getMisObjetivosPriorizados() + "\n");
                  log.debug("\n" + identAgente + "Se ejecuta la tarea " + getIdentTarea() + " Sin orden de movimiento por no tener victimas en la cola."

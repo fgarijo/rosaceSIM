@@ -37,7 +37,7 @@ public class VocabularioRosace extends NombresPredefinidos{
     public static final String MsgNoSePuedeAceptarPropuesta = "NoPuedoAceptarLaPropuesta";
     public static final String MsgAceptacionPropuesta = "PropuestaAceptadada";
     public static final String MsgAceptacionPropuestaNoValida ="LaPropuestaConfirmarNoEsValida";
-    public static final String CausaPropuestaNoValida = "LaPropuestaNoEsValidaNoTengoLaMejorEvaluacion";
+    public static final String MsgCausaPropuestaNoValida = "LaPropuestaNoEsValidaNoTengoLaMejorEvaluacion";
     static public  final String MsgDecision_De_Asumir_Objetivo_Ir_Yo = "YoVoy";
     static public  final String MsgDecision_De_Rechazar_Objetivo = "YoNoVoy";
     static public  final String MsgDecision_De_Continuar_Objetivo = "SigoConObjetivoOriginal";
@@ -64,10 +64,18 @@ public class VocabularioRosace extends NombresPredefinidos{
     static public  final String MsgPeticionTerminacionGestor ="peticionTerminacion";
     static public  final String MsgDecisionIrYoEnvidaTodos ="InformadoGrupo(YoVoy)";
     static public  final String MsgOrdenCCAyudarVictima ="AyudarVictima";
+    static public  final String MsgOrdenCCFinalizarCasoSimulacion ="FinalizarCasoSimulacion";
+    static public  final String MsgOrdenCCinicioCasoSimulacion="IniciarCasoSimulacion";
     static public  final String MsgeLlegadaDestino ="estoyEnDestino";
+    static public  final String CausaCambioMovtoOrdenCC ="ordenCControl";
+    static public  final String CausaCambioMovtoEnDestino ="enDestino";
+    static public  final String CausaCambioMovtoBloqObstaculos ="bloqObstaculos";
+    static public  final String CausaCambioMovtoFaltaEnergia ="faltaEnergia";
     static public  final String MsgeOrdenParar ="Para";
     static public  final String MsgeRobotParado ="RobotParado";
     static public  final String MsgeFinCasoSimulacion="FinCasoSimulacion";
+    static public  final String MsgeRobotBloqueadoPorOrden="robotBloqueadoPorOrden";
+    static public  final String MsgePeticionAsumirObjetivo="peticionAsumirObjetivo";
     static public  final String IdentIteracionProcesoInformesCR ="procesamientoInformesCR";
     static public  final String IdentTareaTimeOutRecibirEvaluaciones1 ="TimeOutRecibirEvaluaciones1";
     static public  final String IdentTareaTimeOutRecibirEvaluaciones2 ="TimeOutRecibirEvaluaciones2";
@@ -102,7 +110,7 @@ public class VocabularioRosace extends NombresPredefinidos{
     static public  final String timeTimeoutMilisEsperaComunicConJefe = "timeTimeoutMilisEsperaComunicConJefe"; 
     
     //Nuevas variables para reorganizar el simulador (JM)
-    static public  final String IdentAgteControladorSimulador = "AgenteControladorSimuladorRosaceReactivo1"; 
+    static public  final String IdentAgteControladorSimulador = "AgenteControladorSimulador"; 
     static public  final String IdentRecursoVisualizadorEstadisticas = "RecursoVisualizadorEstadisticas1";
     static public  final String IdentRecursoCreacionEntornosSimulacion = "RecursoCreacionEntornosSimulacion1";
     static public  final String IdentRecursoVisualizadorEntornosSimulacion = "RecursoVisualizadorEntornosSimulacion1";
@@ -113,13 +121,18 @@ public class VocabularioRosace extends NombresPredefinidos{
     // el automata
     static public  final String peticionSimulacionVictima = "peticionSimulacionVictima";
     static public  final String peticionPararSimulacion = "peticionPararSimulacion";
+    static public  final String peticionPararRobot = "peticionPararRobot";
     static public  final String peticionSimulacionSecuenciaVictimas = "sendSequenceOfSimulatedVictimsToRobotTeam";
     static public  final String peticionMostrarEscenarioActualSimulado = "mostrarEscenarioActualSimulado";
-    static public  final String peticionTerminarSimulacion = "TerminarSimulacion";
+    static public  final String peticionTerminarSimulacion = "terminarSimulacion";
     static public  final String peticionTerminarSimulacionUsuario = "peticionTerminarSimulacion";
     static public  final String peticionPararSimulacionUsuario ="peticionPararSimulacionUsuario" ;
+    static public  final String peticionInicioSimulacion = "peticionInicioSimulacion";
+    static public  final String modoSimulacionSecuencia = "simulacionSecuenciaPeticiones";
+    static public  final String modoSimulacionPeticionesUsuario = "simulacionPeticionesUsuario";
     static public  final String informacionVictimaAsignadaARobot = "victimaAsignadaARobot";
     static public  final String informacionFinSimulacion = "finSimulacion";
+    static public  final String informacionResultadosGuardados ="resultadosPresentadosYguardados";
     static public  final String NombreFicheroSerieInfoAsignacionVictimas = "serieInfoAsignacionVictimas";
     static public  final String NombreFicheroSeriePeticionVictimas = "seriePeticionVictimas";
     static public  final String NombreFicheroSerieLlegadaYasignacion = "serieLlegadaYasignacionVictimas";

@@ -96,12 +96,13 @@ public class VisorCreacionEscenarios1 extends javax.swing.JFrame {
     private volatile GestionEscenariosSimulacion gestionEscComp;
     private volatile EscenarioSimulacionRobtsVictms escenarioActualComp;
     private ComponentMover moverComp;
-    private ControladorVisualizacionSimulRosace controladorSim;
+    private ControladorGestionEscenariosRosace controladorSim;
     private volatile PersistenciaVisualizadorEscenarios persistencia;
     private String modeloOrganizativo;
     private String identEquipoActual;
+    private File ultimoFicheroEscenarioSeleccionado;
 
-     public  VisorCreacionEscenarios1(ControladorVisualizacionSimulRosace controlador) throws Exception {
+     public  VisorCreacionEscenarios1(ControladorGestionEscenariosRosace controlador) throws Exception {
 //        super("visor Escenario ");
         initComponents();
         initEscenario();
@@ -660,7 +661,7 @@ public class VisorCreacionEscenarios1 extends javax.swing.JFrame {
     private void jMenuItemAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirActionPerformed
         // TODO add your handling code here:    
 //      peticionAbrirEscenario();
-        this.controladorSim.peticionAbrirEscenario();
+        this.controladorSim.peticionAbrirEscenarioEdicion();
     }//GEN-LAST:event_jMenuItemAbrirActionPerformed
 
     private void jMenuItemNuevoEscenarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNuevoEscenarioActionPerformed
@@ -874,6 +875,7 @@ public class VisorCreacionEscenarios1 extends javax.swing.JFrame {
          int numRobots = infoEscenario.getNumRobots();
          int numVictims = infoEscenario.getNumVictimas();
          jTextFieldIdentEquipo.setText(""+infoEscenario.getIdentEscenario());
+         jTextFieldModeloOrganizacion.setText(""+infoEscenario.getmodeloOrganizativo());
          intervalNumRobots.setText(""+numRobots);
          intervalNumVictimas.setText(""+numVictims);
          
@@ -967,6 +969,22 @@ public class VisorCreacionEscenarios1 extends javax.swing.JFrame {
                 };
          } 
  
+     }
+     public int selecciondeFichero(){
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("ficheros xml","xml","txt" );
+      jFileChooser1.setFileFilter(filter);
+      File dir = jFileChooser1.getCurrentDirectory();
+     int returnVal = jFileChooser1.showOpenDialog(this);
+      jFileChooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
+       jFileChooser1.setCurrentDirectory(dir);
+//       int returnVal = jFileChooser1.showOpenDialog(this);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+        ultimoFicheroEscenarioSeleccionado = jFileChooser1.getSelectedFile();
+     }return returnVal; // no ha seleccionado nada
+     }
+     
+     public File getUltimoFicheroEscenarioSeleccionado(){
+         return ultimoFicheroEscenarioSeleccionado;
      }
     
     /**
@@ -1083,7 +1101,9 @@ public class VisorCreacionEscenarios1 extends javax.swing.JFrame {
     }
 
 public void visualizarConsejo (String titulo, String msgConsejo, String recomendacion){
-         JOptionPane.showMessageDialog(rootPane,msgConsejo + "  "+ recomendacion, titulo,2);
+         String nl = System.getProperty("line.separator");
+        Object msgConsjyRec = msgConsejo+nl+recomendacion;
+         JOptionPane.showMessageDialog(rootPane,msgConsjyRec, titulo,2);
      }
     private void peticionEliminarEscenario() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -1138,4 +1158,34 @@ private void peticionAbrirEscenario() {
         return null;
     }
    }
+    public boolean hayFicherosCreados(){
+          File dir = jFileChooser1.getCurrentDirectory();
+      int numFiles = dir.list().length ;
+      return(numFiles > 0);
+      }
+     
+     public File solicitarSeleccionFichero(){
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("ficheros xml","xml","txt" );
+      jFileChooser1.setFileFilter(filter);
+      File dir = jFileChooser1.getCurrentDirectory();
+     int returnVal = jFileChooser1.showOpenDialog(this);
+      jFileChooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
+       jFileChooser1.setCurrentDirectory(dir);
+//       int returnVal = jFileChooser1.showOpenDialog(this);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+        return jFileChooser1.getSelectedFile();
+     }return null; // no ha seleccionado nada
+     }
+     
+     public boolean setDirectorioPersistencia(String dirPersistencia){
+         FileNameExtensionFilter filter = new FileNameExtensionFilter("ficheros xml","xml","txt" );
+          jFileChooser1.setFileFilter(filter);
+        jFileChooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        try {
+       jFileChooser1.setCurrentDirectory(new File (dirPersistencia));
+       return true;
+        } catch (Exception ex) {
+            return false;
+        }
+     }
 }

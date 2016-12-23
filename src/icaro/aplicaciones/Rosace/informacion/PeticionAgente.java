@@ -57,9 +57,9 @@ public class PeticionAgente implements Serializable {
     @Override
     public String toString(){
         if ( justificacion == null )
-            return "Agente Emisor :"+identAgente+ " MensajePropuesta :+" + mensajePeticion+ "  Justificacion: null "+"\n ";
+            return "Agente Emisor :"+identAgente+ " MensajePeticion :+" + mensajePeticion+ "  Justificacion: null "+"\n ";
         else 
-            return "Agente Emisor :"+identAgente+ " MensajePropuesta :+" + mensajePeticion+ "  Justificacion: "+justificacion.toString() +"\n ";
+            return "Agente Emisor :"+identAgente+ " MensajePeticion :+" + mensajePeticion+ "  Justificacion: "+justificacion.toString() +"\n ";
     }
     
 }

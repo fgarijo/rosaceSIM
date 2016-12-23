@@ -23,41 +23,22 @@ import java.util.logging.Logger;
  * @author Francisco J Garijo
  */
 public class PedirEvaluacionesQueFaltan extends TareaSincrona{
-
-	   private InterfazUsoAgente agenteReceptor;
-                  //        private ArrayList agentesEquipo, respuestasAgentes,confirmacionesAgentes,nuevasEvaluacionesAgentes,empates;//resto de agentes que forman mi equipo
-        private int mi_eval, mi_eval_nueva;
-        private String nombreAgenteEmisor;
-//        private ItfUsoRecursoTrazas trazas;
-        private InfoParaDecidirQuienVa infoDecision;
-        //private TimeOutRespuestas tiempoSinRecibirRespuesta;  //no usado
-        
   @Override
   public void ejecutar(Object... params) {
-		try {
-
-                      //         InterfazUsoAgente    itfUsoPropiadeEsteAgente = (InterfazUsoAgente) NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ.obtenerInterfaz(nombreAgenteEmisor);
-                      //           tiempoSinRecibirRespuesta = new TimeOutRespuestas(5000,itfUsoPropiadeEsteAgente, notifTimeoutRespuesta);
-                      // para generar el informe con referencia al objetivo en que se ejecuta la tarea, se le pasa el ident del objetivo en el primer parametro
-   //           trazas = NombresPredefinidos.RECURSO_TRAZAS_OBJ;
               Objetivo objetivoEjecutantedeTarea = (Objetivo)params[0];
-              String identDeEstaTarea = this.getIdentTarea();
-              nombreAgenteEmisor = this.getAgente().getIdentAgente();
               InfoParaDecidirQuienVa infoDecisionAgente = (InfoParaDecidirQuienVa) params[1];
               Victim victima = (Victim) params[2];
               try {
-                   trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Se Ejecuta la Tarea :"+ identDeEstaTarea , InfoTraza.NivelTraza.debug));
+                   trazas.aceptaNuevaTrazaEjecReglas( identAgente,"Se Ejecuta la Tarea : "+ identTarea );
                   if (!infoDecisionAgente.hanLlegadoTodasLasEvaluaciones){ // si no han llegado todas las evaluaciones
                    
-                   ComunicacionAgentes comunicacion = new ComunicacionAgentes(nombreAgenteEmisor );            
+                   ComunicacionAgentes comunicacion = new ComunicacionAgentes(identAgente );            
                    for(int i = 0; i< infoDecisionAgente.getAgentesEquipo().size(); i++){
                        Integer evaluacionAgente = (Integer)infoDecisionAgente.getEvaluacionesRecibidas().get(i);
                        if(evaluacionAgente == 0){//si aun no tenemos la evaluacion , queremos que nos la vuelva a mandar
                           String agenteReceptor = (String)infoDecisionAgente.getAgentesEquipo().get(i);
                           
-                          trazas.aceptaNuevaTrazaEjecReglas(nombreAgenteEmisor, "!!!!!!!!Pidiendo evaluacion al agente "+ agenteReceptor);
-                          
-                                  //                        mandaMensajeAAgenteId("PeticionReenvioEvaluaciones",agenteReceptor );
+                          trazas.aceptaNuevaTrazaEjecReglas(identAgente, "!!!!!!!!Pidiendo evaluacion al agente "+ agenteReceptor);
                                   PeticionAgente peticionEval = new PeticionAgente(this.getIdentAgente());
                                   peticionEval.setidentObjectRefPeticion(objetivoEjecutantedeTarea.getobjectReferenceId());
                                   peticionEval.setMensajePeticion(VocabularioRosace.MsgPeticionEnvioEvaluaciones);
@@ -66,64 +47,12 @@ public class PedirEvaluacionesQueFaltan extends TareaSincrona{
                             //      comunicacion.enviarInfoConMomentoCreacionAotroAgente(peticionEval, agenteReceptor);
                        }
                    }
+                   this.generarInformeTemporizadoFromConfigProperty(VocabularioRosace.IdentTareaTimeOutRecibirEvaluaciones2,  objetivoEjecutantedeTarea, 
+                      identAgente,  infoDecisionAgente.getidElementoDecision());
                    }
                        //            trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Pedimos que nos reenvien las evaluaciones al agente: " +agenteReceptor, InfoTraza.NivelTraza.debug));
               } catch (Exception ex) {
-                 trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Error al enviar peticionRecibirRespuestasRestantes "+ ex, InfoTraza.NivelTraza.error));
+                 trazas.aceptaNuevaTraza(new InfoTraza(identAgente, "Error al enviar peticionRecibirRespuestasRestantes "+ ex, InfoTraza.NivelTraza.error));
               }
-        
-              //NO SE LA NECESIDAD DE LAS DOS SENTENCIAS SIGUIENTES (el informe no se usa y el infoDecisionAgente solo se ha consultado y no se ha modificado)
-              this.generarInformeOK(identDeEstaTarea, objetivoEjecutantedeTarea, nombreAgenteEmisor, "PeticionDeEvaluacionesQueFaltanRealizada");
-                    
-            //  this.getEnvioHechos().insertarHecho(infoDecisionAgente);
         }
-        catch (Exception e) {
-			e.printStackTrace();
-        }
-  }
-
-  
-  //El siguiente metodo no se usa actualmente aqui
-  public void mandaMensajeAAgenteId(Object contenido,String identAgenteReceptor){
-
-            // Este método crea un evento con la información de entrada y se le envía al agente REACTIVO que se indique por medio de
-            // la  interfaz de uso
-            MensajeSimple mensajeaEnviar = null;
-         InterfazUsoAgente itfUsoAgenteReceptor = null;
-
-//           Se verifica que la interfaz del aegente no es vacia
-
-        try {
-
-
-                itfUsoAgenteReceptor = (InterfazUsoAgente) NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ.obtenerInterfaz
-                    (NombresPredefinidos.ITF_USO+identAgenteReceptor);
-               }
-               catch (Exception e) {
-                   Logger.getLogger(MandarEvalATodos.class.getName()).log(Level.SEVERE, null, e);
-//                   logger.error("Ha habido un problema enviar un  evento al agente "+IdentAgenteReceptor);
-    			trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor,
-				"Ha habido un problema al enviar el mensaje con informacion "+ contenido.toString()+"al   agente "+identAgenteReceptor,
-					  InfoTraza.NivelTraza.error));
-               }
-
-
-         //   En primer lugar se crea el mensaje con  la informacion de entrada
-            if (mensajeaEnviar == null){
-                mensajeaEnviar = new MensajeSimple(contenido, nombreAgenteEmisor, identAgenteReceptor);
-             }
-        //    else{eventoaEnviar = new EventoRecAgte(input,infoComplementaria, nombreAgenteEmisor, IdentAgenteReceptor);}
-             // Obtener la interfaz de uso del agente reactivo con el que se quiere comunicar
-             try {
-			itfUsoAgenteReceptor.aceptaMensaje(mensajeaEnviar);
-                        trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Se manda 1 mensaje de  " + contenido.toString() + " al agente  "+ identAgenteReceptor, InfoTraza.NivelTraza.debug));
-            }catch (Exception e) {
-	//	logger.error("Ha habido un problema enviar un  evento al agente "+IdentAgenteReceptor, e);
-		trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor,
-			  "Ha habido un problema enviar el mensaje con informacion "+ contenido.toString()+"al   agente "+identAgenteReceptor,
-                        	  InfoTraza.NivelTraza.error));
-            }
-
-    }
-
 }

@@ -43,6 +43,9 @@ public class OrdenAgente implements Serializable {
  public String   getIdentEmisor(){
       return identEmisor;
  }
+  public void   setIdentEmisor(String emisorId){
+       identEmisor=emisorId;
+ }
 public void   setJustificacion(Object contJustificacion){
       justificacion =contJustificacion;
  }

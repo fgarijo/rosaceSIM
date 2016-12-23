@@ -186,7 +186,8 @@ public class HebraMonitorizacionLlegada implements Runnable {
                     this.estadoRobot.setCoordenadasActuales(coordenadaEnviar);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+                            finalizar = true;
+//				 e.printStackTrace();
 			}
 		}
 		if (enDestino ){
@@ -199,6 +200,7 @@ public class HebraMonitorizacionLlegada implements Runnable {
           System.out.println("Coord Robot En thread  " + identRobot + " en destino -> ("+this.coordActuales.x + " , " + this.coordActuales.y + ")");           
             } catch (Exception ex) {
                 log.error( ex);
+                 finalizar = true;
 		}
 	}
               }

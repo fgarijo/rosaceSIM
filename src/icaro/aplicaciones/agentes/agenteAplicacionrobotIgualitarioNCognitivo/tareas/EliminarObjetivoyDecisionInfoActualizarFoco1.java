@@ -22,8 +22,9 @@ public class EliminarObjetivoyDecisionInfoActualizarFoco1 extends TareaSincrona{
 	   try {
              MisObjetivos misObjs = (MisObjetivos) params[0];
              Objetivo ayudarVictima = (Objetivo)params[1]; // el estado es pending
-             InfoParaDecidirQuienVa infoDecision = (InfoParaDecidirQuienVa)params[2];
-             Focus focoActual = (Focus)params[3]; // el foco actual es decidir quien va 
+             Objetivo decidirquienVa = (Objetivo)params[2];
+             InfoParaDecidirQuienVa infoDecision = (InfoParaDecidirQuienVa)params[3];
+             Focus focoActual = (Focus)params[4]; // el foco actual es decidir quien va 
 //                Objetivo objetivoMasPrioritario = misObjs.getobjetivoMasPrioritario();
 //                if (objetivoMasPrioritario != null)
 //                if(objetivoMasPrioritario.getState()== Objetivo.SOLVED){
@@ -33,6 +34,7 @@ public class EliminarObjetivoyDecisionInfoActualizarFoco1 extends TareaSincrona{
 ////                ayudarVictima.setSolving();
 ////                misObjs.addObjetivo(ayudarVictima);
 ////                objetivoMasPrioritario = misObjs.getobjetivoMasPrioritario();
+             this.getEnvioHechos().eliminarHechoWithoutFireRules(decidirquienVa);
                 this.getEnvioHechos().eliminarHechoWithoutFireRules(ayudarVictima);
                 this.getEnvioHechos().eliminarHechoWithoutFireRules(infoDecision);
 //                focoActual.setFocusToObjetivoMasPrioritario(misObjs);

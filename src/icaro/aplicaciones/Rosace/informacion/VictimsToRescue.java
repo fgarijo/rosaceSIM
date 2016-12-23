@@ -16,11 +16,16 @@ public class VictimsToRescue {
     private Map<String, Victim> victims2Rescue;
     private Victim lastVictimToRescue;
     private static ArrayList<Victim> victimasNoAsignadas;
+    private boolean hayVictimasArescatar;
 
 public VictimsToRescue(){
        victims2Rescue = new HashMap <String, Victim>();
        victimasNoAsignadas = new ArrayList<Victim>();
 } 
+public void inicializar(){
+    victims2Rescue = new HashMap <String, Victim>();
+    victimasNoAsignadas = new ArrayList<Victim>();
+}
 public synchronized void addVictimToRescue (Victim victim){
     String idVictim = victim.getName();
     if (!victims2Rescue.containsKey(idVictim)){
@@ -61,7 +66,14 @@ public synchronized void setlastVictimToRescue (Victim victim){
 public synchronized Victim getlastVictimToRescue (){
    return  lastVictimToRescue;
 }
-public void eliminarVictima(String nombreVictima) {
+public synchronized void eliminarVictima(String nombreVictima) {
 	victims2Rescue.remove(nombreVictima);
+}
+public synchronized boolean gethayVictimasArescatar(){
+    hayVictimasArescatar= victims2Rescue.isEmpty();
+    return hayVictimasArescatar;
+}
+public synchronized void sethayVictimasArescatar(){
+    hayVictimasArescatar = victims2Rescue.isEmpty();
 }
 }

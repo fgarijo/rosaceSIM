@@ -137,7 +137,7 @@ public class GeneraEstadisticaIntervaloLlegadaYAsignacionVictimas {
         visualizadorJFchart = new VisualizacionJfreechart("Graficas estadisticas simulacion " + cadena);
         visualizadorJFchart.inicializacionJFreeChart(
     			"Elapsed Time to Assign a New Victim",   //titulo   
-    			"Number of Victim's Notifications",                            //etiqueta eje x  
+    			"Number of Victim's Notifications",    //etiqueta eje x  
     			"Time in seconds",                    //etiqueta eje y
     			PlotOrientation.VERTICAL,             //horientacion del plot
     			true,                                 //leyenda

@@ -13,7 +13,7 @@
             <icaro:propiedad atributo="nombreJefeEquipo" valor = "rescate1RobotAsignador" />   
             <icaro:propiedad atributo="organizacion" valor = "Igualitario" />
     <!--        <icaro:propiedad atributo="rutaFicheroVictimasTest" valor = "src/utils/Esc_6Victimas_0IP_001.xml" />  -->
-            <icaro:propiedad atributo="identFicheroEscenarioSimulacion" valor = "modeloOrg_IgualitarioNumRobts_4NumVicts_5_1.xml" />            
+            <icaro:propiedad atributo="identFicheroEscenarioSimulacion" valor = "modeloOrg_IgualitarioNumRobts_4NumVicts_5_0.xml" />            
             <icaro:propiedad atributo="rutaFicheroRobotsTest" valor = "src/utils/Esc_Jerarquico_4Robots_001.xml" />
             <icaro:propiedad atributo="timeMsTarea:TimeOutContactarMiembrosEquipo" valor = "3000" />
             <icaro:propiedad atributo="intervaloMilisegundosEnvioMensajesDesdeCC" valor = "10000" />   <!-- valor expresado en milisegundos -->  
@@ -55,7 +55,7 @@
        localizacionFicheroReglas="icaro.aplicaciones.agentes.agenteAplicacionAsignadorTareasCognitivo.procesoResolucionObjetivos.reglasjearqJefeCambioRol.drl"/>
      <icaro:DescComportamientoAgente  
        nombreComportamiento="AgenteAplicacionIgualitario" rol="AgenteAplicacion" localizacionComportamiento="icaro.aplicaciones.agentes.agenteAplicacionrobotIgualitarioNCognitivo" tipo="Cognitivo"
-       localizacionFicheroReglas="icaro.aplicaciones.agentes.agenteAplicacionrobotIgualitarioNCognitivo.procesoResolucionObjetivos.reglasIgualitarioNC1.drl"/>
+       localizacionFicheroReglas="icaro.aplicaciones.agentes.agenteAplicacionrobotIgualitarioNCognitivo.procesoResolucionObjetivos.reglasIgualitarioNC2.drl"/>
 </icaro:DescComportamientoAgentesAplicacion>
 </icaro:DescComportamientoAgentes>
 	<!--******************************************************************************************************

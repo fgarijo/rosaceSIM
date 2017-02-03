@@ -44,7 +44,7 @@ public class Temporizador extends Thread {
       this.informeAGenerar = informeAGenerar;
     }
      public Temporizador(long milis, ItfProcesadorObjetivos envioHechosItf, InformeDeTarea informeAGenerar,boolean traza) {
-      super("Timeout "+informeAGenerar.getIdentTarea());
+      super("Timeout "+informeAGenerar.getidentEntidadEmisora());
       this.milis= milis;
       this.finalizar= false;
       this.itfEnvioHechos = envioHechosItf;

@@ -38,8 +38,8 @@ public class ProcesarOrdenFinCasoSimulacion extends TareaSincrona {
 //             this.getItfMotorDeReglas().assertFactWithoutFireRules(misObjs);
 //             this.getItfMotorDeReglas().assertFactWithoutFireRules(focoActual);
 //             this.getItfMotorDeReglas().assertFactWithoutFireRules(victims);
-             this.getEnvioHechos().insertarHechoWithoutFireRules(miEquipo);
-             this.getEnvioHechos().insertarHecho(infoCompMov);
+//             this.getEnvioHechos().actualizarHechoWithoutFireRules(miEquipo);
+             this.getEnvioHechos().actualizarHecho(infoCompMov);
                }         
             catch(Exception e) {
                   e.printStackTrace();

@@ -55,7 +55,7 @@ public class ProcesarConfirmacionPropuestaParaIr extends TareaSincrona{
                     		                                          confirmacionRecibida.getmsgAceptacionPropuesta());
 
                       if (infoDecisionAgente.getTengoAcuerdoDeTodos()){
-                           if (infoDecisionAgente.settengoLaMejorEval()){
+                           if (infoDecisionAgente.gettengoLaMejorEval()){
                                 this.generarInformeOK(identTarea, objetivoEjecutantedeTarea, nombreAgenteEmisor, 
                                 		              "TengoAcuerdoDeTodosParaIrYo");
                                 infoDecisionAgente.setTengoAcuerdoDeTodos(Boolean.TRUE);

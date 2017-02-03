@@ -17,6 +17,7 @@ public class OrdenAgente implements Serializable {
     public String identEmisor;
     public String mensajeOrden;
     public Object justificacion;
+    public String refIteracion;
 
   public OrdenAgente( ) {
         
@@ -53,6 +54,12 @@ public void   setJustificacion(Object contJustificacion){
   public Object   getJustificacion(){
       return justificacion;
  }
+  public String getrefIteracion(){
+         return refIteracion ;
+    }
+    public void setrefIteracion(String iterId){
+        refIteracion =iterId;
+    }
   @Override
      public String toString(){
         if ( justificacion == null )

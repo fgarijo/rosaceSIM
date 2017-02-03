@@ -23,9 +23,9 @@ import org.apache.log4j.Logger;
 public class MoverseAsalvarVictima extends TareaSincrona {
     // private Victim victim;
     private Logger log = Logger.getLogger(this.getClass().getSimpleName());
-    int velocidadCruceroPordefecto = 5;// metros por segundo
+    private int velocidadCruceroPordefecto = 5;// metros por segundo
     private ItfUsoMovimientoCtrl itfcompMov;
-	private Victim victima;
+    private Victim victima;
 
     @Override
     public void ejecutar(Object... params) {
@@ -35,8 +35,6 @@ public class MoverseAsalvarVictima extends TareaSincrona {
              victima = (Victim) params[2];
             InfoCompMovimiento infoComMov = (InfoCompMovimiento) params[3];
             VictimsToRescue victimasArescatar = (VictimsToRescue) params[4];
-            String identAgente =this.getIdentAgente();
-            String identTarea= this.getIdentTarea();
             Objetivo objConseguido = focoActual.getFoco();
             if (objConseguido!= null){
                 objConseguido.setPriority(-1);
@@ -51,11 +49,9 @@ public class MoverseAsalvarVictima extends TareaSincrona {
                             + " Victima salvada  :  " + victima + 
                             "Objetivo conseguido :  " + objConseguido + "Nuevo objetivo a conseguir  :  " + nuevoObj
                             + " Los objetivos en la cola son  :  " + misObjs.getMisObjetivosPriorizados() + "\n"); 
-             Thread t = new Thread(){
-				
+             Thread t = new Thread(){	
 				public void run(){
-					
-					itfcompMov.moverAdestino(victima.getName(), victima.getCoordinateVictim(), velocidadCruceroPordefecto); 
+                                itfcompMov.moverAdestino(victima.getName(), victima.getCoordinateVictim(), velocidadCruceroPordefecto); 
 				}
 			};
             if (nuevoObj.getPriority()>0 ){

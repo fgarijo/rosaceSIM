@@ -39,26 +39,28 @@ public class ProcesarPeticionAsumirObjetivo extends TareaSincrona {
 //                  VictimsToRescue victims = (VictimsToRescue)params[4];
             // Se Verifica que el robot que hace la propuesta esta bloqueado
                   RobotStatus1 estatusRobot = (RobotStatus1)peticionRecibida.getJustificacion();
-                  String idvictima = peticionRecibida.getidentObjectRefPeticion();
                   if(estatusRobot.getBloqueado()){
             // Actualizo el equipo
                       miEquipo.setTeamMemberStatus( estatusRobot);
             // Se asume que el objetivo es "SalvarVictima" y se trabaja con la referencia a  la victima     
-            // Se asume la propuesta generando un objetivo para ver quien se hace cargo de salvar a la victima
+            // Se asume la peticion generando un objetivo para ver quien se hace cargo de salvar a la victima
                  Victim victimaRescate= (Victim) peticionRecibida.getinfoComplementaria();
+               
                  if(victimaRescate!=null){
+                 String idvictima = victimaRescate.getName();
                  AyudarVictima nuevoObjAyudarVictima= new AyudarVictima(idvictima);
                  nuevoObjAyudarVictima.setPriority(victimaRescate.getPriority());
           //      if((objetivoEjecutantedeTarea == null)) newObjetivo.setSolving(); // se comienza el proceso para intentar conseguirlo                                        
            //       Se genera un objetivo para decidir quien se hace cargo de la ayuda y lo ponemos a solving
                  DecidirQuienVa newDecision = new DecidirQuienVa(idvictima);
                  newDecision.setSolving();
-                 foco.setFoco(newDecision);
+//                 foco.setFoco(newDecision);
+                 this.getEnvioHechos().actualizarHechoWithoutFireRules(miEquipo);
                  this.getEnvioHechos().actualizarHechoWithoutFireRules(newDecision);
                  this.getEnvioHechos().actualizarHechoWithoutFireRules(nuevoObjAyudarVictima);
-                 this.getEnvioHechos().actualizarHecho(foco);
+                 this.getEnvioHechos().actualizarHechoWithoutFireRules(foco);
                  this.trazas.aceptaNuevaTrazaEjecReglas(this.getIdentAgente(), 
-                        "Se ejecuta la tarea : " + this.getIdentTarea() + " Preticion recibida del robot :  " + peticionRecibida.identAgente +
+                        "Se ejecuta la tarea : " + this.getIdentTarea() + " Peticion recibida del robot :  " + peticionRecibida.identAgente +
                         "  idVictima implicada : "+idvictima +" Estado del robot proponente bloqueado? : "+estatusRobot.getBloqueado()+"\n" );  
                   }else
                      this.trazas.aceptaNuevaTrazaEjecReglas(this.getIdentAgente(), 

@@ -20,8 +20,8 @@ public class InfoParaDecidirQuienVa implements Serializable{
       private ArrayList confirmacionesAgentes,evaluacionesRecibidas;//resto de agentes que forman mi equipo
       private String  identEquipo = null;
       private String  nombreAgente;
-      private InfoEquipo miEquipo ;
-      private ArrayList<String> agentesAplicacionDefinidos, agentesEquipo,agentesEmpatados,respuestasAgentes;
+//      private InfoEquipo miEquipo ;
+      private ArrayList<String>  agentesEquipo,agentesEmpatados,respuestasAgentes;
       private  int mi_eval_nueva,respuestasEsperadas,confirmacionesEsperadas ;
       private int numeroEvaluacionesRecibidas, valorMejorEvalucionRecibida,indiceAgenteConMejorEvaluacion;
       public int numeroRespuestasConfirmacionParaIrYo = 0 ;
@@ -33,7 +33,7 @@ public class InfoParaDecidirQuienVa implements Serializable{
       public boolean hanLlegadoTodasLasEvaluaciones = false;
       public boolean hayEmpates = false;
       public boolean noSoyElMejor = true ; // Not (hayEmpates) or Not ( tengoLaMejorEvaluacion) 
-      public boolean hayOtrosQueQuierenIr = false;
+      public boolean objetivoAsumidoPorOtroAgte = false;
       public boolean tengoAcuerdoDeTodos = false;
       public boolean tengoMiEvaluacion = false;
       public boolean miEvaluacionEnviadaAtodos = false;
@@ -42,45 +42,17 @@ public class InfoParaDecidirQuienVa implements Serializable{
       public boolean miPropuestaDeDesempateEnviadaAtodos = false;
       public boolean heInformadoAlmejorParaQueAsumaElObjetivo = false;
       public String idElementoDecision = null;
-//      private ItfUsoRecursoTrazas trazas;
 
       public  InfoParaDecidirQuienVa(String identAgente){
-        try {
-     //      trazas = NombresPredefinidos.RECURSO_TRAZAS_OBJ;
-         
-            ItfUsoConfiguracion itfConfig = (ItfUsoConfiguracion) NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ.obtenerInterfaz(NombresPredefinidos.ITF_USO+"Configuracion");
-            agentesAplicacionDefinidos = itfConfig.getIdentificadoresInstanciasAgentesAplicacion();
-            identEquipo = itfConfig.getValorPropiedadGlobal(NombresPredefinidos.NOMBRE_PROPIEDAD_GLOBAL_IDENT_EQUIPO);
-            agentesEquipo = getNombreAgentesEquipoDefinidos(identAgente, identEquipo);
-            nombreAgente = identAgente;
-            respuestasAgentes = new ArrayList();
-            confirmacionesAgentes = new ArrayList();
-            agentesEmpatados = new ArrayList();
-            evaluacionesRecibidas = new ArrayList();
-            numeroEvaluacionesRecibidas = 0;
-            valorMejorEvalucionRecibida = 0;
-            indiceAgenteConMejorEvaluacion = 0;
-            respuestasRecibidas = 0;
-            numeroRespuestasConfirmacionParaIrYo = 0;
-            propuestasDesempateEsperadas = 0;
-           
-         // Inicializamos para cada agente las respuestas, empates, confirmaciones
-            String aux;
-            for (int i = 0; i < agentesEquipo.size(); i++) {
-                respuestasAgentes.add("");
-                confirmacionesAgentes.add("");
-                evaluacionesRecibidas.add(0); 
-                }
-            confirmacionesEsperadas = agentesEquipo.size()-1;
-        } catch (Exception ex) {
-            Logger.getLogger(InfoParaDecidirQuienVa.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        nombreAgente = identAgente;
+        inicializarInfo();
       }
-     public InfoParaDecidirQuienVa(String identAgente,InfoEquipo equipo){
-            miEquipo = equipo;
-            agentesEquipo = miEquipo.getTeamMemberIDs();
-            identEquipo =miEquipo.getTeamId();
+     public InfoParaDecidirQuienVa(String identAgente,ArrayList<String> agtsEquipoIds){
+            setAgentesEquipo(agtsEquipoIds);
             nombreAgente = identAgente;
+            inicializarInfo();
+     }
+     private void inicializarInfo(){
             respuestasAgentes = new ArrayList();
             confirmacionesAgentes = new ArrayList();
             agentesEmpatados = new ArrayList();
@@ -93,68 +65,24 @@ public class InfoParaDecidirQuienVa implements Serializable{
             propuestasDesempateEsperadas = 0;   
          // Inicializamos para cada agente las respuestas, empates, confirmaciones
             String aux;
-            for (int i = 0; i < agentesEquipo.size(); i++) {
-                respuestasAgentes.add("");
-                confirmacionesAgentes.add("");
-                evaluacionesRecibidas.add(0); 
+            if ( agentesEquipo!= null){
+                for (String agentesEquipo1 : agentesEquipo) {
+                    respuestasAgentes.add("");
+                    confirmacionesAgentes.add("");
+                    evaluacionesRecibidas.add(0);
                 }
-            confirmacionesEsperadas = agentesEquipo.size();
-         
-     }
-     public synchronized ArrayList ObtenerNombreAgentesDelEquipoRegistrados(String identEquipo, String identAgente){
-         try {
-            ArrayList agentesRegistrados = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ.nombresInterfacesRegistradas();
-        
-            agentesEquipo = new ArrayList();
-            String aux;
-               for (int i = 0; i < agentesRegistrados.size(); i++) {
-                   aux = (String) agentesRegistrados.get(i);
-                   //filtramos los Gestores. Mandamos solo a las itf de uso de los agentes, y excluimos el propio agente
-                   if (aux.contains(identEquipo) && aux.contains("Itf_Uso") && !aux.contains(identAgente)) {
-                       String identAgenteRegistrado = aux.replaceFirst("Itf_Uso_", "");
-                       agentesEquipo.add(identAgenteRegistrado);
-                   }
-               }
-         } catch (Exception ex) {
-            Logger.getLogger(InfoParaDecidirQuienVa.class.getName()).log(Level.SEVERE, null, ex);
-         }
-         return agentesEquipo;
+                  confirmacionesEsperadas = agentesEquipo.size();
+            }
      }
      
-     private ArrayList getNombreAgentesEquipoDefinidos(String identAgente, String identEquipo){    
-         try {     
-             if (identEquipo != null){
-             
-            agentesEquipo = new ArrayList();
-            String aux;
-                for (int i = 0; i < agentesAplicacionDefinidos.size(); i++) {
-                    aux = (String) agentesAplicacionDefinidos.get(i); 
-                //Excluimos el propio agente
-                        if (aux.contains(identEquipo) && !aux.contains(identAgente)) {             
-                        agentesEquipo.add(aux);
-                        }
-                }
-             }
-            // se deberia poner un mensaje de error en las trazas, pero ya saldra mas adelante
-         } catch (Exception ex) {
-            Logger.getLogger(InfoParaDecidirQuienVa.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-         }
-         return agentesEquipo; 
-     }
-     public  ArrayList getIdentsAgentesEquipo(){
-         if (identEquipo != null) return agentesEquipo;
-         else return null;
-     }
-     public  String getIdenEquipo(){
-         return identEquipo;
-     }
      public synchronized void inicializarInfoParaDecidir(String idInfoDecision){
       // Inicializamos para cada agente las respuestas, empates, confirmaciones
+         if(agentesEquipo!= null){
          for (int i = 0; i < agentesEquipo.size(); i++) {
              respuestasAgentes.add("");
              confirmacionesAgentes.add("");
              evaluacionesRecibidas.add(0);
+         }
          }
          idElementoDecision = idInfoDecision;
          numeroEvaluacionesRecibidas = 0;
@@ -164,7 +92,7 @@ public class InfoParaDecidirQuienVa implements Serializable{
          tengoLaMejorEvaluacion = false;
          hayEmpates = false;
          hanLlegadoTodasLasEvaluaciones = false;
-         hayOtrosQueQuierenIr = false;
+         objetivoAsumidoPorOtroAgte = false;
          tengoAcuerdoDeTodos = false;
          tengoMiEvaluacion = false;
          miEvaluacionEnviadaAtodos = false;
@@ -202,7 +130,18 @@ public class InfoParaDecidirQuienVa implements Serializable{
          }
          return evalRecibidas;
      }
-     
+    public synchronized ArrayList getAgentesEquipo(){
+          return agentesEquipo;
+     }
+     public synchronized void setAgentesEquipo(ArrayList agtesEquipoIds){
+         agentesEquipo=agtesEquipoIds;
+     }
+     public  String getIdenEquipo(){
+         return identEquipo;
+     }
+     public  void setIdenEquipo(String quipoId){
+          identEquipo=quipoId;
+     } 
      
      public synchronized void setMi_eval(Integer valor){
          mi_eval = valor;
@@ -216,8 +155,11 @@ public class InfoParaDecidirQuienVa implements Serializable{
          return nombreAgente ;
      }
  
-     public synchronized boolean settengoLaMejorEval(){
+     public synchronized boolean gettengoLaMejorEval(){
          return tengoLaMejorEvaluacion;
+     }
+     public synchronized void settengoLaMejorEval(){
+          tengoLaMejorEvaluacion=true;
      }
      
      public synchronized boolean tengoTodasLasEvaluaciones(){					   
@@ -241,10 +183,10 @@ public class InfoParaDecidirQuienVa implements Serializable{
      
      //devuelve el agente mejor dentro de mi equipo
      public synchronized String dameIdentMejor(){
+         if(agentesEquipo !=null){
          String mejorAgente = (String)agentesEquipo.get(0);
          int mejor_eval = (Integer)evaluacionesRecibidas.get(0);
          int evaluacion_local;
-
          //empezamos en el uno porque lo hemos inicializado en el cero
          for(int i = 1; i< evaluacionesRecibidas.size();i++){
              evaluacion_local = (Integer)evaluacionesRecibidas.get(i);
@@ -254,22 +196,24 @@ public class InfoParaDecidirQuienVa implements Serializable{
              }
          }
          return mejorAgente;
+         }else return null;
      }
      
      public synchronized String dameEmpatados(){
+         
+         if(agentesEquipo !=null){
          String mejorAgente = (String)agentesEquipo.get(0);
             			//         int mejor_eval = (Integer)evaluacionesRecibidas.get(0);
          int evaluacion_local;
-
          //empezamos en el uno porque lo hemos inicializado en el cero
          for(int i = 0; i< evaluacionesRecibidas.size();i++){
              evaluacion_local = (Integer)evaluacionesRecibidas.get(i);
              if(mi_eval == (Integer)evaluacionesRecibidas.get(i)){
                  agentesEmpatados.add((String)agentesEquipo.get(i));
-
              }
          }
          return mejorAgente;
+         }else return null;
      }
 
   public synchronized void procesarValorPropuestaDesempate(PropuestaAgente propuesta) { 
@@ -310,28 +254,17 @@ public class InfoParaDecidirQuienVa implements Serializable{
                 }
          }
      }
-  }
-     
+  }    
      public synchronized void procesarPropuestaRecibida(PropuestaAgente propuesta) {
-					  //          ArrayList p = paquete;
-					  //          String eval = (String)p.get(0);
          String respuesta = propuesta.getMensajePropuesta();
          String idAgenteEmisorRespuesta = propuesta.getIdentAgente();
-         				//          trazas.aceptaNuevaTraza(new InfoTraza(nombreAgente, "Respuesta Recibida. Dice :" + eval.toString()+" Emisor: "+idAgenteEmisorEvaluacion, InfoTraza.NivelTraza.info));
-         //actualizar las respuestas
          Integer indiceAgenteEmisorRespuesta = agentesEquipo.indexOf(idAgenteEmisorRespuesta);
-
          if ( (String) respuestasAgentes.get(indiceAgenteEmisorRespuesta)== "" ){
               respuestasRecibidas ++;
-           
               respuestasAgentes.set(indiceAgenteEmisorRespuesta, respuesta);//guardamos la respuesta
               if ((respuesta == "CreoQueDebesIrTu")& (tengoLaMejorEvaluacion)){
-                         // añado la respuesta a la lista de empates Puedo comprobar su evaluacion pero me fio de el
-                         //    empates.add(idAgenteEmisorRespuesta);//quiere decir que el agente de agentesequipo(i) esta empatado conmigo
-                         //    hayOtrosQueQuierenIr = true;
                  numeroRespuestasConfirmacionParaIrYo ++;
                  this.addConfirmacionAcuerdoParaIr(idAgenteEmisorRespuesta, respuesta);
-
                  if (numeroRespuestasConfirmacionParaIrYo == respuestasEsperadas){
                      tengoAcuerdoDeTodos = true;
                  }
@@ -340,26 +273,24 @@ public class InfoParaDecidirQuienVa implements Serializable{
      }
      
      public synchronized void addConfirmacionAcuerdoParaIr(String idAgenteEmisorRespuesta, String respuesta ) {
-					  
+	if (agentesEquipo !=null){				  
           Integer indiceAgenteEmisorRespuesta = agentesEquipo.indexOf(idAgenteEmisorRespuesta);
+          if(indiceAgenteEmisorRespuesta>=0)
           if ( ((String) confirmacionesAgentes.get(indiceAgenteEmisorRespuesta)).equals("" )) {
                 numeroRespuestasConfirmacionParaIrYo ++;
                 confirmacionesAgentes.set(indiceAgenteEmisorRespuesta, respuesta);//guardamos la respuesta
                  if (numeroRespuestasConfirmacionParaIrYo == confirmacionesEsperadas)
                     tengoAcuerdoDeTodos = true;
-          }           
+          }  
+        }
       }
 
       public synchronized void addNuevaEvaluacion(EvaluacionAgente evaluacion) {
-							  //          ArrayList p = paquete;
-							  //          String eval = (String)p.get(0);
+          if(agentesEquipo!=null){
           Integer eval = evaluacion.getEvaluacion();
-          					  //         String idAgenteEmisorEvaluacion = evaluacion.getIdentAgente();
           Integer indiceAgente = agentesEquipo.indexOf ( evaluacion.getIdentAgente());
           // Si el agente no pertenece al equipo ignoro la evalucion que puede ser la mia
           if (indiceAgente != -1 ) {
-        	  			//          trazas.aceptaNuevaTraza(new InfoTraza(nombreAgente, "Respuesta Recibida. Dice :" + eval.toString()+" Emisor: "+idAgenteEmisorEvaluacion, InfoTraza.NivelTraza.info));
-              //actualizar el valor de la mejor evaluacion
               if (eval > valorMejorEvalucionRecibida   ){
                     // Si la evaluacion recibida es mayor que la mejor evaluacion actualizo el valor de la mejor evaluacion
                     valorMejorEvalucionRecibida = eval;
@@ -393,18 +324,17 @@ public class InfoParaDecidirQuienVa implements Serializable{
               }
                 
           }
+          }
           // Si la evaluacion es -1 es decir esta fuera de rango  ignoro  la evaluacion
           // el motor la elimina
     }
     
     public synchronized void addConfirmacionRealizacionObjetivo(AceptacionPropuesta confObjetivo) {
-					  //          ArrayList p = paquete;
-					  //          String eval = (String)p.get(0);
+         if(agentesEquipo!=null){
         String identObj = confObjetivo.getmsgAceptacionPropuesta();
         String idAgenteEmisorEvaluacion = confObjetivo.getIdentAgente();
-					 //           trazas.aceptaNuevaTraza(new InfoTraza(nombreAgente, "Confirmacion Recibida. Dice Objetivo :" + identObj +" Emisor: "+idAgenteEmisorEvaluacion, InfoTraza.NivelTraza.info));
-        //actualizar las respuestas
         confirmacionesAgentes.set(agentesEquipo.indexOf(idAgenteEmisorEvaluacion), identObj);//guardamos la respuesta
+         }
      }
 
      public synchronized Integer calcularEvalucionParaDesempate (){
@@ -443,6 +373,14 @@ public class InfoParaDecidirQuienVa implements Serializable{
          hanLlegadoTodasLasEvaluaciones = bvalue;
     
     }
+     public synchronized void setobjetivoAsumidoPorOtroAgte(Boolean bvalue){
+					    
+          objetivoAsumidoPorOtroAgte = bvalue;
+     }
+     public synchronized Boolean getobjetivoAsumidoPorOtroAgte() {
+         return objetivoAsumidoPorOtroAgte ;
+    
+    }
    
      public synchronized Integer getRespuestasEsperadas(){
             //mandar un mensaje a los agentes que no nos han enviado la respuesta aun
@@ -472,24 +410,6 @@ public class InfoParaDecidirQuienVa implements Serializable{
     public synchronized ArrayList getEvaluacionesRecibidas(){
          return evaluacionesRecibidas;
      }
-     public synchronized ArrayList<String> getAgentesEquipo(){      
-						//         try {
-						////         ArrayList agentesRegistrados = itfConfig.getIdentificadoresInstanciasAgentesAplicacion();
-						////         agentesEquipo = new ArrayList();
-						//         String aux;
-						//            for (int i = 0; i < agentesEquipo.size(); i++) {
-						//                aux = (String) agentesEquipo.get(i); 
-						//                //Excluimos el propio agente
-						//                if (aux.contains(nombreAgente)) {
-						//                    agentesEquipo.remove(i);
-						//                }
-						//            }
-						//         } catch (Exception ex) {
-						//            Logger.getLogger(InfoParaDecidirQuienVa.class.getName()).log(Level.SEVERE, null, ex);
-						//            } 
-         return agentesEquipo;
-     }
-     
      public synchronized ArrayList<String> getAgentesEmpatados(){
          //empezamos en el uno porque lo hemos inicializado en el cero
          // si esta vacio lo calculamos pero si ya hay elementos se devuelve  como esta. Esto se debe a que a terminado una rodo de desempate con empates
@@ -584,7 +504,7 @@ public class InfoParaDecidirQuienVa implements Serializable{
     	        " ; hayEmpates->" + hayEmpates + 
     	        " ; noSoyElMejor->" + noSoyElMejor + 
     	        " ; tengoAcuerdoDeTodos->" + tengoAcuerdoDeTodos + 
-    	        " ; hayOtrosQueQuierenIr->" + hayOtrosQueQuierenIr + 
+    	        " ; hayOtrosQueQuierenIr->" + objetivoAsumidoPorOtroAgte + 
     	        " ; hanLlegadoTodasLasEvaluaciones->" + hanLlegadoTodasLasEvaluaciones + 
     	        " ; numeroEvaluacionesRecibidas->" + numeroEvaluacionesRecibidas
     	        

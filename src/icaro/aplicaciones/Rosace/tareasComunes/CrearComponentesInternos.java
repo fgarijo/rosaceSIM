@@ -8,6 +8,7 @@
  */
 package icaro.aplicaciones.Rosace.tareasComunes;
 
+import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.agentes.componentesInternos.InfoCompInterno;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.FactoriaAbstrCompInterno;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
@@ -34,7 +35,7 @@ public class CrearComponentesInternos extends TareaAsincrona {
                   itfcomp.inicializarInfoMovimiento(0,null, Integer.SIZE);
                            this.itfProcObjetivos.insertarHecho(infoCompMov);
             //             itfcomp.moverAdestino(null, Integer.MIN_VALUE);
-                   this.trazas.trazar(this.identAgente, "se ejecuta la tarea : "+ this.identTarea, InfoTraza.NivelTraza.debug);
+                   this.trazas.aceptaNuevaTrazaEjecReglas(this.identAgente, "se ejecuta la tarea : "+ this.identTarea + " Se crea infoCompMov");
                 //   this.getEnvioHechos().insertarHecho(cre);
         } catch (ExcepcionEnComponente ex) {
             Logger.getLogger(CrearComponentesInternos.class.getName()).log(Level.SEVERE, null, ex);

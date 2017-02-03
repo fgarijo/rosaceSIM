@@ -42,7 +42,7 @@ public class InfoEquipo {
              initializeAgentTeamStatus();
     }
     
-    private void  initializeAgentTeamStatus(){
+    private   void  initializeAgentTeamStatus(){
            teamInfoAgentStatus = new HashMap<String,RobotStatus1>();
            for(int i = 0; i < teamRobotIds.size();  i++ ) {
                String aux = (String) teamRobotIds.get(i); 
@@ -156,16 +156,16 @@ public class InfoEquipo {
          RobotStatus1 estatusAgte;
          String identAgte;
          ArrayList<String> idsRobotsActivos = new ArrayList();
-         for (int i = 0; i < teamRobotIds.size();  i++ ){
-             identAgte = teamRobotIds.get(i);
-             if ( !identAgte.equals(this.identAgentePropietario)){
-                estatusAgte =teamInfoAgentStatus.get(identAgte);
-                if(estatusAgte != null)
-                    if(!estatusAgte.getBloqueado()){
-                        idsRobotsActivos.add(identAgte);                      
-                    }
-            }
-         }
+          for (String teamRobotId : teamRobotIds) {
+              identAgte = teamRobotId;
+              if ( !identAgte.equals(this.identAgentePropietario)){
+                  estatusAgte =teamInfoAgentStatus.get(identAgte);
+                  if(estatusAgte != null)
+                      if(!estatusAgte.getBloqueado()){
+                          idsRobotsActivos.add(identAgte);
+                      }
+              }
+          }
          return idsRobotsActivos;
      }
      public synchronized RobotStatus1 getTeamMemberStatus(String identMember){ 

@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 
-public class Victim implements Serializable{
+public class Victim implements Serializable, Cloneable {
     @Element
        private String name;
      @Element
@@ -136,6 +136,16 @@ public class Victim implements Serializable{
           coordinateVictim.setX(victimCoordinateP.x);
           coordinateVictim.setY(victimCoordinateP.y);
           
+    }
+    @Override
+    public Object clone(){
+        Object obj=null;
+        try{
+            obj=super.clone();
+        }catch(CloneNotSupportedException ex){
+            System.out.println(" no se puede duplicar");
+        }
+        return obj;
     }
    	      	   
 }

@@ -15,7 +15,6 @@ import java.util.Map;
 public class InfoAgteAsignacionVictima implements Serializable{
 
     private String victimId;
-    private String robotId;
     private int evaluacion;
     private long tiempoAsignacion;
     private long tiempoPeticion;
@@ -23,7 +22,6 @@ public class InfoAgteAsignacionVictima implements Serializable{
     private int nrovictimasenentorno;
 //    private InfoContextoAsignacionVictima infoCtxtAsingacionVictima;
     private String idAgteInformante;
-    private int costeEstimadoAsignacion;
 
     public InfoAgteAsignacionVictima() {
     }
@@ -41,12 +39,12 @@ public class InfoAgteAsignacionVictima implements Serializable{
         this.victimId = vict;
     }
 
-    public String getRobotId() {
-        return robotId;
+    public String getidAgteInformante() {
+        return idAgteInformante;
     }
 
-    public void setRobotId(String robot) {
-        this.robotId = robot;
+    public void setidAgteInformante(String robot) {
+        this.idAgteInformante = robot;
     }
 
     public int getEvaluacion() {

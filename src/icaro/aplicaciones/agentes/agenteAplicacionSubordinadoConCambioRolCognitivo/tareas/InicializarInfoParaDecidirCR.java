@@ -7,6 +7,7 @@ package icaro.aplicaciones.agentes.agenteAplicacionSubordinadoConCambioRolCognit
 import icaro.aplicaciones.Rosace.informacion.InfoEquipo;
 import icaro.aplicaciones.agentes.agenteAplicacionrobotIgualitarioNCognitivo.informacion.InfoParaDecidirQuienVa;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
+import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 
 /**
  *
@@ -18,13 +19,18 @@ public class InicializarInfoParaDecidirCR extends TareaSincrona{
    public void ejecutar(Object... params) {
 	   try {
              InfoEquipo miEquipo = (InfoEquipo)params[0];
-             String nombreAgenteEmisor = this.getIdentAgente();
              String idVictim = (String)params[1];
              InfoParaDecidirQuienVa infoDecisionAgente;
-             if (miEquipo==null)infoDecisionAgente = new InfoParaDecidirQuienVa(nombreAgenteEmisor);
-             else infoDecisionAgente = new InfoParaDecidirQuienVa(nombreAgenteEmisor,miEquipo);
-             infoDecisionAgente.setidElementoDecision(idVictim);
-             this.getEnvioHechos().insertarHecho(infoDecisionAgente);
+             if (miEquipo!=null){
+                 infoDecisionAgente = new InfoParaDecidirQuienVa(this.identAgente,miEquipo.getIDsMiembrosActivos());
+                  infoDecisionAgente.setidElementoDecision(idVictim);
+                   this.getEnvioHechos().insertarHecho(infoDecisionAgente);
+             }
+             else{
+                 this.trazas.aceptaNuevaTrazaEjecReglas(identAgente, "Se ejecuta la tarea : "+this.identTarea + " No existe informacion del equipo : InfoEquipo es null");
+                 this.trazas.trazar(identAgente, "Se ejecuta la tarea : "+this.identTarea + " No existe informacion del equipo : InfoEquipo es null", InfoTraza.NivelTraza.error);
+             }
+             
              // Activo un timeout para la decision. Cuando venza se decidira que hacer en funcion de la situacion del agente
              // Porque se supone que estoy esperando informaciones que no llegan. 
              

@@ -52,6 +52,7 @@ public class InfoCasoSimulacion {
     private ArrayList<PuntoEstadistica> valoresSeriePuntosElapsed ;
     private InfoEntornoCasoSimulacion infoEntorno;
     private VictimasSalvadas victimasRescatadasPorRobot ;
+    private Map<String, Set<String>> infoRobotVictimasAsignadas;
     private boolean victimaNueva = false;
     private ArrayList valoresSeriePuntosAsignacion;
     private int numeroVictimasRescatadas;
@@ -63,6 +64,7 @@ public class InfoCasoSimulacion {
        infoRescateVictimas = new HashMap<String, InfoRescateVictima>();
        conjVictimasRescatadas= new TreeSet <InfoRescateVictima>() ;
        infoRobotVictimasSalvadas=new HashMap<String, VictimasSalvadas>();
+       infoRobotVictimasAsignadas=new HashMap<String, Set<String>>();
        victimasRescatadasPorRobot = new VictimasSalvadas();
        identsVictimasRescatadas= new VictimasSalvadas();
       }
@@ -134,10 +136,18 @@ public class InfoCasoSimulacion {
    public synchronized void addInfoAsignacionVictima(InfoRescateVictima infoAsign){
 //      if( infoVictims2Rescue.put(infoAsign.getVictima().getName(), infoAsign)!= null) numeroVictimasEntorno ++ ;
    String idVictima= infoAsign.getvictimaId();
+   if (idVictima!=null){
+    String idRobot = infoAsign.getRobotRescatadorId();
 //       InfoRescateVictima infoVictima = infoRescateVictimas.get(idVictima);
-       if (idVictima==null)numeroVictimasAsignadas ++;
+        if(!infoRobotVictimasAsignadas.containsKey(idRobot)){
+            Set victimasAsignadasAlRobot =new  TreeSet <String>();
+            victimasAsignadasAlRobot.add(idVictima);
+            infoRobotVictimasAsignadas.put(idRobot,victimasAsignadasAlRobot );
+        }else infoRobotVictimasAsignadas.get(idRobot).add(idVictima);
+           if(!infoRescateVictimas.containsKey(idVictima))numeroVictimasAsignadas ++;
            conjVictimasRescatadas.add(infoAsign);
            infoRescateVictimas.put(idVictima, infoAsign); 
+   }
    }
    public synchronized void addInfoRescateVictima(InfoRescateVictima infoRescate){
        String idVictima= infoRescate.getvictimaId();
@@ -177,6 +187,10 @@ public class InfoCasoSimulacion {
 //   @XmlElement (name = "victimasRescatadas")
       public List<String> getvictimasRescatadas(String idRobot){
           return infoRobotVictimasSalvadas.get(idRobot).getVictimas();
+       }
+      public Set<String> getvictimasAsignadas(String idRobot){
+          
+          return this.infoRobotVictimasAsignadas.get(idRobot);
        }
 
         public ArrayList<PuntoEstadistica> getSerieAsignacionVictimas(){

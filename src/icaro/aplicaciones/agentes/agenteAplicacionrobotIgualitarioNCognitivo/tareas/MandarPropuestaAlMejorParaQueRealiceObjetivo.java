@@ -23,7 +23,6 @@ public class MandarPropuestaAlMejorParaQueRealiceObjetivo  extends TareaSincrona
 	/**  */
     private InterfazUsoAgente agenteReceptor;
     private ArrayList agentesEquipo, respuestasAgentes,confirmacionesAgentes,nuevasEvaluacionesAgentes,empates;//resto de agentes que forman mi equipo
-    private String nombreAgenteEmisor;
 //    private ItfUsoRecursoTrazas trazas;
     private InfoParaDecidirQuienVa infoDecision;
     private String identDeEstaTarea ;
@@ -39,23 +38,19 @@ public class MandarPropuestaAlMejorParaQueRealiceObjetivo  extends TareaSincrona
               Objetivo objetivoEjecutantedeTarea = (Objetivo)params[0];
               infoDecision = (InfoParaDecidirQuienVa)params[1];
                       //             nombreAgenteReceptor = (String)params[2];
-
-              nombreAgenteEmisor = this.getAgente().getIdentAgente();
-              identDeEstaTarea = this.getIdentTarea();
-
               try {
-                   trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Se Ejecuta la Tarea :"+ identDeEstaTarea , InfoTraza.NivelTraza.debug));
    //               if (! infoDecision.getheInformadoAlmejorParaQueAsumaElObjetivo() ){ // si ya se le ha informado no se hace nada
+                 
                    nombreAgenteReceptor = infoDecision.dameIdentMejor();
-                   PropuestaAgente miPropuesta = new PropuestaAgente (nombreAgenteEmisor);
+                   PropuestaAgente miPropuesta = new PropuestaAgente (this.identAgente);
                    miPropuesta.setMensajePropuesta(VocabularioRosace.MsgPropuesta_Para_Q_vayaOtro);
                    miPropuesta.setIdentObjectRefPropuesta(infoDecision.getidElementoDecision());
                    miPropuesta.setJustificacion(infoDecision.getMi_eval());
                    
-                   trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor,"IdentObjetoPropuesta: " +infoDecision.getidElementoDecision()+ "Enviamos la propuesta: " + VocabularioRosace.MsgPropuesta_Para_Q_vayaOtro + "  Al agente " +nombreAgenteReceptor  , InfoTraza.NivelTraza.debug));
+                   trazas.aceptaNuevaTrazaEjecReglas(this.identAgente, "Se Ejecuta la Tarea :"+ this.identTarea + " Se envia propuesta : "+
+                     VocabularioRosace.MsgPropuesta_Para_Q_vayaOtro + " Al Agente : " + nombreAgenteReceptor   );
                    
-                   ComunicacionAgentes comunicacion = new ComunicacionAgentes(nombreAgenteEmisor);
-                   comunicacion.enviarInfoAotroAgente(miPropuesta,nombreAgenteReceptor );
+                   this.getComunicator().enviarInfoAotroAgente(miPropuesta,nombreAgenteReceptor );
                    
                         infoDecision.setheInformadoAlmejorParaQueAsumaElObjetivo(Boolean.TRUE);
                         this.getEnvioHechos().actualizarHecho(infoDecision);

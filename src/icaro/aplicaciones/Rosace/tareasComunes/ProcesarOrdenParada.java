@@ -4,13 +4,16 @@
  */
 package icaro.aplicaciones.Rosace.tareasComunes;
 import icaro.aplicaciones.Rosace.informacion.InfoEquipo;
+import icaro.aplicaciones.Rosace.informacion.InfoEstadoAgente;
 import icaro.aplicaciones.Rosace.informacion.InfoRolAgente;
 import icaro.aplicaciones.Rosace.informacion.OrdenCentroControl;
+import icaro.aplicaciones.Rosace.informacion.OrdenParada;
 import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
 import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.InfoCompMovimiento;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
+import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp.EstadoAbstractoMovRobot;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp.MaquinaEstadoMovimientoCtrl;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.imp.MaquinaEstadoMovimientoCtrl.EstadoMovimientoRobot;
 import icaro.infraestructura.entidadesBasicas.comunicacion.InfoContEvtMsgAgteReactivo;
@@ -33,6 +36,7 @@ public class ProcesarOrdenParada extends TareaSincrona {
             try {
              RobotStatus1 miEstatus = (RobotStatus1) params[0];
              InfoCompMovimiento infoCompMov = (InfoCompMovimiento) params[1];
+             OrdenParada ordenCC = (OrdenParada)params[2];
 //             trazas.aceptaNuevaTraza(new InfoTraza(this.identAgente, "Se Ejecuta la Tarea :"+ this.identTarea , InfoTraza.NivelTraza.info));
              trazas.aceptaNuevaTrazaEjecReglas(this.identAgente, "Se Procesa la orden  Parada   recibida por el agente  "+"\n");
             // se inicializa objetivos, foco y victimas, y se vacia la memoria de trabajo y se me
@@ -57,8 +61,9 @@ public class ProcesarOrdenParada extends TareaSincrona {
                         "Se ejecuta la tarea : " + identTarea + " El robot esta en la posicion " + itfcompMov.getCoordenadasActuales() +
                         "estado del robot : "+EstadoMovimientoRobot.RobotBloqueado.name()+"\n" +
                         "esta bloqueado : "+ miEstatus.getBloqueado()+"\n" );
-            // Se informa la agente controlador de la ejecucion de la orden de parada
-            InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo(VocabularioRosace.MsgeRobotBloqueadoPorOrden,identAgente);
+            // Se informa al agente controlador de la ejecucion de la orden de parada
+            InfoEstadoAgente infoMiEstado = new InfoEstadoAgente(this.identAgente,EstadoMovimientoRobot.RobotBloqueado.name(),VocabularioRosace.CausaCambioMovtoOrdenCC);
+            InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo(VocabularioRosace.MsgeInfoEstadoAgente,infoMiEstado);
              this.getComunicator().enviarInfoAotroAgente(msg, VocabularioRosace.IdentAgteControladorSimulador);
              this.getEnvioHechos().eliminarHecho(miEstatus);
              this.getEnvioHechos().insertarHecho(miEstatus.clone());

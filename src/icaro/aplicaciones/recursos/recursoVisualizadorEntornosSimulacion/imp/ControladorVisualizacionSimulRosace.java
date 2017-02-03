@@ -617,57 +617,24 @@ public    void peticionCambiarPosicionRobot(String identRobot, Integer coordX, I
        this.visorMovimientoEscen.cambiarPosicionRobot(identRobot, coordX, coordY);
     }
 
-public  void peticionMostrarVictimaRescatada(String identVictima) {
-        this.visorMovimientoEscen.cambiarIconoEntidad(identVictima, VisorMovimientoEscenario.IMAGEmujerRes);
-        
+public  void peticionMostrarVictima(String identVictima,String estadoVictima)throws Exception{ 
+     switch (estadoVictima) {
+            case "esperandoRescate":
+                this.visorMovimientoEscen.cambiarIconoEntidad(identVictima,VisorMovimientoEscenario.IMAGEmujer);
+                break;
+            case "asignada":
+                this.visorMovimientoEscen.cambiarIconoEntidad(identVictima,VisorMovimientoEscenario.IMAGEmujerAsignada);
+                break;
+            case "reAsignada":
+                this.visorMovimientoEscen.cambiarIconoEntidad(identVictima,VisorMovimientoEscenario.IMAGEmujerReAsignada);
+                break;
+            case "rescatada":
+                this.visorMovimientoEscen.cambiarIconoEntidad(identVictima,VisorMovimientoEscenario.IMAGEmujerRes);
+                break;
+                default:
+             throw new IllegalArgumentException("Estado de la victima no valido : " + estadoVictima);
+        }  
     }
-
-//    void abrirVisorConEscenarioComp(EscenarioSimulacionRobtsVictms escenarioSimulacion) {
-//       if(!visorControlSimuladorIniciado){
-////        initModelosYvistas();
-//        // Se abre el visor sin 
-//            visorControlSim.setVisible(true);
-//        }
-//       visorControlSimuladorIniciado=true; 
-//        if(escenarioSimulacion ==null){}
-//        else if ( {
-//           this.escenarioSimulComp = escenarioSimulacion;
-//            visorControlSim.setIdentEscenarioActual(escenarioSimulacion.getIdentEscenario());
-//            visorControlSim.visualizarIdentsEquipoRobot(escenarioSimulacion.getListIdentsRobots());
-//            visorControlSim.visualizarIdentsVictimas(escenarioSimulacion.getListIdentsVictims());
-//            visorControlSim.setIntervaloEnvioMensajesDesdeCC(intervaloSecuencia);
-//            escenarioValidoObtenido= true;
-//            robotsVisualizados= true;
-//            victimasVisualizadas = true;
-//            if(visorMovimientoEscen== null)
-//                try {
-//                    visorMovimientoEscen= new VisorMovimientoEscenario(escenarioSimulComp);
-//                    visorMovientoIniciado = true;
-//                    
-//                }
-//                catch (Exception ex) {
-//                    Exceptions.printStackTrace(ex);
-//                }
-//            else
-//                visorMovimientoEscen.actualizarEscenario(escenarioSimulComp);
-//            memComunControladores.setescenarioSimulacion(escenarioSimulComp);
-//            memComunControladores.setescenarioSimulacionAbierto(true);
-//       }
-//            
-//    }
-    
-//    private EscenarioSimulacionRobtsVictms obtenerEscenarioDesdePersistencia (String identFichero){
-//       try {
-//        if(itfPersistenciaSimul == null){
-//           return persistenciaLocal.obtenerInfoEscenarioSimulacion(identFichero);
-//        }else{
-//           return itfPersistenciaSimul.obtenerInfoEscenarioSimulacion(identFichero);
-//        }
-//        } catch (Exception ex) {
-//            Exceptions.printStackTrace(ex);
-//        }
-//       return null;
-//    }
 
  public   void setMemComunControladores(MemComunControladores memoriaComunControladores) {
         this.memComunControladores=memoriaComunControladores;

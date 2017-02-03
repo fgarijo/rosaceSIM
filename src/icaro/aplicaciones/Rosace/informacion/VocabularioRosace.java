@@ -75,6 +75,7 @@ public class VocabularioRosace extends NombresPredefinidos{
     static public  final String MsgeRobotParado ="RobotParado";
     static public  final String MsgeFinCasoSimulacion="FinCasoSimulacion";
     static public  final String MsgeRobotBloqueadoPorOrden="robotBloqueadoPorOrden";
+    static public  final String MsgeInfoEstadoAgente="infoEstadoAgente";
     static public  final String MsgePeticionAsumirObjetivo="peticionAsumirObjetivo";
     static public  final String IdentIteracionProcesoInformesCR ="procesamientoInformesCR";
     static public  final String IdentTareaTimeOutRecibirEvaluaciones1 ="TimeOutRecibirEvaluaciones1";
@@ -101,6 +102,7 @@ public class VocabularioRosace extends NombresPredefinidos{
     static public  final String rutaFicheroRobotsTest    = "rutaFicheroRobotsTest";
     static public  final String identDirectorioPersistenciaEscenarios  = "PersistenciaEscenariosSimulacion" ;
     static public  final String rutaPersistenciaEscenarios    = "src/PersistenciaEscenariosSimulacion";
+    static public  final String rutaIconosEscenario = "\\src\\utilsDiseniaEscenariosRosace\\";
     static public  final String intervaloMilisegundosEnvioCCMensajes = "intervaloMilisegundosEnvioMensajesDesdeCC"; 
     static public  final String timeTimeoutPorDefecto = "timeTimeoutPorDefecto";     
     static public  final String timeTimeoutMilisegundosRecibirEvaluaciones = "timeTimeoutMilisegundosRecibirEvaluaciones";     
@@ -139,4 +141,7 @@ public class VocabularioRosace extends NombresPredefinidos{
     static public  final String NombreFicheroSerieAsignacion = "serieAsignacionVictimas";
     static public  final String NombreFicheroEscenarioSimulacion = "identFicheroEscenarioSimulacion";
     static public  enum PeticionAgteControlSimul{TerminarSimulacion,mostrarEscenarioActualSimulado,pararRobot,sendSequenceOfSimulatedVictimsToRobotTeam,enviarIdentsEquipo};
+    static public  enum EstadoMovimientoRobot {Indefinido,RobotParado, RobotEnMovimiento, RobotBloqueado, RobotBloqueadoPorObstaculo,RobotavanceImposible,enDestino, error};
+    public static  enum EvalEnergiaRobot {sinEnergia,energiaSuficiente,EnergiaJusta, EnergiaInsuficiente };
+    static public  enum EstadoVictima {esperandoRescate,asignada, reAsignada, rescatada};
 }

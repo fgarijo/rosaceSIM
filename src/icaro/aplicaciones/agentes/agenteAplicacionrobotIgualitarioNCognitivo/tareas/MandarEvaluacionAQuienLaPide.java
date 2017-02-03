@@ -56,7 +56,7 @@ public class MandarEvaluacionAQuienLaPide  extends TareaSincrona {
           victimasRecibidas = (VictimsToRescue) params[5];
                        //      EvaluacionAgente miEvaluacion = (EvaluacionAgente) params[2];
           nombreAgenteEmisor = this.getIdentAgente();
-          agentesEquipo = infoDecision.getIdentsAgentesEquipo();
+          agentesEquipo = infoDecision.getAgentesEquipo();
           identObjEvaluacion = peticionRecibida.getidentObjectRefPeticion();
           nombreAgenteQuePideLaEvaluacion= peticionRecibida.getIdentAgente();
          robotLocation= robot.getRobotCoordinate();

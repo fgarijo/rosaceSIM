@@ -13,6 +13,7 @@ import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.ItfUsoR
 import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp.LineaObstaculo;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Informe;
+import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.InformeDeTarea;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Temporizador;
 import icaro.infraestructura.patronAgenteCognitivo.procesadorObjetivos.factoriaEInterfacesPrObj.ItfProcesadorObjetivos;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
@@ -209,15 +210,13 @@ public class MaquinaEstadoMovimientoCtrl implements ItfUsoMovimientoCtrl  {
         this.robotposicionActual=this.destinoCoord;
 //        this.robotposicionActual=(Coordinate)this.destinoCoord.clone();
 		Informe informeLlegada = new Informe (identComponente,identDestino, VocabularioRosace.MsgeLlegadaDestino);
-		Temporizador informeTemp = new Temporizador (1,itfProcObjetivos,informeLlegada);
+		Temporizador informeTemp = new Temporizador (1,itfProcObjetivos, informeLlegada);
 		informeTemp.start();
 //        estadoActual = this.cambiarEstado(EstadoMovimientoRobot.RobotParado);
 //	this.robotposicionActual = new Coordinate(destinoCoord.getX(),destinoCoord.getY(),destinoCoord.getZ());
         this.estadoActual.identDestino = identDestino;
          trazas.trazar(identComponente, "Se informa de llegada al  destino: " +informeLlegada + " El robot esta en el estado :"+ identEstadoActual
                 + " CoordActuales =  "+robotposicionActual.toString() , InfoTraza.NivelTraza.debug);
-        
-  
     }
         public synchronized void setEnergiaRobot(int energRobot){ 
             this.contadorGastoEnergia=energiaRobot-energRobot; // se actualiza el contador de gasto cada vez que se reporta un nueva energia

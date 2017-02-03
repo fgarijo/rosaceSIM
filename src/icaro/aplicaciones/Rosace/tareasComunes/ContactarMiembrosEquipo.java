@@ -18,9 +18,7 @@ import java.util.ArrayList;
  * @author Francisco J Garijo
  */
    public class ContactarMiembrosEquipo  extends TareaSincrona {
-   private InterfazUsoAgente agenteReceptor;
    private ArrayList <String> agentesEquipo;//resto de agentes que forman mi equipo                                
-   private int mi_eval, mi_eval_nueva;
    private String nombreAgenteEmisor;
  
    
@@ -32,12 +30,12 @@ import java.util.ArrayList;
 		try {     
               RobotStatus1 miStatus = (RobotStatus1)params[0];    
              InfoEquipo equipoInfo = (InfoEquipo)params[1];  
-              nombreAgenteEmisor = this.getAgente().getIdentAgente();
+              nombreAgenteEmisor = this.identAgente;
               agentesEquipo = equipoInfo.getTeamMemberIDs();
-              trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Se Ejecuta la Tarea :"+ identTarea , InfoTraza.NivelTraza.debug));
+              trazas.aceptaNuevaTrazaEjecReglas(identAgente, "Se Ejecuta la Tarea : "+ identTarea + " Los agtes de mi equipo son : " + agentesEquipo );
                         //            trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Enviamos la evaluacion " + miEvaluacion, InfoTraza.NivelTraza.masterIA));          
-              InfoRolAgente mirol = new InfoRolAgente(nombreAgenteEmisor,equipoInfo.getTeamId(),miStatus.getIdRobotRol(),VocabularioRosace.IdentMisionEquipo);
-              trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Enviamos informacion de Rol " + mirol.toString(), InfoTraza.NivelTraza.info));  
+              InfoRolAgente mirol = new InfoRolAgente(identAgente,equipoInfo.getTeamId(),miStatus.getIdRobotRol(),VocabularioRosace.IdentMisionEquipo);
+              trazas.aceptaNuevaTrazaEjecReglas(identAgente, " Enviamos informacion de Rol " + mirol.toString());  
               this.getComunicator().informaraGrupoAgentes(mirol, agentesEquipo);
               equipoInfo.setinicioContactoConEquipo();
               equipoInfo.setidentMiRolEnEsteEquipo(miStatus.getIdRobotRol());

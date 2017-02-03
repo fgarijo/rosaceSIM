@@ -172,7 +172,7 @@ public class HebraMonitorizacionLlegada implements Runnable {
 		log.debug ("Coord Robot " + identRobot + " destino -> ("+this.coordDestino.getX() + " , " + this.coordDestino.getY() + ")");
 		//       System.out.println("Coord Robot " + identRobot + " iniciales -> ("+this.coordActuales.x + " , " + this.coordActuales.y + ")");
 		//      this.itfusoRecVisSimulador.mostrarMovimientoAdestino(identRobot,identDestino, coordActuales,velocidadRobot);
- log.debug("Inicio ciclo de envio de coordenadas  " + identRobot + " en destino -> ("+this.coordActuales.getX() + " , " + this.coordActuales.getY() + ")");           
+ log.debug("Inicio ciclo de envio de coordenadas  " + identRobot + " en posicion actual -> ("+this.coordActuales.getX() + " , " + this.coordActuales.getY() + ")");           
 		while (!this.finalizar && (!enDestino)) {
 			try {
 			Thread.sleep(intervaloEnvioInformesMs);

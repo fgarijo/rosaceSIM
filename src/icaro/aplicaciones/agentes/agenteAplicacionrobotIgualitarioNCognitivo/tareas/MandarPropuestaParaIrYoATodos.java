@@ -49,7 +49,7 @@ public class MandarPropuestaParaIrYoATodos  extends TareaSincrona {
                  miPropuesta.setIdentObjectRefPropuesta(infoDecision.getidElementoDecision());
                  if (!infoDecision.miPropuestaParaAsumirElObjetivoEnviadaAtodos){ // si ya lo he enviado no hago nada asi evito problemas de invocacion en  la regla
                  trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Se Ejecuta la Tarea :"+ identDeEstaTarea , InfoTraza.NivelTraza.debug));
-                 agentesEquipo = infoDecision.getIdentsAgentesEquipo();
+                 agentesEquipo = infoDecision.getAgentesEquipo();
                  trazas.aceptaNuevaTraza(new InfoTraza(nombreAgenteEmisor, "Enviamos la propuesta: "+ VocabularioRosace.MsgPropuesta_Oferta_Para_Ir , InfoTraza.NivelTraza.debug));
                           //            ComunicacionAgentes comunicacion = new ComunicacionAgentes(nombreAgenteEmisor);
                           //            comunicacion.informaraGrupoAgentes(miPropuesta, agentesEquipo);

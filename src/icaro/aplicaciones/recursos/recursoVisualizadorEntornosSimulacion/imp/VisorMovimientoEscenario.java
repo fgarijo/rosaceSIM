@@ -43,11 +43,11 @@ public class VisorMovimientoEscenario extends javax.swing.JFrame {
      private String tituloVentanaVisor = "ROSACE Scenario Visor";
     private String rutassrc = "src/";   //poner "src/main/java" si el proyecto de icaro se monta en un proyecto maven
     private String rutapaqueteConstructorEscenariosROSACE = "utilsDiseniaEscenariosRosace/";
-    public static  Image IMAGErobot,IMAGEmujer,IMAGEmujerRes ;
+    public static  Image IMAGErobot,IMAGEmujer,IMAGEmujerRes ,IMAGEmujerAsignada,IMAGEmujerReAsignada;
     private String rutaIconos = "\\src\\utilsDiseniaEscenariosRosace\\";
 //    private String rutaPersistenciaEscenario = "\\src\\persistenciaEscenarios\\";
     private String directorioPersistencia = VocabularioRosace.NombreDirectorioPersistenciaEscenarios+File.separator;
-     private String imageniconoHombre = "Hombre.png";
+    private String imageniconoHombre = "Hombre.png";
     private String imageniconoMujer = "Mujer.png";
     private String imageniconoMujerRescatada = "MujerRescatada.png";
     private String imageniconoHombreRescatado = "HombreRescatado.png";
@@ -79,6 +79,9 @@ public class VisorMovimientoEscenario extends javax.swing.JFrame {
         IMAGErobot = Utilities.loadImage (rutaIconoRobot);
         IMAGEmujerRes = Utilities.loadImage ( rutapaqueteConstructorEscenariosROSACE +imageniconoMujerRescatada); 
         IMAGEmujer = Utilities.loadImage ( rutapaqueteConstructorEscenariosROSACE +imageniconoMujer);
+        IMAGEmujerAsignada= Utilities.loadImage ("utilsDiseniaEscenariosRosace/MujerAsignada.png");
+        IMAGEmujerReAsignada= Utilities.loadImage ("utilsDiseniaEscenariosRosace/MujerReasignada.png");
+        
         tablaEntidadesEnEscenario= new HashMap<String, JLabel>();
          
 //        JLabel label = new javax.swing.JLabel("RobotPrueba");
@@ -461,14 +464,8 @@ public class VisorMovimientoEscenario extends javax.swing.JFrame {
     public void cambiarIconoEntidad(String idEntidad, Image imagenIcono) {
 
        JLabel jlabelEntidad = tablaEntidadesEnEscenario.get(idEntidad);
-
-        if (idEntidad != null) {
-//            jlabelEntidad.setEnabled(false);
-//            ImageIcon icono = new ImageIcon (IMAGEmujerRes);
+        if (jlabelEntidad != null) {
             ImageIcon icono = new ImageIcon (imagenIcono);
-    
-//            Icon icon = jlabelEntidad.getIcon();
-//            jlabelEntidad.setDisabledIcon(icon);
             jlabelEntidad.setIcon(icono);
         } else {
             System.out.println("jlabelEntidad nulo");

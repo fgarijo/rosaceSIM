@@ -344,9 +344,24 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
 //        visorEscenarios.cambiarPosicionRobot(identRobot, coordX, coordY);
 //    }
     @Override
-    public synchronized void mostrarVictimaRescatada(String identVictima)throws Exception{
-//        
-        this.controladorIUSimulador.peticionMostrarVictimaRescatada( identVictima);
+    public synchronized void mostrarVictima(String identVictima,String estadoVictima)throws Exception{
+        controladorIUSimulador.peticionMostrarVictima( identVictima, estadoVictima);
+//        switch (estadoVictima) {
+//            case "esperandoRescate":
+//                this.visorEscenarioMov.cambiarIconoEntidad(identVictima,VisorMovimientoEscenario.IMAGEmujer);
+//                break;
+//            case "asignada":
+//                this.visorEscenarioMov.cambiarIconoEntidad(identVictima,VisorMovimientoEscenario.IMAGEmujerAsignada);
+//                break;
+//            case "reAsignada":
+//                this.visorEscenarioMov.cambiarIconoEntidad(identVictima,VisorMovimientoEscenario.IMAGEmujerReAsignada);
+//                break;
+//            case "rescatada":
+//                this.visorEscenarioMov.cambiarIconoEntidad(identVictima,VisorMovimientoEscenario.IMAGEmujerRes);
+//                break;
+//                default:
+//             throw new IllegalArgumentException("Estado de la victima no valido : " + estadoVictima);
+//        }
     }
     @Override
      public  void inicializarDestinoRobot(String idRobot,Coordinate coordInicial,String destinoId, Coordinate coordDestino, double velocidadInicial){
@@ -362,40 +377,7 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
 ////               visorEscenarios.moverRobot(idRobot, coordX, coordX);
 //           }
     }
-//        public synchronized void mostrarMovimientoAdestino(String idRobot,String identDest,Coordinate coordDestino, float velocidadCrucero) {
-//            if (idRobot != null ){
-//                this.visorEscenarios.setVisible(true);
-//           HebraMovimiento hebraMov =  this.getInstanciaHebraMvto(idRobot);
-//           hebraMov.finalizar();
-//           hebraMov.inicializarDestino(identDest, hebraMov.getCoordRobot(), coordDestino, velocidadCrucero);
-//           hebraMov.run();
-//            }
-//         //   identDestino = identDest;
-//        }
-////    private HebraMovimiento getInstanciaHebraMvto(String identRobot) {
-////         
-////         if(identRobot != null){
-////             HebraMovimiento hebramov;
-////             if (tablaHebrasMov == null ){
-////                 tablaHebrasMov = new HashMap();
-////                 hebramov = new HebraMovimiento (identRobot,notifEvt,visorEscenarios);
-////                 tablaHebrasMov.put(identRobot, hebramov);
-////                 return hebramov;
-////             }else{
-////                 hebramov = tablaHebrasMov.get(identRobot);
-////                 if (hebramov == null){
-////                      hebramov = new HebraMovimiento (identRobot,notifEvt,visorEscenarios);
-////                      tablaHebrasMov.put(identRobot, hebramov);                  
-////                 }
-////                 
-////                 trazas.trazar(identRobot, " se crea el monitor de movimiento del robot ", InfoTraza.NivelTraza.debug);
-////                 return hebramov;
-////             }
-//         }
-//         trazas.trazar(identAgenteAReportar, " el identificador del monitor de movimiento del robot debe ser distinto de null ", InfoTraza.NivelTraza.error);
-//         return null;
-//         
-//     }
+
     @Override
     public void mostrarIdentsEquipoRobots(ArrayList identList){
 //        this.ventanaControlCenterGUI.visualizarIdentsEquipoRobot(identList);

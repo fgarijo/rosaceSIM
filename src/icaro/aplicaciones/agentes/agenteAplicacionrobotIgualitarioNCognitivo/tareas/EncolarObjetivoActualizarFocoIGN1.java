@@ -75,30 +75,8 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
             //Inicializar y recuperar la referencia al recurso de estadisticas 
             String refVictima = objetivoAsignado.getobjectReferenceId();
             this.informarControladorAsignacionVictima(refVictima);
-//            long tiempoActual = System.currentTimeMillis();
-//            String refVictima = objetivoAsignado.getobjectReferenceId();
-//            //      	 itfUsoRecursoEstadistica.escribeEstadisticaFicheroTextoPlanoTRealAsignacionVictimasRobots(tiempoActual, refVictima, nombreAgenteEmisor, coste);
-//            ////////////////////////////////////////////////////////
-//            //ENVIAR INFORMACION AL AGENTE CONTROLADOR DEL SIMULADOR           
-//            Object[] valoresParametrosAccion = new Object[4];
-//            valoresParametrosAccion[0] = tiempoActual;
-//            valoresParametrosAccion[1] = refVictima;
-//            valoresParametrosAccion[2] = nombreAgenteEmisor;
-//            valoresParametrosAccion[3] = miEvaluacion;
-//            InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo("victimaAsignadaARobot", valoresParametrosAccion);
-//            this.getComunicator().enviarInfoAotroAgente(msg, VocabularioRosace.IdentAgteControladorSimulador);
-            // verificamos que no se esta ayudando a esa victima. Comprobamos que el ident no esta en ninguno de los objetivos 
-            // Se compara con los objetivos pendientes
-            // Miramos si la cola de objetivos esta o no vacia 
             Objetivo nuevoObj = misObjs.getobjetivoMasPrioritario();
               itfcompMov = estatusRobot.getInfoCompMovt();
-//             while( nuevoObj != null&& nuevoObj.getPriority()>0 ){
-//                 if (nuevoObj.getState()== Objetivo.SOLVED){  
-//                                    nuevoObj.setPriority(-1);
-//                                    misObjs.cambiarPrioridad(obj1);
-//                                    nuevoObj=misObjs.getobjetivoMasPrioritario();
-//                             }
-//             }
              Thread t = new Thread(){
 				
                                 @Override
@@ -117,15 +95,12 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
                 t.start();
                 estatusRobot.setidentDestino(objetivoAsignado.getobjectReferenceId());
                 estatusRobot.setestadoMovimiento(EstadoMovimientoRobot.RobotEnMovimiento.name());
-                  
-
                 this.getEnvioHechos().actualizarHechoWithoutFireRules(estatusRobot);
                 this.getEnvioHechos().actualizarHechoWithoutFireRules(objetivoAsignado);
                 this.getEnvioHechos().actualizarHechoWithoutFireRules(misObjs);
                 trazas.aceptaNuevaTrazaEjecReglas(identAgente, "No hay objetivos anteriores Objetivo considerado : "+ objetivoAsignado.toString()+
                         "Se ejecuta la tarea : " + identTarea + " Se actualiza el  foco al objetivo:  " + objetivoAsignado +
                         "estado del robot : "+EstadoMovimientoRobot.RobotEnMovimiento.name()+"\n");
-            
             }else{
                  misObjs.addObjetivo(objetivoAsignado);
                                     this.getEnvioHechos().actualizarHecho(misObjs);

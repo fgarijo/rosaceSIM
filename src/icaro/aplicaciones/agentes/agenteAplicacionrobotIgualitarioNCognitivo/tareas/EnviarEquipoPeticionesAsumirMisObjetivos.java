@@ -35,22 +35,26 @@ public class EnviarEquipoPeticionesAsumirMisObjetivos extends TareaSincrona{
              VictimsToRescue victimas = (VictimsToRescue)params[3];
              InfoTransimisionObjetivos infoTransmisionObjs;
 //             String idVictima=trsnsfObj.getobjectReferenceId();
-              trazas.aceptaNuevaTrazaEjecReglas(identAgente, "  Se ejecuta la tarea : " + identTarea + " Vicitimas a rescatar : " +victimas.getvictims2Rescue().toString() +"\n");
+              
+              
              infoTransmisionObjs = new InfoTransimisionObjetivos(identAgente,miEquipo,miEstatus.getcausaCambioEstado());
              // Enviamos las propuestas a los miembros del equipo
              Iterator<Objetivo>  iterObj = misObjs.getMisObjetivosPriorizados().iterator();
             ArrayList<String> idsAgtesMiequipo = miEquipo.getTeamMemberIDs();
+            trazas.aceptaNuevaTrazaEjecReglas(identAgente, "  Se ejecuta la tarea : " + identTarea 
+                      + "///////////////////////////////////////////////////////////////////////////////// ///////////"+"\n"+
+                      "Agentes en mi equipo: " + idsAgtesMiequipo ); 
             while (iterObj.hasNext()){
   	  	  //Hay al menos un objetivo    		
                 Objetivo obj = iterObj.next();
 //                if(obj.getgoalId().equals(idObjetivoAtrasmitir) ){
-                if(obj.getState()!=Objetivo.SOLVED){
+                if( obj.getgoalId().equals("AyudarVictima")){
                 String obrefId = obj.getobjectReferenceId();
                 PeticionAsumirObjetivo petAsumirObj = new PeticionAsumirObjetivo(this.identAgente, obj, miEstatus);
                 petAsumirObj.setinfoComplementaria(victimas.getVictimToRescue(obrefId));
                 this.getComunicator().informaraGrupoAgentes(petAsumirObj, idsAgtesMiequipo);
                 infoTransmisionObjs.addInfoPropuestaEnviada(obrefId);
-                trazas.aceptaNuevaTrazaEjecReglas(identAgente, " Se envia una peticion al equipo para salvar a la vicitma : "+obrefId+ "Se aniade la victima a InfoTransimisionObjetivos . Contenido :  " + infoTransmisionObjs +"\n");
+                trazas.aceptaNuevaTrazaEjecReglas(identAgente, " Se envia una peticion al equipo para salvar a la victima : "+obrefId+ "Se aniade la victima a InfoTransimisionObjetivos . Contenido :  " + infoTransmisionObjs +"\n");
                 }
             }
              this.getEnvioHechos().insertarHecho(infoTransmisionObjs);

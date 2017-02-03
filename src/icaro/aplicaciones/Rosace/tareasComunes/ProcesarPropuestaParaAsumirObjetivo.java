@@ -39,7 +39,7 @@ public class ProcesarPropuestaParaAsumirObjetivo extends TareaSincrona {
                         this.generarInformeConCausaTerminacion(this.identTarea, objetivoEjecutantedeTarea,this.identAgente, VocabularioRosace.MsgContenidoPropuestaNoValida, CausaTerminacionTarea.ERROR);
                         trazas.aceptaNuevaTraza(new InfoTraza(this.identAgente, "El mensaje de la propuesta Recibida No es valido :  "+ propuestaRecibida  , InfoTraza.NivelTraza.error));
                   }
-                  else { //De acuerdo a la regla citada al principio, la ejecucion entraría por aqui
+                  else { //De acuerdo a la regla citada al principio, la ejecucion entrara por aqui
                       // evaluo de nuevo el coste de hacerme cargo del objetivo y si puedo hacerlo contesto que acepto
                        Coste coste = new Coste();
  //                      int costeAyudaVictima = coste.calculoCosteAyudarVictimaConRLocation(nombreAgenteEmisor, miStatus, victima,  victimasRecibidas,  misObjtvs, "FuncionEvaluacion3");

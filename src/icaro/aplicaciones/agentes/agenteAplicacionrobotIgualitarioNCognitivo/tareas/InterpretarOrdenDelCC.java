@@ -30,15 +30,7 @@ public class InterpretarOrdenDelCC extends TareaSincrona{
              Victim victim = (Victim)ccOrdenAyudarVictima.getJustificacion();
             // String identTarea = this.getIdentTarea();
              String nombreAgenteEmisor = this.getIdentAgente();
-             String idVictim = victim.getName();
-         //    this.getEnvioHechos().eliminarHechoWithoutFireRules(ccOrdenAyudarVictima);
-            
-           // verificamos que no se esta ayudando a esa victima. Comprobamos que el ident no esta en ninguno de los objetivos 
-       //      if ((ccOrdenAyudarVictima.mensajeOrden.equals(VocabularioRosace.MsgOrdenCCAyudarVictima)))
-        //          if((objetivoEjecutantedeTarea == null) |
-        //             ((objetivoEjecutantedeTarea != null)&&((!idVictim.equals(objetivoEjecutantedeTarea.getobjectReferenceId()))&& (!misObjs.existeObjetivoConEsteIdentRef(idVictim))))){
-           // se crea el objetivo y se inserta en el motor
-//                 if (victims2R.getvictims2Rescue().isEmpty() || victims2R.getVictimToRescue(idVictim) == null )  {   
+             String idVictim = victim.getName(); 
                  AyudarVictima newAyudarVictima = new AyudarVictima (idVictim);
            //      newObjetivo.setvictimId(idVictim);
                  newAyudarVictima.setPriority(victim.getPriority());

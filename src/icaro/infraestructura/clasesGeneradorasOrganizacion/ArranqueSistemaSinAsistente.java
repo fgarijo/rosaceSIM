@@ -19,23 +19,23 @@ public class ArranqueSistemaSinAsistente {
     private static final long serialVersionUID = 1L;
 
     /**
-     * M�todo de arranque principal de la organizaci�n
+     * Mï¿½todo de arranque principal de la organizaciï¿½n
      * 
      * @param args
-     *            Entrada: ruta completa hasta el fichero de configuraci�n
+     *            Entrada: ruta completa hasta el fichero de configuraciï¿½n
      */
     public static void main(String args[]) {
 
         boolean herramientaArrancada = false;
 
-        // creamos los recursos de la organizaci�n
+        // creamos los recursos de la organizaciï¿½n
 
         ItfUsoConfiguracion configuracionExterna = null;
         ItfUsoRecursoTrazas recursoTrazas = null;
 
         if (args.length == 0) {
             System.err.println("Error. Ningun argumento recibido.\n Causa: Es necesario pasar como argumento la ruta del fichero de descripcion.\n Ejemplo: ./config/descripcionAcceso.xml");
-            int opcion = JOptionPane.showConfirmDialog(new JFrame(), "Descripción de Organizacion no encontrado. ¿Desea arrancar el asistente de creación de Descripción de Organización?", "Confirmación", JOptionPane.YES_NO_OPTION);
+            int opcion = JOptionPane.showConfirmDialog(new JFrame(), "Descripcion de Organizacion no encontrado. ¿Desea arrancar el asistente de creacion de Descripcion de Organizacion?", "Confirmacion", JOptionPane.YES_NO_OPTION);
            // if (opcion == JOptionPane.YES_OPTION) {
            //     arrancarHerramienta();
           //      herramientaArrancada = true;
@@ -48,7 +48,7 @@ public class ArranqueSistemaSinAsistente {
                 configuracionExterna = ClaseGeneradoraConfiguracion.instance(args[0]);
                 
 
-                // registro la configuraci�n 
+                // registro la configuraciï¿½n 
 
                 repositorioInterfaces.registrarInterfaz(
                         NombresPredefinidos.ITF_USO + NombresPredefinidos.CONFIGURACION,
@@ -62,9 +62,9 @@ public class ArranqueSistemaSinAsistente {
                 System.err.println("Error. No se ha podido interpretar o registrar la descripcion.");
                 e.printStackTrace();
                 int opcion = JOptionPane.showConfirmDialog(new JFrame(), 
-                        "Descripci�n de Organizacion inv�lido. " +
-                        "�Desea arrancar el asistente de creaci�n de Descripci�n de Organizaci�n?",
-                        "Confirmaci�n", JOptionPane.YES_NO_OPTION);
+                        "Descripciï¿½n de Organizacion invï¿½lido. " +
+                        "ï¿½Desea arrancar el asistente de creaciï¿½n de Descripciï¿½n de Organizaciï¿½n?",
+                        "Confirmaciï¿½n", JOptionPane.YES_NO_OPTION);
          //       if (opcion == JOptionPane.YES_OPTION) {
           //          arrancarHerramienta();
           //          herramientaArrancada = true;
@@ -86,19 +86,19 @@ public class ArranqueSistemaSinAsistente {
                 } catch (Exception e) {
                     System.err.println("Error. No se pudo crear o registrar el recurso de trazas");
                     e.printStackTrace();
-                //no es error cr�tico
+                //no es error crï¿½tico
                 }
             }
             ItfGestionAgenteReactivo gestorOrg = null;
             if (!herramientaArrancada) {
                 try {
                     DescInstanciaAgente descGestor = configuracionExterna.getDescInstanciaGestor(NombresPredefinidos.NOMBRE_GESTOR_ORGANIZACION);
-                    // creo el agente gestor de organizaci�n
+                    // creo el agente gestor de organizaciï¿½n
                     FactoriaAgenteReactivo.instancia().crearAgenteReactivo(descGestor);
                     gestorOrg = (ItfGestionAgenteReactivo) ClaseGeneradoraRepositorioInterfaces.instance().obtenerInterfaz(
                             NombresPredefinidos.ITF_GESTION + NombresPredefinidos.NOMBRE_GESTOR_ORGANIZACION);
 
-                    // arranco la organizaci�n
+                    // arranco la organizaciï¿½n
                     gestorOrg.arranca();
 
                 } catch (ExcepcionEnComponente e) {

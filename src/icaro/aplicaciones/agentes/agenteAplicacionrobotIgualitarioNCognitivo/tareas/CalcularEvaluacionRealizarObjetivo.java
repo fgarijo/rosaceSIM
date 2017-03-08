@@ -14,7 +14,7 @@ import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRe
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.imp.ClaseGeneradoraRepositorioInterfaces;
 
 /**
- *Se calcula el coste de la realización del objetivo
+ *Se calcula el coste de la realizacion del objetivo
  * @author Francisco J Garijo
  */
 public class CalcularEvaluacionRealizarObjetivo extends TareaSincrona {
@@ -86,7 +86,7 @@ public class CalcularEvaluacionRealizarObjetivo extends TareaSincrona {
     //              mi_eval_nueva = cotaMaxima; 
                     //como va el que menor rango tiene, lo inicializamos a la peor                        
                     //Para que gane el que mayor valor tiene de evaluacion le resto el valor de la distancia obtenida al valor mÃ¡ximo de Integer
-                    //El que este mas cercano hara¡ decrecer menos ese valor y por tanto es el MEJOR
+                    //El que este mas cercano hara decrecer menos ese valor y por tanto es el MEJOR
                     mi_eval = mi_eval_nueva - mi_eval;
                 }
             }else // Robot bloqueado

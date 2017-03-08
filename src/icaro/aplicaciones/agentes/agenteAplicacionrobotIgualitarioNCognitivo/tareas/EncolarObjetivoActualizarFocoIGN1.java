@@ -119,7 +119,7 @@ public class EncolarObjetivoActualizarFocoIGN1 extends TareaSincrona {
 //                       itfcompMov.cambiaDestino(nuevoObj.getobjectReferenceId(), victima.getCoordinateVictim());
                         t.start();
                        estatusRobot.setidentDestino(nuevoObj.getobjectReferenceId());
-                       objetivoAsignado.setSolving(); // interrumpimos la ejecución y la sustituimos por el nuevo objetivo
+                       objetivoAsignado.setSolving(); // interrumpimos la ejecucion y la sustituimos por el nuevo objetivo
 //                       nuevoObj.setPending();
                        this.getEnvioHechos().actualizarHechoWithoutFireRules(objetivoAsignado);
                        this.getEnvioHechos().actualizarHechoWithoutFireRules(nuevoObj);

@@ -17,7 +17,7 @@ import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.
  *
  * @author FGarijo
  * 
- * Corresponde a un decisión de que otro agente se ha hecho cargo de la tarea
+ * Corresponde a un decision de que otro agente se ha hecho cargo de la tarea
  */
 public class AsimilarDecisionAsignVictimaOtroAgte extends TareaSincrona{
     private int velocidadCruceroPordefecto = 5;// metros por segundo

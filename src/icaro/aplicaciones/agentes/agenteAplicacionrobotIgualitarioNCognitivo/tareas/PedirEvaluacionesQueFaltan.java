@@ -42,7 +42,7 @@ public class PedirEvaluacionesQueFaltan extends TareaSincrona{
                                   PeticionAgente peticionEval = new PeticionAgente(this.getIdentAgente());
                                   peticionEval.setidentObjectRefPeticion(objetivoEjecutantedeTarea.getobjectReferenceId());
                                   peticionEval.setMensajePeticion(VocabularioRosace.MsgPeticionEnvioEvaluaciones);
-                                  peticionEval.setJustificacion(victima); // para que se sepa qué evaluacion le pedimos
+                                  peticionEval.setJustificacion(victima); // para que se sepa que evaluacion le pedimos
                                   comunicacion.enviarInfoAotroAgente(peticionEval, agenteReceptor);
                             //      comunicacion.enviarInfoConMomentoCreacionAotroAgente(peticionEval, agenteReceptor);
                        }

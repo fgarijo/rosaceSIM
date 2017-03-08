@@ -35,8 +35,6 @@ public class EnviarEquipoPeticionesAsumirMisObjetivos extends TareaSincrona{
              VictimsToRescue victimas = (VictimsToRescue)params[3];
              InfoTransimisionObjetivos infoTransmisionObjs;
 //             String idVictima=trsnsfObj.getobjectReferenceId();
-              
-              
              infoTransmisionObjs = new InfoTransimisionObjetivos(identAgente,miEquipo,miEstatus.getcausaCambioEstado());
              // Enviamos las propuestas a los miembros del equipo
              Iterator<Objetivo>  iterObj = misObjs.getMisObjetivosPriorizados().iterator();
@@ -50,7 +48,7 @@ public class EnviarEquipoPeticionesAsumirMisObjetivos extends TareaSincrona{
 //                if(obj.getgoalId().equals(idObjetivoAtrasmitir) ){
                 if( obj.getgoalId().equals("AyudarVictima")){
                 String obrefId = obj.getobjectReferenceId();
-                PeticionAsumirObjetivo petAsumirObj = new PeticionAsumirObjetivo(this.identAgente, obj, miEstatus);
+                PeticionAsumirObjetivo petAsumirObj = new PeticionAsumirObjetivo(this.identAgente, obj, (RobotStatus1)miEstatus.clone());
                 petAsumirObj.setinfoComplementaria(victimas.getVictimToRescue(obrefId));
                 this.getComunicator().informaraGrupoAgentes(petAsumirObj, idsAgtesMiequipo);
                 infoTransmisionObjs.addInfoPropuestaEnviada(obrefId);

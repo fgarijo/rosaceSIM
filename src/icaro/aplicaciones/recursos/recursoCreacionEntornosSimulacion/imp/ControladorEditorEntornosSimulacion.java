@@ -45,12 +45,12 @@ public class ControladorEditorEntornosSimulacion {
     private String imageniconoRobot = "Robot.png";
     private String modeloOrganizativoInicial = "Igualitario";
     private String tituloAvisoEscenarioNoDefinido= "Escenario indefinido";
-    private String mensajeEscenarioNoDefinido= "El esceneraio de simulación no esta definido ";
+    private String mensajeEscenarioNoDefinido= "El esceneraio de simulacion no esta definido ";
     private String recomendacionDefinirEscenario= " Abrir un escenario con el menu de edicion o crear un escenario nuevo";
-    private String mensajeEscenarioNoSeleccionado= "No se ha seleccionado el esceneraio de simulación ";
+    private String mensajeEscenarioNoSeleccionado= "No se ha seleccionado el esceneraio de simulacion ";
     private String tituloAvisoEscenSinRobotsDefinidos= "Escenario sin Robots definidos";
     private String mensajeEscenarioSinRobots= "No se han definido Robots en el escenario ";
-    private String recomendacionDefinirRobots= " Definir Robots y Victimas con el botón derecho para poder guardar el escenario ";
+    private String recomendacionDefinirRobots= " Definir Robots y Victimas con el boton derecho para poder guardar el escenario ";
     private Map<String, JLabel> tablaEntidadesEnEscenario;
     private ArrayList <JLabel> listaEntidadesEnEscenario;
     private JPanel panelVisor;
@@ -84,7 +84,7 @@ public class ControladorEditorEntornosSimulacion {
                 try {
                     gestionEscComp = new GestionEscenariosSimulacion();
                     gestionEscComp.setIdentsEscenariosSimulacion(persistencia.obtenerIdentsEscenarioSimulacion(directorioPersistencia));
-//        escenarioActualComp = gestionEscComp.crearEscenarioSimulación();
+//        escenarioActualComp = gestionEscComp.crearEscenarioSimulacion();
 //                    visorControlSim = new VisorControlSimuladorRosace(this);
                     visorEditorEscen= new VisorCreacionEscenarios1(this);
                    
@@ -92,7 +92,7 @@ public class ControladorEditorEntornosSimulacion {
 //                    persistencia= new PersistenciaVisualizadorEscenarios();
 //                    visor.setPersistencia(persistencia);
 //                    visor.setGestorEscenarionComp(gestionEscComp);
-//                    visor.setEscenarioActualComp(gestionEscComp.crearEscenarioSimulación());
+//                    visor.setEscenarioActualComp(gestionEscComp.crearEscenarioSimulacion());
 //                    visor.setIdentEquipoActual()
 //                    visor.actualizarInfoEquipoEnEscenario();
 //                    visorControlSim.setVisible(true);

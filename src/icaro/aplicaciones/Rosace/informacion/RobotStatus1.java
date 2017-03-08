@@ -1,6 +1,6 @@
 /*
  *
- * Clase para gestionar las caracteristicas del robot en un escenario de simulación :
+ * Clase para gestionar las caracteristicas del robot en un escenario de simulacion :
  * 
  *    -  idRobot -> Identificador del robot
  *    -  availableEnergy -> Energia disponible
@@ -16,16 +16,13 @@
 
 package icaro.aplicaciones.Rosace.informacion;
 
-import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.InfoCompMovimiento;
 import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.ElementMap;
 import org.simpleframework.xml.Root;
 @Root
 public class RobotStatus1 implements Cloneable{

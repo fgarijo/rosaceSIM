@@ -4,6 +4,7 @@
  */
 package icaro.aplicaciones.agentes.agenteAplicacionSubordinadoConCambioRolCognitivo.informacion;
 
+import icaro.aplicaciones.Rosace.informacion.InfoInteraccionBasica;
 import icaro.aplicaciones.Rosace.informacion.AceptacionPropuesta;
 import icaro.aplicaciones.Rosace.informacion.PropuestaAgente;
 import icaro.aplicaciones.Rosace.informacion.RechazarPropuesta;

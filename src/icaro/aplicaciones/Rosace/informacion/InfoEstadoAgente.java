@@ -5,8 +5,6 @@
  */
 package icaro.aplicaciones.Rosace.informacion;
 
-import icaro.aplicaciones.agentes.agenteAplicacionSubordinadoConCambioRolCognitivo.informacion.InfoInteraccionBasica;
-
 /**
  *
  * @author FGarijo

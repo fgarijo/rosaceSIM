@@ -115,7 +115,7 @@ private ItfUsoMovimientoCtrl itfcompMov;
 //                    if (estadoMovRobot.equalsIgnoreCase(EstadoMovimientoRobot.RobotEnMovimiento.name())){   
 //                       itfcompMov.cambiaDestino(objetivoActual.getobjectReferenceId(), victima.getCoordinateVictim());
 //                       estatusRobot.setidentDestino(objetivoActual.getobjectReferenceId());
-////                       objetivoAsignado.setSolving(); // interrumpimos la ejecución y la sustituimos por el nuevo objetivo   
+////                       objetivoAsignado.setSolving(); // interrumpimos la ejecucion y la sustituimos por el nuevo objetivo   
                     objetivoActual.setPending();
                     estatusRobot.setidentDestino(objetivoAsignado.getobjectReferenceId());
                     t.run();

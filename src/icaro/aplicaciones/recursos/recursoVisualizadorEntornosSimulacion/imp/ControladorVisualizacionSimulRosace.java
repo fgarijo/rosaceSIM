@@ -56,6 +56,7 @@ public class ControladorVisualizacionSimulRosace {
     private String imageniconoRobot = "Robot.png";
     private String modeloOrganizativoInicial = "Igualitario";
     private String tituloAvisoEscenarioNoDefinido= "Escenario indefinido";
+    private String tituloAvisoIntentosSobrepsados= "Intentos para obtener Escenario sobrapasados";
     private String mensajeEscenarioNoDefinido= "El esceneraio de simulación no esta definido ";
     private String recomendacionDefinirEscenario= " Abrir un escenario con el menu de edicion o crear un escenario nuevo";
     private String caracteristicasFicheroSimulacion;
@@ -94,10 +95,13 @@ public class ControladorVisualizacionSimulRosace {
     public static final int MOD_SIMULACION=1;
     public static final int FICHERO_SELECCIONADO = 0;
     public static final int USUARIO_CANCELA_SELECCION = 1;
+    public static final int INTENTOS_SELECCION_SOBREPASADOS = 2;
+    public static final int FICHERO_VALIDO = 3;
 //    private boolean simulando;
 //    private boolean editando;
     private javax.swing.JFileChooser jFileChooser1;
-    int maxIntentosPeticionSeleccionEscenario = 2;
+    private int maxIntentosPeticionSeleccionEscenario = 2;
+    private int resultadoObtencionFicheroSimulacion;
     private ArrayList identsVictims;
     private boolean avisoSeleccionVictima;
     private MemComunControladores memComunControladores;
@@ -167,16 +171,16 @@ public class ControladorVisualizacionSimulRosace {
                 simulacionEnCurso= true;
             }
       }else {
-         
           visorControlSim.visualizarRecomenSeleccionFicheroSimulacion(tituloAvisoEscenarioNoDefinido,
                 memComunControladores.getmodorganizDefinidoEnOrg(),memComunControladores.getnumRobotsdefsEnOrganizacion() );
-         if( this.obtenerEscenarioSimulacion(modeloOrganizativo, numeroRobots)){
+          int resultadoObtenrEscenario = this.obtenerEscenarioSimulacion(modeloOrganizativo, numeroRobots);
+         if( resultadoObtenrEscenario== this.FICHERO_VALIDO){
              this.notifEvts.sendPeticionSimulacionSecuenciaVictimasToRobotTeam(escenarioSimulComp,intervaloSecuencia);
              simulacionEnCurso= true;
          }
-             else //this.notifRecomendacionUsuario("Falta Escenario de simulacion", "No se ha abierto  un fichero de simulación valido ", " Abrir un fichero con el editor o crear uno nuevo");
-            visorControlSim.visualizarRecomenSeleccionFicheroSimulacion(tituloAvisoEscenarioNoDefinido,
-                memComunControladores.getmodorganizDefinidoEnOrg(),memComunControladores.getnumRobotsdefsEnOrganizacion() );  
+//         else if (resultadoObtenrEscenario== this.INTENTOS_SELECCION_SOBREPASADOS)
+//            visorControlSim.visualizarRecomenSeleccionFicheroSimulacion(tituloAvisoIntentosSobrepsados,
+//                memComunControladores.getmodorganizDefinidoEnOrg(),memComunControladores.getnumRobotsdefsEnOrganizacion() );  
         }
       }
   
@@ -462,106 +466,49 @@ public  void peticionSalvarVictima() {
     return escenarioActualAbierto;
     }
 
-//public void peticionObtenerEscenarioSimulacion(String modOrganizativo, int numRobots) {
-//    // Se delega la peticion al gestor de escenarios y se compara el computacional obtenido con el computacional  existente si lo  hay
-//    // 
-//    if (escenarioSimulComp == null){
-//        gestionEscComp.
-//    }
-//    if( escenarioActualAbierto){
-//          if(this.verificarCaracteristicasEscenarioAbierto(modOrganizativo,numRobots))
-//            if (  visorControlSim.solicitarConfirmacion("Desea utilizar el escenario actual abierto como escenario de simulacion ?"))
-//                notifEvts.sendInfoEscenarioSeleccionado(escenarioEdicionComp);
-//    }
-//        peticionObtenerEscenarioValido= true;
-//        escenarioValidoObtenido = false;
-//         if (!visorControlSim.hayFicherosCreados()) {
-//             visorControlSim.visualizarConsejo("Creacion de Fichero ", " No hay ficheros de simulacion creados",
-//                     "Debe crear un fichero de modelo organizativo: "+modOrganizativo+ " y numero de Robots = : "+ numRobots);
-//             this.peticionCrearEscenario();
-//             notifEvts.sendNotifAgteControlador("EscenarioEnfaseDeCreacion");
-//         } else { // hay ficheros definidos le pedimos que seleccione uno 
-//        
-//        visorControlSim.visualizarConsejo("Seleccion de Fichero ", "Seleccionar un fichero de modelo organizativo: "+modOrganizativo
-//            + " y numero de Robots = : "+ numRobots, "Si no tiene ninguno de estas caracteristicas cree uno nuevo ");
-//        File ficheroSeleccionado = this.peticionSeleccionarEscenario();
-//        int numeroIntentos=0; boolean ficheroSeleccionadoValido= false;
-//        while (numeroIntentos< maxIntentosPeticionSeleccionEscenario &&!ficheroSeleccionadoValido  ){
-//            if (ficheroSeleccionado !=null)
-//                if(!verificarCaracteristicasEscenarioSeleccionado(ficheroSeleccionado,modOrganizativo, numRobots)){
-//                 visorControlSim.visualizarConsejo("Fichero no valido ", "Se debe seleccionar un fichero de modelo organizativo: "+modOrganizativo
-//                + " y numero de Robots = : "+ numRobots, "Si no tiene ninguno de estas caracteristicas cree uno nuevo ");
-//                ficheroSeleccionado = this.peticionSeleccionarEscenario();
-//                // Se podrian considerar mas intentos pero lo dejamos aqui
-//                
-//            } else {
-//                ficheroSeleccionadoValido = true;
-////              notifEvts.sendInfoEscenarioSeleccionado(escenarioActualComp);
-//            }else // no se ha seleccionado ningun fichero 
-//            visorControlSim.visualizarConsejo("Sin seleccion de fichero ", "Se debe seleccionar un fichero de modelo organizativo: "+modOrganizativo
-//            + " y numero de Robots = : "+ numRobots, "Sin fichero que defina el escenario no se puede iniciar la simulacion ");
-//            numeroIntentos ++;
-//        }
-//       if (ficheroSeleccionadoValido){
-//           notifEvts.sendInfoEscenarioSeleccionado(escenarioEdicionComp);
-//           escenarioValidoObtenido = true;
-//           peticionObtenerEscenarioValido = false;
-//       }
-//       else notifEvts.sendNotifAgteControlador("escenarioNoDefinidoTrasAgotarLosIntentos");
-//    }
-  
- // caso 3 un escenario abierto y el suario pulsa la opcion simular.
- //     es necesario validarlo  y si es valido se envia una notificacion al agente con el computacional
-//        si no es válido hay que pedir que se seleccione otro : noticar que el escenario tiene que tener el mismo
-//        numero de robots que el definido en la configuracion y esperar que seleccione o cree uno nuevo
-//        una vez conseguido el escenrio valido se cambian los identificadores de los robots para ajustarlos a la configuracion
-    
-   
-    
-//    } 
- public  boolean obtenerEscenarioSimulacion(String modOrganizativo, int numRobots) {
+ public  int obtenerEscenarioSimulacion(String modOrganizativo, int numRobots) {
+     // Posibles resultados:
+     //1:se obtiene un escenario  valido
+     //2:se sobrepasa el numero de intentos para obtener el fichero
+     //3:el usuario cancela la peticion para seleccionar el escenario
     this.peticionObtenerEscenarioValido=true;
     int numeroIntentos=0;
-    int resultadoSeleccion;
-    boolean ficheroSeleccionadoValido=false;
+    int resultadoSeleccion=-1;
+    boolean nuevoIntentoDeObtencion=true;
      modeloOrganizativo=modOrganizativo;
      numeroRobots=numRobots ;
     this.memComunControladores.setmodorganizDefinidoEnOrg(modOrganizativo);
     this.memComunControladores.setnumRobotsdefsEnOrganizacion(numRobots);
     EscenarioSimulacionRobtsVictms escenario = null;
-    while( numeroIntentos<=this.maxIntentosPeticionSeleccionEscenario&&!ficheroSeleccionadoValido){
+    
+    while( numeroIntentos<=this.maxIntentosPeticionSeleccionEscenario&&nuevoIntentoDeObtencion){
         resultadoSeleccion = visorControlSim.selecciondeFichero();
-        if (resultadoSeleccion==this.USUARIO_CANCELA_SELECCION)numeroIntentos=maxIntentosPeticionSeleccionEscenario;
+        if (resultadoSeleccion==this.USUARIO_CANCELA_SELECCION)nuevoIntentoDeObtencion=false;
         else 
             if(resultadoSeleccion==this.FICHERO_SELECCIONADO ){
             escenario = obtenerComputacionalDePersistencia(visorControlSim.getUltimoFicheroEscenarioSeleccionado());
             if (escenario ==null )visorControlSim.visualizarConsejo("Fichero seleccionado Nulo ", "Se debe eleccionar un fichero con modelo organizativo : "+modOrganizativo
                 + " y numero  = : "+ numRobots , "Seleccione otro fichero o  cree uno nuevo "); 
             else if(  escenario.getmodeloOrganizativo().equals(modOrganizativo)
-                       && escenario.getNumRobots()==numRobots) ficheroSeleccionadoValido= true;
+                       && escenario.getNumRobots()==numRobots) nuevoIntentoDeObtencion=false;
                 else
                 visorControlSim.visualizarConsejo("Fichero seleccionado No valido ", "El modelo organizativo del fichero seleccionado debe ser: "+modOrganizativo
                     + " y el  numero de Robots debe ser de = : "+ numRobots ," pero el fichero selecionado no tiene estas características. Seleccione otro fichero o  cree uno nuevo "); 
             }
             numeroIntentos ++;
     }
-    if(ficheroSeleccionadoValido){
+    if(resultadoSeleccion == this.FICHERO_VALIDO){
         escenarioSimulComp= escenario;
         escenarioSimulComp.setGestorEscenarios(gestionEscComp);
         identEquipoActual=escenarioSimulComp.getIdentEscenario();
-//        visorControlSim.setIdentEscenarioActual(identEquipoActual);
-//        visorControlSim.setIntervaloEnvioMensajesDesdeCC(intervaloSecuencia);
-//        identsRobotsEquipo=escenarioSimulComp.getListIdentsRobots();
-//        visorControlSim.visualizarIdentsEquipoRobot(identsRobotsEquipo);
         this.memComunControladores.setescenarioMovimiento(escenarioSimulComp);
         this.memComunControladores.setcambioEnEscenarioSimulacion(true);
-//        this.memComunControladores.setescenarioSimulacionAbierto(true); 
-//        notifEvts.sendInfoEscenarioSeleccionadoValido(escenarioSimulComp);
+        }else if(numeroIntentos>=maxIntentosPeticionSeleccionEscenario){
+            visorControlSim.visualizarConsejo("Se ha sobrepsado el numero de intentos de seleccion ", "El modelo organizativo del fichero para simular debe ser: "+modOrganizativo
+                    + " y el  numero de Robots debe ser de = : "+ numRobots, " pero no se ha seleccionado ningun fichero con esas caracteristicas, Intentelo de nuevo o cree uno nuevo "); 
+            resultadoSeleccion=this.INTENTOS_SELECCION_SOBREPASADOS;
         }
-//    else{
-//            notifEvts.sendNotifAgteControlador("escenarioNoDefinidoTrasAgotarLosIntentos");
-//        }
-    return ficheroSeleccionadoValido;
+    return resultadoSeleccion;
 }
     public boolean peticionConfirmacionInformacion(String preguntaAconfirmar){
         return visorControlSim.solicitarConfirmacion(preguntaAconfirmar);
@@ -648,19 +595,20 @@ public  void peticionMostrarVictima(String identVictima,String estadoVictima)thr
    this.visorControlSim.setVisible(true);
 //        notifEvts.sendInfoEscenarioSeleccionadoValido(escenarioSimulComp);
    }
-   else{
-     this.notifRecomendacionUsuario("Ejecución de nuevo caso", "","Para ejecutar otro caso con un nuevo escenario abra un nuevo escenario ");
-   if(! this.obtenerEscenarioSimulacion(memComunControladores.getmodorganizDefinidoEnOrg(), memComunControladores.getnumRobotsdefsEnOrganizacion()))
-   {// No ha seleccionado ningun fichero 
-    visorMovimientoEscen.setVisible(false);
-    visorControlSim.inicializarInfoEscenarioSimul();
-    escenarioSimulComp=null;
-    this.memComunControladores.setescenarioSimulacion(escenarioSimulComp);
-    this.memComunControladores.setescenarioSimulacionAbierto(false);
-   }else{
+   else
+//     this.notifRecomendacionUsuario("Ejecución de nuevo caso", "","Para ejecutar otro caso con un nuevo escenario abra un nuevo escenario ");
+   if (this.visorControlSim.solicitarConfirmacion("Desea abrir un  nuevo escenario  ?" )) {
+   if((this.obtenerEscenarioSimulacion(memComunControladores.getmodorganizDefinidoEnOrg(),memComunControladores.getnumRobotsdefsEnOrganizacion())== this.FICHERO_VALIDO))
+   {
 //     Ya tiene un escenario de simulacion valido, pero los robots no estan actualizados
-   // cerrar el escenario de simulacion que tenga abierto y poner en primer plano
+       // cerrar el escenario de simulacion que tenga abierto y poner en primer plano
        notifEvts.sendInfoEscenarioSeleccionadoValido(escenarioSimulComp);
+   }else{// No ha seleccionado ningun fichero 
+       visorMovimientoEscen.setVisible(false);
+       visorControlSim.inicializarInfoEscenarioSimul();
+       escenarioSimulComp=null;
+       this.memComunControladores.setescenarioSimulacion(escenarioSimulComp);
+       this.memComunControladores.setescenarioSimulacionAbierto(false);
    } 
    }
  } 

@@ -36,11 +36,13 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
     private String identVictimaSeleccionada;
     private ControladorGestionEscenariosRosace controladorGestionEscenarios;
     private File ultimoFicheroEscenarioSeleccionado;
+    private String sepLinea;
     
      
     
     public VisorControlSimuladorRosace(ControladorVisualizacionSimulRosace controlador) {
         controladorEscSim= controlador;
+        sepLinea= System.getProperty("line.separator");
         initComponents();
 //         jButtonStart.setEnabled(false);
 //         listaComponentes.setVisible(false);
@@ -49,14 +51,6 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
     public void setControladorGestionEscenarios( ControladorGestionEscenariosRosace controladorGestionEsc) {
         this.controladorGestionEscenarios = controladorGestionEsc;
     }
-////        this.notifEvts = notifEvt;
-//        this.identsRobotsEquipo =identsRobotsEquipo;
-// //       this.cgen = cgenRec;
-// //       this.visorSc = visorScn;
-//        initComponents();
-//         jButtonStart.setEnabled(false);
-//         listaComponentes.setVisible(false);
-//    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -350,16 +344,7 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
 
     private void jButtonSendVictimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSendVictimActionPerformed
           
-  //        notifEvts.sendInitialRobotCoordenates();
-        // peticion salvar victim se delega en el agente controlador. Se podria implementar primero en local
-        // El controlador local, mira si el usuario puede seleccionar una victima y si puede le envia la peticion
-        // con la victima seleccionada
-//        jListIdentsVictims.setListData(identsRobotsEquipo.toArray());
-//            notifEvts.sendPeticionSimulacionVictimToRobotTeam();
-        this.controladorEscSim.peticionSalvarVictima();
-   //         primeraVictima = false;
-  //          sendVictimButton.setEnabled(false); 
-           
+        this.controladorEscSim.peticionSalvarVictima(); 
            
     }//GEN-LAST:event_jButtonSendVictimActionPerformed
 
@@ -447,8 +432,6 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (evt.getClickCount() == 2) {
     	            int index = jListIdentsVictims.locationToIndex(evt.getPoint());
-//    	        notifEvts.sendPeticionPararAgente ((String)identsRobotsEquipo.get(index));
-    	       //      clasificadorV.muestraVentanaEspecifica(listaComponentes.getSelectedValue().toString());
                     identVictimaSeleccionada = (String)identsVictimas.get(index);
                    controladorEscSim.victimaSeleccionadaParaSimulacion(identVictimaSeleccionada);
     	          }
@@ -488,9 +471,7 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
         jlistIdentsRobots.setVisible(true);
 }
      public void visualizarIdEscenarioActual (String identEquipo){
-//         this.identEquipoActual =identEquipo;
-         jTextFieldIdentEscenarioActual.setText(identEquipo);
-         
+         jTextFieldIdentEscenarioActual.setText(identEquipo);      
      }
 
      public boolean solicitarConfirmacion(String texto){
@@ -498,22 +479,22 @@ public class VisorControlSimuladorRosace extends javax.swing.JFrame {
      }
      
      public void visualizarConsejo (String titulo, String msgConsejo, String recomendacion){
-        String nl = System.getProperty("line.separator");
-        Object msgConsjyRec = msgConsejo+nl+recomendacion;
+        Object msgConsjyRec = msgConsejo+sepLinea+recomendacion;
          JOptionPane.showMessageDialog(rootPane,msgConsjyRec, titulo,2);
      }
+     public int visualizarConsejoYpeticion (String titulo, String msgConsejo, String peticion){
+        Object msgConsjyRec = msgConsejo+sepLinea+peticion;
+        return JOptionPane.showConfirmDialog(rootPane,msgConsjyRec, titulo,JOptionPane.YES_NO_OPTION);
+     }
       public void visualizarRecomenSeleccionFicheroSimulacion (String titulo, String modOrganizativo, int numRobots){
-        String nl = System.getProperty("line.separator");
-        Object msgRecAbrirFicheroEscenario = " Abrir un escenario con el menu de edicion" + nl + "o crear un escenario nuevo"+
-         nl+" El fichero de simulación debe ser de un equipo : " +modOrganizativo +nl+ " y numero de robots : " + numRobots;
-             
+        Object msgRecAbrirFicheroEscenario = " Abrir un escenario con el menu de edicion" + sepLinea + "o crear un escenario nuevo"+
+         sepLinea+" El fichero de simulación debe ser de un equipo : " +modOrganizativo +sepLinea+ " y numero de robots : " + numRobots;    
          JOptionPane.showMessageDialog(rootPane,msgRecAbrirFicheroEscenario, titulo,2);
      }
      
      public void solicitarDefinicionItervaloSecuencia(){
 //          jtextTextFieldIntervaloEnvioMensajes.setText(String.valueOf(intervaloSecuencia));
          String valorIntervaloDefinido=  jtextTextFieldIntervaloEnvioMensajes.getText();
-         
          if(valorIntervaloDefinido.equals(""))intervaloSecuencia=0;
          else intervaloSecuencia = Integer.parseInt(valorIntervaloDefinido);
          setLocationRelativeTo(this);

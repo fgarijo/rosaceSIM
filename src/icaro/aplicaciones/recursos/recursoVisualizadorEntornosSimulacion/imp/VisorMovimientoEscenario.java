@@ -83,17 +83,7 @@ public class VisorMovimientoEscenario extends javax.swing.JFrame {
         IMAGEmujerReAsignada= Utilities.loadImage ("utilsDiseniaEscenariosRosace/MujerReasignada.png");
         
         tablaEntidadesEnEscenario= new HashMap<String, JLabel>();
-         
-//        JLabel label = new javax.swing.JLabel("RobotPrueba");
-//            String rutaIconoRobot = directorioTrabajo + "/" + rutassrc + rutapaqueteConstructorEscenariosROSACE + imageniconoRobot;
-
-//       label.setIcon(new javax.swing.ImageIcon(rutaIconoRobot));     //System.out.println("Ruta->" + rutaIconoRobot);
-//       label.createImage(10,10);
-//            this.getRootPane().add(label);
-//            this.repaint();
     }
-
-        
 
     /** This method is called from within the constructor to
      * initialize the form.

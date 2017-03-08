@@ -113,13 +113,11 @@ public class AccionesSemanticasGestorRecursos extends AccionesSemanticasAgenteRe
 					InfoTraza.NivelTraza.debug));
 			
 			List<DescInstancia> lista = config.getDescInstanciaGestor(NombresPredefinidos.NOMBRE_GESTOR_RECURSOS).getComponentesGestionados();
-
-			Object[] parametros = new Object[] { lista, new Integer(0) };
-                         this.informaraMiAutomata("recursos_listados", lista, 0);
-
-//			this.itfUsoPropiadeEsteAgente.aceptaEvento(new EventoRecAgte("recursos_listados",
-//					parametros, NombresPredefinidos.NOMBRE_GESTOR_RECURSOS,
-//					NombresPredefinidos.NOMBRE_GESTOR_RECURSOS));
+                        if (!lista.isEmpty()){
+                            Object[] parametros = new Object[] { lista, new Integer(0) };
+                             this.informaraMiAutomata("recursos_listados", lista, 0);
+                            }
+                        else this.informaraMiAutomata("sinRecursosDefinidos");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("GestorRecursos: Hubo problemas al listar los recursos desde la configuracion.");

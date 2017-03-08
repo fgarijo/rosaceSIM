@@ -15,6 +15,7 @@
 	</estado>
 	<estado idIntermedio="listandoRecursos">
 		<transicion input="recursos_listados" accion="crearRecurso" estadoSiguiente="creandoRecurso" modoDeTransicion="bloqueante"/>
+                <transicion input="sinRecursosDefinidos" accion="vacio" estadoSiguiente="esperandoPeticiones" modoDeTransicion="bloqueante"/>
 	</estado>
 	<estado idIntermedio="creandoRecurso">
 		<transicion input="recurso_creado" accion="crearRecurso" estadoSiguiente="creandoRecurso" modoDeTransicion="bloqueante"/>

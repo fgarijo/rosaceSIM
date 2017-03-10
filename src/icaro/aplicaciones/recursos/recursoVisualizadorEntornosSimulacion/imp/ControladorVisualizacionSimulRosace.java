@@ -9,24 +9,17 @@ import icaro.aplicaciones.Rosace.informacion.RobotCapability;
 import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
 import icaro.aplicaciones.recursos.recursoPersistenciaEntornosSimulacion.ItfUsoRecursoPersistenciaEntornosSimulacion;
-import icaro.infraestructura.entidadesBasicas.comunicacion.InfoContEvtMsgAgteReactivo;
 import java.awt.Image;
 import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.WidgetAction;
-import org.netbeans.api.visual.animator.SceneAnimator;
-import org.netbeans.api.visual.model.ObjectScene;
-import org.netbeans.api.visual.widget.LayerWidget;
 import org.openide.util.Exceptions;
 
 /**
@@ -490,7 +483,10 @@ public  void peticionSalvarVictima() {
             if (escenario ==null )visorControlSim.visualizarConsejo("Fichero seleccionado Nulo ", "Se debe eleccionar un fichero con modelo organizativo : "+modOrganizativo
                 + " y numero  = : "+ numRobots , "Seleccione otro fichero o  cree uno nuevo "); 
             else if(  escenario.getmodeloOrganizativo().equals(modOrganizativo)
-                       && escenario.getNumRobots()==numRobots) nuevoIntentoDeObtencion=false;
+                       && escenario.getNumRobots()==numRobots){
+                nuevoIntentoDeObtencion=false;
+                resultadoSeleccion = this.FICHERO_VALIDO;
+            }
                 else
                 visorControlSim.visualizarConsejo("Fichero seleccionado No valido ", "El modelo organizativo del fichero seleccionado debe ser: "+modOrganizativo
                     + " y el  numero de Robots debe ser de = : "+ numRobots ," pero el fichero selecionado no tiene estas características. Seleccione otro fichero o  cree uno nuevo "); 

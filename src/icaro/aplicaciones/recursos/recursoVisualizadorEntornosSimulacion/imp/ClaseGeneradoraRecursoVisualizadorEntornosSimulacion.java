@@ -4,28 +4,20 @@ import icaro.aplicaciones.Rosace.informacion.Coordinate;
 import icaro.aplicaciones.Rosace.informacion.InfoCasoSimulacion;
 import icaro.aplicaciones.Rosace.informacion.PuntoEstadistica;
 import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
-import icaro.aplicaciones.recursos.recursoEstadistica.imp.visualizacionEstadisticas.VisualizacionJfreechart;
 import icaro.aplicaciones.recursos.recursoPersistenciaEntornosSimulacion.ItfUsoRecursoPersistenciaEntornosSimulacion;
 import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.ItfUsoRecursoVisualizadorEntornosSimulacion;
 import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp.visualizacionResultados.ControladorVisualizResultados;
-import icaro.infraestructura.entidadesBasicas.InfoTraza.NivelTraza;
-import icaro.infraestructura.entidadesBasicas.comunicacion.InfoContEvtMsgAgteReactivo;
-import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Informe;
-import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Temporizador;
+import icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp.visualizacionResultados.VisualizacionJfreechart;
 import icaro.infraestructura.patronRecursoSimple.imp.ImplRecursoSimple;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 import java.awt.Color;
 import java.io.File;
-import static java.rmi.server.LogStream.log;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
-import org.openide.util.Exceptions;
 
 //Other imports used by this Resource
 //#start_nodespecialImports:specialImports <--specialImports-- DO NOT REMOVE THIS
@@ -148,9 +140,8 @@ public class ClaseGeneradoraRecursoVisualizadorEntornosSimulacion extends ImplRe
         visualizadorJFchart = new VisualizacionJfreechart(tituloVentanaVisor);
         visualizadorJFchart.inicializacionJFreeChart(tituloLocalGrafico, tituloEjeX, tituloEjeY, orientacionPlot, incluyeLeyenda, incluyeTooltips, false);
         visualizadorJFchart.setColorChartBackgroundPaint(colorChartBackgroundPaint);
-        visualizadorJFchart.setColorChartPlotBackgroundPaint(colorChartPlotBackgroundPaint);
-        visualizadorJFchart.setColorChartPlotDomainGridlinePaint(colorChartPlotDomainGridlinePaint);
-        visualizadorJFchart.setColorChartPlotRangeGridlinePaint(colorChartPlotRangeGridlinePaint);
+//        visualizadorJFchart.setColorChartPlotDomainGridlinePaint(colorChartPlotDomainGridlinePaint);
+//        visualizadorJFchart.setColorChartPlotRangeGridlinePaint(colorChartPlotRangeGridlinePaint);
 
     }
 

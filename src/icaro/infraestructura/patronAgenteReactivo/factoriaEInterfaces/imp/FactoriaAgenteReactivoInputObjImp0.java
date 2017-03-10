@@ -387,7 +387,7 @@ public class FactoriaAgenteReactivoInputObjImp0 extends FactoriaAgenteReactivo {
 		logger.debug(rutaAutomata+"?"+ ((input != null) ? "  OK" : "  null"));
 		if  (input != null) return rutaAutomata;
                 else {
-                    // intentamos otra política de nombrado
+                    // intentamos otra politica de nombrado
                     String nombreEntidad = rutaComportamiento.substring(rutaComportamiento.lastIndexOf("/")+1);
                     String primerCaracter= nombreEntidad.substring(0,1);
                     nombreEntidad = nombreEntidad.replaceFirst(primerCaracter, primerCaracter.toUpperCase());

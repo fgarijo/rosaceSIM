@@ -8,12 +8,9 @@ package icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp;
 import icaro.aplicaciones.Rosace.informacion.RobotCapability;
 import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import java.io.File;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 

@@ -28,7 +28,7 @@ public  class ClaseGeneradoraRecursoPersistenciaEntornosSimulacion extends ImplR
 
 //    private ItfUsoRecursoTrazas trazas; //Se inicializa en el constructor con la referencia al recurso de trazas. Asi ya estara disponible en cualquier metodo.
    private String idRecurso;  //Se inicializara en el constructor con el identificador, dado a la instancia del recurso, en la descripcion de la organizacion
-   private ReadXMLTestSequence rXMLTSeq; 
+//   private ReadXMLTestSequence rXMLTSeq; 
    private NodeList nodeLst;      // estructura en memoria con todos los nodos de								   // las victimas que hay en el fichero xml
    private String rutaFicheroVictimasTest;	
    private String rutaFicheroRobotsTest; 
@@ -47,7 +47,7 @@ public  class ClaseGeneradoraRecursoPersistenciaEntornosSimulacion extends ImplR
 //           impPersistenciaXML.setNumeroVictimasDiferentesSimulacion();
            
         } catch (Exception ex) {
-            Logger.getLogger(RecursoPersistenciaEntornosSimulacionImp.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RecursoPersistenciaEntornosSimulacionImp1.class.getName()).log(Level.SEVERE, null, ex);
             
         }
      }

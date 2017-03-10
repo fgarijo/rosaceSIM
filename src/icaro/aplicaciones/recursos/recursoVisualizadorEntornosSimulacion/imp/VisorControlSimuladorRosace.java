@@ -10,7 +10,6 @@
  */
 package icaro.aplicaciones.recursos.recursoVisualizadorEntornosSimulacion.imp;
 
-import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;

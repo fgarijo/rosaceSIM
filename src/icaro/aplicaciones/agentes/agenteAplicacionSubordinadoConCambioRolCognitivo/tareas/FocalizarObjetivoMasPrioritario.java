@@ -4,15 +4,10 @@
  */
 package icaro.aplicaciones.agentes.agenteAplicacionSubordinadoConCambioRolCognitivo.tareas;
 
-import icaro.aplicaciones.Rosace.informacion.AceptacionPropuesta;
 import icaro.aplicaciones.Rosace.informacion.Victim;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
 import icaro.aplicaciones.Rosace.informacion.VocabularioRosace;
 import icaro.aplicaciones.Rosace.objetivosComunes.AyudarVictima;
-import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.InfoCompMovimiento;
-import icaro.aplicaciones.agentes.componentesInternos.movimientoCtrl.ItfUsoMovimientoCtrl;
-import icaro.aplicaciones.recursos.recursoEstadistica.ItfUsoRecursoEstadistica;
-import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.comunicacion.InfoContEvtMsgAgteReactivo;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.MisObjetivos;

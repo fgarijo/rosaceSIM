@@ -79,7 +79,7 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
             itfUsoRecursoVisualizadorEntornosSimulacion.setItfUsoPersistenciaSimulador(itfUsoRecursoPersistenciaEntornosSimulacion);
             identFicheroEscenario = itfconfig.getValorPropiedadGlobal(VocabularioRosace.NombreFicheroEscenarioSimulacion);
             identificadorEquipo = itfconfig.getValorPropiedadGlobal(VocabularioRosace.NombrePropiedadGlobalIdentEquipo);
-            modeloOrganizativo = itfconfig.getValorPropiedadGlobal(VocabularioRosace.NOMBRE_PROPIEDAD_GLOBAL_MODELO_ORGANIZATIVO);
+            modeloOrganizativo = itfconfig.getValorPropiedadGlobal(VocabularioRosace.NombrePropiedadGlobalModeloOrganizacion);
             equipo = new InfoEquipo(this.nombreAgente, identificadorEquipo);
             identsAgtesEquipo = equipo.getTeamMemberIDs(); // Se obtienen de la configuracion
             comunicator = this.getComunicator();
@@ -291,13 +291,12 @@ public class AccionesSemanticasAgenteAplicacionAgteControladorSimuladorRosace ex
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                    if (identificadorEquipo.equals("robotSubordinado")) //VocabularioRosace.IdentEquipoJerarquico
-                    {
-                        comunicator.enviarInfoAotroAgente(ccOrder, VocabularioRosace.IdentAgteDistribuidorTareas);
-                    } else {
+//                    if (identificadorEquipo.equals("robotSubordinado")) //VocabularioRosace.IdentEquipoJerarquico
+//                    {
+//                        comunicator.enviarInfoAotroAgente(ccOrder, VocabularioRosace.IdentAgteDistribuidorTareas);
+//                    } else {
                         comunicator.informaraGrupoAgentes(ccOrder, identsAgtesEquipo);
-                    }
+//                    }
                     infoCasoSimul.addInfoAsignacionVictima(infoAsigVictima);
                     i++;
                     try {

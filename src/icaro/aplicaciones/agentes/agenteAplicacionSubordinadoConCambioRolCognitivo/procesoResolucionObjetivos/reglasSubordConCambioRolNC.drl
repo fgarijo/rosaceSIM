@@ -234,18 +234,18 @@ when
   
 end
 */
-rule "Fin de la simulacion"
-  when    
-    robot:RobotStatus1()
-    victims2R:VictimsToRescue(victims2Rescue!=null)
-    misObjs: MisObjetivos()
-//    finSimu: FinSimulacion(flagActivacion==false)                
-    finSimu: FinSimulacion()                
-  then
-     TareaSincrona tarea = gestorTareas.crearTareaSincrona(FinalizarSimulacion.class);
-     tarea.ejecutar(robot,victims2R,misObjs,finSimu);
-     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
-
+rule "Proceso una orden de fin de caso simulacion enviada por el CC  "
+salience 10
+when   
+ //  miEquipo: InfoEquipo(idTeam:teamId,inicioContactoConEquipo== true)
+    miEquipo: InfoEquipo()
+   infoCompmov: (InfoCompMovimiento())
+    ccOrden:OrdenFinCasoSimulacion(identEmisor==VocabularioRosace.IdentAgteControladorSimulador,mensajeOrden == VocabularioRosace.MsgOrdenCCFinalizarCasoSimulacion)
+ then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(ProcesarOrdenFinCasoSimulacion.class); //crea el  objetivo ayudar victima
+    tarea.ejecutar(miEquipo,infoCompmov ); 
+    System.out.println( "\n"+agentId +" EJECUTO LA REGLA: "+drools.getRule().getName()+"\n\n" );
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());      
 end
 //==========================================================================
 //   Reglas   del objetivo Parar Robot  : Ciclo de vida

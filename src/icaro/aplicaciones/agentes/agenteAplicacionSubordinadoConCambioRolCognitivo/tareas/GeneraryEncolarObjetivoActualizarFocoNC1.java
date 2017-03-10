@@ -5,6 +5,7 @@
 package icaro.aplicaciones.agentes.agenteAplicacionSubordinadoConCambioRolCognitivo.tareas;
 
 import icaro.aplicaciones.Rosace.informacion.AceptacionPropuesta;
+import icaro.aplicaciones.Rosace.informacion.InfoAgteAsignacionVictima;
 import icaro.aplicaciones.Rosace.informacion.RobotStatus1;
 import icaro.aplicaciones.Rosace.informacion.Victim;
 import icaro.aplicaciones.Rosace.informacion.VictimsToRescue;
@@ -159,21 +160,11 @@ private ItfUsoMovimientoCtrl itfcompMov;
             // Miramos si la cola de objetivos esta o no vacia 
           int miEvaluacion = victima.getEstimatedCost();
              if (miEvaluacion!=-1) miEvaluacion = Integer.MAX_VALUE - miEvaluacion;
-             else miEvaluacion = miEvaluacion;    //SI EL COSTE EL -1 INDICARIA QUE SE HA HECHO CARGO PERO QUE NO PUEDE IR (NO TIENE RECURSOS)
-//            Objetivo objetivoAsignado = focoActual.getFoco();
-            //ACTUALIZAR ESTADISTICAS
-            //Inicializar y recuperar la referencia al recurso de estadisticas        	
+  //SI EL COSTE EL -1 INDICARIA QUE SE HA HECHO CARGO PERO QUE NO PUEDE IR (NO TIENE RECURSOS)    	
             long tiempoActual = System.currentTimeMillis();
-            String refVictima = victima.getName();
-            //      	 itfUsoRecursoEstadistica.escribeEstadisticaFicheroTextoPlanoTRealAsignacionVictimasRobots(tiempoActual, refVictima, nombreAgenteEmisor, coste);
-            ////////////////////////////////////////////////////////
             //ENVIAR INFORMACION AL AGENTE CONTROLADOR DEL SIMULADOR           
-            Object[] valoresParametrosAccion = new Object[4];
-            valoresParametrosAccion[0] = tiempoActual;
-            valoresParametrosAccion[1] = refVictima;
-            valoresParametrosAccion[2] = this.getIdentAgente();
-            valoresParametrosAccion[3] = miEvaluacion;
-            InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo("victimaAsignadaARobot", valoresParametrosAccion);
+            InfoAgteAsignacionVictima infoVictimaAsignada = new InfoAgteAsignacionVictima (this.identAgente,victima.getName(),tiempoActual,miEvaluacion);
+            InfoContEvtMsgAgteReactivo msg = new InfoContEvtMsgAgteReactivo("victimaAsignadaARobot",infoVictimaAsignada);
             this.getComunicator().enviarInfoAotroAgente(msg, VocabularioRosace.IdentAgteControladorSimulador);
       }  
 }

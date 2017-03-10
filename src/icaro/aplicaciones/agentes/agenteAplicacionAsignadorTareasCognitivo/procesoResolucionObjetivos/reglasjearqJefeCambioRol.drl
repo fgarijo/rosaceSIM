@@ -365,3 +365,17 @@ rule "Proceso el  timeout aceptacion propuesta doy por  asignado el objetivo"
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId,"( ID Victima: "+idVict + " ) EJECUTO LA REGLA " + drools.getRule().getName() + "\n");
     System.out.println( "\n"+agentId +" EJECUTO LA REGLA: "+drools.getRule().getName()+" \n\n" );
 end
+
+rule "Proceso una orden de fin de caso simulacion enviada por el CC  "
+salience 10
+when   
+ //  miEquipo: InfoEquipo(idTeam:teamId,inicioContactoConEquipo== true)
+    miEquipo: InfoEquipo()
+   infoCompmov: (InfoCompMovimiento())
+   ccOrden:OrdenFinCasoSimulacion(identEmisor==VocabularioRosace.IdentAgteControladorSimulador,mensajeOrden == VocabularioRosace.MsgOrdenCCFinalizarCasoSimulacion)
+ then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(ProcesarOrdenFinCasoSimulacion.class); //crea el  objetivo ayudar victima
+    tarea.ejecutar(miEquipo,infoCompmov ); 
+    System.out.println( "\n"+agentId +" EJECUTO LA REGLA: "+drools.getRule().getName()+"\n\n" );
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());      
+end

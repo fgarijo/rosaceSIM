@@ -237,14 +237,18 @@ public void setIdentEscenario(String escenarioId) {
 
     public void renombrarIdentRobts(ArrayList identList) {
         String identNuevo; int i= 0;
+        String identTabla;
         RobotStatus1 robotInfo = null;
         Object[] identRobots= infoRobots.keySet().toArray();
         for( i=0; i<identList.size();i++){
-            robotInfo = infoRobots.get ( identRobots[i]);
-            infoRobots.remove ( identRobots[i]);  
             identNuevo = (String)identList.get(i);
+           if (infoRobots.get ( identNuevo)==null){
+               identTabla = (String)identRobots[i];
+            robotInfo = infoRobots.get(identTabla);
+            infoRobots.remove ( identTabla);  
             robotInfo.setIdRobot(identNuevo);  
-            infoRobots.put(identNuevo,robotInfo );           
+            infoRobots.put(identNuevo,robotInfo ); 
+           }
         }
     }
 }

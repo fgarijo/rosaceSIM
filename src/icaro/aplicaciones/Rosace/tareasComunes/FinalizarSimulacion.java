@@ -8,7 +8,7 @@ package icaro.aplicaciones.Rosace.tareasComunes;
 
 import icaro.aplicaciones.Rosace.informacion.*;
 import icaro.aplicaciones.Rosace.utils.ConstantesRutasEstadisticas;
-import icaro.aplicaciones.recursos.recursoEstadistica.ItfUsoRecursoEstadistica;
+//import icaro.aplicaciones.recursos.recursoEstadistica.ItfUsoRecursoEstadistica;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.MisObjetivos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Objetivo;
@@ -29,7 +29,7 @@ public class FinalizarSimulacion extends TareaSincrona {
 	
         
     private ItfUsoRecursoTrazas trazas = NombresPredefinidos.RECURSO_TRAZAS_OBJ;    
-    private ItfUsoRecursoEstadistica itfUsoRecursoEstadistica;    //Para escribir estadisticas
+//    private ItfUsoRecursoEstadistica itfUsoRecursoEstadistica;    //Para escribir estadisticas
 
     
     private Coordinate robotLocation; //Localizacion del robot
